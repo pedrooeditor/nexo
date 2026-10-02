@@ -1,73 +1,25 @@
 /* =============================================================
    NEXO STUDIO — ecossistema.css
-   Blocos novos do site: passagem entre as frentes, ciclo,
-   pacotes, time, formulário e ajustes de acessibilidade.
+   Peças compartilhadas: tipografia, lista das frentes, formulário,
+   contato e ajustes de acessibilidade.
    Usa apenas as cores e fontes já definidas em identity.css.
-   Carregado depois de responsive.css.
+   Carregado depois de responsive.css e antes de experiencia.css.
    ============================================================= */
 
 /* ---------- Tipografia: quebras de linha mais equilibradas ---------- */
 h2,h3,h4{text-wrap:balance}
 p,li,dd{text-wrap:pretty}
 
-/* ---------- 01 Ecossistema: slogan e passagem de cada frente ---------- */
-.step-copy{display:grid;gap:8px;min-width:0}
-#step-slogan{font-family:Manrope,Arial,sans-serif;font-size:clamp(18px,1.6vw,22px);font-weight:650;letter-spacing:-.025em;line-height:1.35;color:var(--text)}
-.connection-detail .step-handoff{font-size:14px;line-height:1.7;color:#8fd0ff;padding-left:14px;border-left:1px solid #1088ff80}
-
-/* O ciclo: vendas alimentam o conteúdo */
-.cycle-note{display:grid;grid-template-columns:minmax(120px,1fr) minmax(0,3fr);column-gap:24px;row-gap:14px;align-items:baseline;margin-top:clamp(44px,5vw,72px);padding-top:32px;border-top:1px solid var(--line)}
-.cycle-label{font-size:11px;letter-spacing:1.6px;color:#53b8ff;display:flex;align-items:center;gap:8px}
-.cycle-label>span{font-size:18px;letter-spacing:0}
-.cycle-note>p{font-family:Manrope,Arial,sans-serif;font-size:clamp(26px,3.2vw,46px);font-weight:650;letter-spacing:-.045em;line-height:1.15}
-.cycle-note>small{grid-column:2;font-size:15px;line-height:1.8;color:var(--muted);max-width:56ch}
-
-/* ---------- 02 Especialidades ---------- */
+/* ---------- As frentes (lista com cena ao lado) ---------- */
 .service-icon{display:inline-flex;justify-content:center;flex-shrink:0;width:1.1em;font-size:.8em;color:#53beff}
 .service-panel .service-slogan{font-family:Manrope,Arial,sans-serif;font-size:17px;font-weight:650;letter-spacing:-.015em;line-height:1.5;color:var(--text);margin-bottom:10px}
-.service-flow{display:grid;gap:10px;margin:20px 0 0}
-.service-flow>div{display:grid;grid-template-columns:76px minmax(0,1fr);gap:12px;align-items:baseline}
-.service-flow dt{font-size:10px;letter-spacing:1.4px;text-transform:uppercase;color:#53b8ff}
-.service-flow dd{margin:0;font-size:14px;line-height:1.6;color:#c3cfdf}
-.service-panel .service-owner{margin-top:18px;font-size:13px;color:#8fa3bf}
-.service-owner strong{font-weight:600;color:var(--text)}
 
-/* Pacotes */
-.packages{margin-top:clamp(56px,6vw,88px);padding-top:clamp(32px,4vw,48px);border-top:1px solid #26354b}
-.packages-head{display:flex;justify-content:space-between;align-items:end;gap:24px;margin-bottom:28px}
-.packages-head h3{font-family:Manrope,Arial,sans-serif;font-size:clamp(24px,2.4vw,34px);font-weight:650;letter-spacing:-.04em;line-height:1.2}
-.packages-head p{font-size:14px;line-height:1.7;color:var(--muted);max-width:34ch}
-.packages-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
-.package-card{display:flex;flex-direction:column;gap:12px;padding:26px 24px 18px;border:1px solid #2e4260;border-radius:12px;background:linear-gradient(145deg,#111d2f88,#060c17e6);box-shadow:inset 0 1px 0 #d3eaff12}
-.package-card h4{margin:0;font-family:Manrope,Arial,sans-serif;font-size:24px;font-weight:650;letter-spacing:-.035em}
-.package-fronts{font-size:13px;line-height:1.6;color:#a5c5e8}
-.package-fronts>span[aria-hidden]{color:#53beff}
-.package-plus{color:#6d86a8;margin:0 2px}
-.package-card>p:not(.package-fronts){font-size:15px;line-height:1.7;color:var(--muted)}
-.package-link{margin-top:auto;display:inline-flex;align-items:center;gap:12px;min-height:44px;font-size:14px;font-weight:600;color:#c1ccdc;transition:color .2s}
-.package-link span{color:#39b7ff;font-size:18px}
-.package-link:hover{color:#fff}
-.package-featured{border-color:#34b5ff;background:linear-gradient(145deg,#0a3a72aa,#06122a 70%);box-shadow:inset 0 1px 0 #d1edff40,0 0 30px #006bff22}
-
-/* ---------- 03 Time ---------- */
-.team{background:radial-gradient(ellipse at 12% 0%,#0632632b,transparent 55%)}
-.team-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(24px,3vw,40px)}
-.team-card{position:relative;display:flex;flex-direction:column;gap:12px;padding-top:28px;border-top:1px solid #4b647f}
-.team-card::before{content:"";position:absolute;top:-1px;left:0;width:42px;height:1px;background:#4cc6ff;box-shadow:0 0 13px #008aff}
+/* ---------- Iniciais (ponto de contato) ---------- */
 .team-avatar{display:grid;place-items:center;width:72px;height:72px;border-radius:20px;font-family:Manrope,Arial,sans-serif;font-size:30px;font-weight:800;letter-spacing:-.04em;color:#cfe6ff;text-shadow:0 0 18px #0078ff66;background:linear-gradient(145deg,#253244,#070d18 45%,#111e30);border:1px solid #5c718e;box-shadow:inset 0 1px 0 #bed7f844,0 10px 25px #0009}
-.team-card h3{margin-top:8px;font-family:Manrope,Arial,sans-serif;font-size:28px;font-weight:650;letter-spacing:-.04em}
-.team-role{font-size:14px;font-weight:500;line-height:1.6;color:#53beff}
-.team-and{color:#8fa3bf;font-weight:400}
-.team-card>p:not(.team-role){font-size:15px;line-height:1.8;color:var(--muted);max-width:36ch}
-.team-exp{list-style:none;margin:4px 0 0;padding:0;display:grid;gap:6px;font-size:13px;color:#c3cfdf}
-.team-exp li::before{content:"";display:inline-block;width:12px;height:1px;margin-right:10px;vertical-align:middle;background:#38b6ff}
-.team-badge{align-self:flex-start;margin-top:6px;padding:7px 12px;font-size:12px;font-weight:500;color:#d4f3ff;border:1px solid #34b5ff;border-radius:4px;background:#0754b333}
-
-/* ---------- 04 Processo: ponto de contato ---------- */
-.process-contact{display:flex;align-items:center;gap:16px;max-width:640px;margin-top:clamp(36px,4vw,56px);padding:16px 22px 16px 16px;font-size:16px;line-height:1.6;color:#d2deee;border:1px solid #2e4260;border-radius:12px;background:linear-gradient(90deg,#08182a99,transparent)}
 .team-avatar-sm{width:44px;height:44px;border-radius:12px;font-size:18px;flex-shrink:0}
+.process-contact{display:flex;align-items:center;gap:16px;max-width:640px;margin-top:clamp(36px,4vw,56px);padding:16px 22px 16px 16px;font-size:16px;line-height:1.6;color:#d2deee;border:1px solid #2e4260;border-radius:12px;background:linear-gradient(90deg,#08182a99,transparent)}
 
-/* ---------- 05 Contato: frentes, pacotes e novos campos ---------- */
+/* ---------- Contato: frentes, combinações e campos ---------- */
 .service-choices span{justify-content:flex-start}
 .service-choices b{margin-left:auto}
 .service-choices em{font-style:normal;color:#53bcff;flex-shrink:0}
@@ -81,41 +33,29 @@ p,li,dd{text-wrap:pretty}
 /* O autocompletar do navegador não pinta os campos de amarelo */
 .brief-form input:-webkit-autofill,.brief-form input:-webkit-autofill:hover,.brief-form input:-webkit-autofill:focus{-webkit-text-fill-color:#f0f1f4;caret-color:#f0f1f4;transition:background-color 600000s 0s,color 600000s 0s}
 
+/* Quem responde e primeiras vagas */
+.contact-notes{display:grid;gap:14px;margin-top:28px;max-width:420px}
+.contact-grid>div>.contact-notes>p{margin:0}
+.contact-reply{display:flex;align-items:center;gap:14px;font-size:15px;line-height:1.6;color:#d2deee}
+.contact-badge{display:inline-flex;align-items:center;align-self:start;justify-self:start;gap:4px;padding:8px 14px;font-size:13px;line-height:1.5;color:#d4f3ff;border:1px solid #2e6fae;border-radius:40px;background:#0754b322}
+
 /* Modo de alto contraste (Windows): seleção e foco continuam visíveis */
 @media(forced-colors:active){
   .service-choices input:checked+span{outline:2px solid Highlight;outline-offset:2px}
   .package-featured{border:2px solid CanvasText}
 }
 
-/* ---------- Tablet ---------- */
-@media(max-width:980px){
-  .cycle-note{grid-template-columns:1fr;row-gap:12px}
-  .cycle-note>small{grid-column:auto}
-  .packages-grid{grid-template-columns:1fr;max-width:620px}
-  .packages-head{flex-direction:column;align-items:start;gap:10px}
-}
-@media(max-width:760px){
-  .team-grid{grid-template-columns:1fr;gap:36px}
-  .team-avatar{width:62px;height:62px;border-radius:17px;font-size:26px}
-}
-
 /* ---------- Celular ---------- */
 @media(max-width:640px){
-  #step-slogan{font-size:19px}
-  .connection-detail .step-handoff{font-size:14px}
-  .cycle-note{padding-top:26px}
-  .cycle-note>p{font-size:clamp(26px,7.4vw,34px)}
-  .service-flow>div{grid-template-columns:1fr;gap:2px}
   .service-panel .service-slogan{font-size:17px}
-  .package-card{padding:22px 18px 14px}
-  .team-card h3{font-size:26px}
   .process-contact{font-size:15px;padding:14px 16px 14px 14px}
   .brief-fields{grid-template-columns:1fr}
+  .contact-reply{font-size:15px}.contact-badge{font-size:12px}
 }
 
 /* ---------- Pequenos acertos ---------- */
 /* Espaço entre o texto e a seta nos links que usam flex */
-.phone-link,.footer-top>a:last-child,.footer-bottom>a,.mobile-nav a{gap:8px}
+.phone-link,.mobile-nav a{gap:8px}
 /* O botão de play fica no canto, sem cobrir o título da cena */
 .scene-video .play-orbit{top:4%;right:5%}
 @media(max-width:640px){.scene-video .play-orbit{width:52px;height:52px;font-size:22px;top:2%;right:4%}}
@@ -123,15 +63,3 @@ p,li,dd{text-wrap:pretty}
 .tile-front strong{font-size:42px;letter-spacing:-.06em;white-space:nowrap}
 .tile-front strong span{font-size:44px;top:10px;right:14px}
 @media(max-width:640px){.tile-front strong{font-size:34px}.tile-front strong span{font-size:36px;top:8px;right:10px}}
-
-/* ---------- Time: contato direto com o Pedro ---------- */
-.team-cta{align-self:flex-start;display:inline-flex;align-items:center;gap:12px;min-height:46px;margin-top:4px;padding:12px 18px;font-size:14px;font-weight:600;color:#fff;border:1px solid #42b8ff;border-radius:5px;background:linear-gradient(115deg,#087ff5,#064dd7 75%,#053ba6);box-shadow:inset 0 1px 0 #bceaff70,0 0 24px #006bff30;transition:box-shadow .3s,background .3s}
-.team-cta span{font-size:18px}
-.team-cta:hover{background:linear-gradient(115deg,#1599ff,#085ae9);box-shadow:inset 0 1px 0 #d0eeff90,0 0 38px #007cff66}
-
-/* ---------- Contato: quem responde e primeiras vagas ---------- */
-.contact-notes{display:grid;gap:14px;margin-top:28px;max-width:420px}
-.contact-grid>div>.contact-notes>p{margin:0}
-.contact-reply{display:flex;align-items:center;gap:14px;font-size:15px;line-height:1.6;color:#d2deee}
-.contact-badge{display:inline-flex;align-items:center;align-self:start;justify-self:start;gap:4px;padding:8px 14px;font-size:13px;line-height:1.5;color:#d4f3ff;border:1px solid #2e6fae;border-radius:40px;background:#0754b322}
-@media(max-width:640px){.contact-reply{font-size:15px}.contact-badge{font-size:12px}}

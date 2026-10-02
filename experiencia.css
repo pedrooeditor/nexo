@@ -1,0 +1,201 @@
+/* =============================================================
+   NEXO STUDIO — experiencia.css
+   A experiência de abertura e de rolagem: tela de carregamento,
+   entrada do topo, problema, frase que se revela ao rolar, ciclo
+   em linha do tempo, pacotes e rodapé.
+   Só usa a paleta já definida em identity.css (preto, cromado e azul elétrico).
+   Carregado por último.
+   ============================================================= */
+
+/* ---------- Entrada dos blocos (atraso opcional por --d) ---------- */
+.js .reveal{transition-delay:var(--d,0ms)}
+
+/* ---------- Tela de abertura ---------- */
+.preloader{display:none;position:fixed;inset:0;z-index:300;place-items:center;background:#030509;transition:opacity 1s ease .05s,visibility 0s linear 1.05s}
+.js .preloader{display:grid}
+.js.is-entered .preloader{opacity:0;visibility:hidden;pointer-events:none}
+.is-loading{overflow:hidden}
+.preloader-inner{position:relative;display:grid;justify-items:center;gap:20px;transition:transform 1.1s var(--ease)}
+.js.is-entered .preloader-inner{transform:scale(1.06)}
+.preloader-inner::before{content:"";position:absolute;left:50%;top:38%;width:min(520px,90vw);aspect-ratio:1;translate:-50% -50%;border-radius:50%;background:radial-gradient(circle,#0a63ff40,#0a63ff12 45%,transparent 68%);opacity:0;animation:pre-glow 1.9s ease-out .1s forwards}
+.preloader-mark{position:relative;width:clamp(92px,15vw,138px);aspect-ratio:560/490;mix-blend-mode:screen;opacity:0;animation:pre-mark 1.7s ease-out forwards}
+.preloader-mark svg{width:100%;height:100%;filter:drop-shadow(0 0 22px #0a7bffaa)}
+.preloader-word{font-size:11px;font-weight:500;letter-spacing:.55em;padding-left:.55em;color:#8fb4dd;opacity:0;animation:pre-fade 1s ease-out .55s forwards}
+.preloader-line{width:clamp(96px,16vw,140px);height:1px;background:#16263c;overflow:hidden;position:relative}
+.preloader-line::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,#054bea,#39c7ff);box-shadow:0 0 10px #008cff;transform:scaleX(0);transform-origin:left;animation:pre-line 1.7s cubic-bezier(.45,0,.2,1) .15s forwards}
+@keyframes pre-mark{0%{opacity:.08;scale:.94;filter:brightness(.5)}55%{opacity:1;scale:1;filter:brightness(1)}100%{opacity:1;scale:1.02;filter:brightness(1.12)}}
+@keyframes pre-glow{to{opacity:1}}
+@keyframes pre-fade{to{opacity:1}}
+@keyframes pre-line{to{transform:scaleX(1)}}
+
+/* ---------- Entrada do topo (uma sequência só, quando a abertura termina) ---------- */
+.js .enter{opacity:0}
+.js.is-entered .enter{animation:nx-enter .95s var(--ease) both;animation-delay:calc(var(--i,0) * 90ms + 140ms)}
+@keyframes nx-enter{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+/* Frentes logo abaixo dos botões do topo */
+.hero-fronts{display:flex;flex-wrap:wrap;align-items:center;gap:10px 22px;max-width:560px;margin-top:34px;padding-top:20px;border-top:1px solid var(--line)}
+.hero-fronts-label{font-size:10px;letter-spacing:1.6px;color:#53b8ff}
+.hero-fronts ul{display:flex;flex-wrap:wrap;gap:8px 20px;margin:0;padding:0;list-style:none}
+.hero-fronts li{font-size:13px;line-height:1.5;color:#c3cfdf;white-space:nowrap}
+.hero-fronts li span{color:#53beff;margin-right:4px}
+
+/* Etiquetas flutuando ao redor da logo */
+.art-tag{position:absolute;z-index:3;padding:7px 13px;font-size:11px;letter-spacing:.4px;white-space:nowrap;color:#9fd3ff;border:1px solid #1f5f9e;border-radius:40px;background:#04101fd9;backdrop-filter:blur(6px);animation:nx-float 7s ease-in-out infinite}
+.art-tag-a{top:13%;right:1%}
+.art-tag-b{top:37%;left:0;animation-delay:-3.5s}
+@keyframes nx-float{0%,100%{translate:0 0}50%{translate:0 -8px}}
+
+/* ---------- Títulos das seções: [01] NOME ---------- */
+.section-label>span:first-child{color:#6fc3ff}
+
+/* ---------- 01 O problema ---------- */
+.problem{position:relative;background:radial-gradient(ellipse at 92% 0%,#06326326,transparent 55%),#030509}
+.problem-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.problem-card{position:relative;display:grid;grid-template-columns:1fr auto;align-content:start;align-items:start;row-gap:14px;padding:30px 28px 32px;border:1px solid #26354b;border-radius:12px;background:linear-gradient(145deg,#0f1a2b99,#060b15e6);box-shadow:inset 0 1px 0 #d3eaff10}
+.problem-card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;border:1px solid #34b5ff;box-shadow:0 0 34px #0a6bff26;opacity:0;transition:opacity .4s ease;pointer-events:none}
+.problem-card:hover::before{opacity:.75}
+.problem-num{font-family:Manrope,Arial,sans-serif;font-size:clamp(46px,5vw,68px);font-weight:300;letter-spacing:-.06em;line-height:1;background:linear-gradient(172deg,#f1faff 3%,#7f9bbd 55%,#2c4b72 100%);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:.8}
+.problem-tag{padding:6px 12px;font-size:12px;color:#9fd3ff;border:1px solid #1f4f82;border-radius:40px;background:#061326}
+.problem-tag span{color:#53beff;margin-right:2px}
+.problem-card h3,.problem-card p{grid-column:1/-1}
+.problem-card h3{margin-top:10px;font-family:Manrope,Arial,sans-serif;font-size:clamp(21px,2vw,26px);font-weight:600;letter-spacing:-.035em;line-height:1.25}
+.problem-card p{font-size:15px;line-height:1.8;color:#9fa8b6;max-width:46ch}
+.problem-next{margin-top:clamp(36px,5vw,64px);max-width:48ch;font-family:Manrope,Arial,sans-serif;font-size:clamp(20px,2.3vw,30px);font-weight:500;letter-spacing:-.035em;line-height:1.4;color:#d2deee}
+.problem-next span{color:#39b7ff}
+
+/* ---------- Frase que se revela ao rolar ---------- */
+.statement{--p:0;position:relative;background:#030509}
+.statement-pin{height:300vh;height:300svh}
+.statement-stage{position:sticky;top:0;height:100vh;height:100svh;display:grid;align-content:center;justify-items:center;gap:clamp(22px,4vh,40px);padding:0 max(var(--gutter),calc((100% - 1400px)/2));text-align:center;overflow:hidden;isolation:isolate}
+.statement-stage::before{content:"";position:absolute;left:50%;top:50%;width:min(1100px,150vw);aspect-ratio:1;translate:-50% -52%;border-radius:50%;background:radial-gradient(circle,#0a63ff2b,#0a63ff10 38%,transparent 66%);opacity:calc(.25 + var(--p) * .75);z-index:-1;pointer-events:none}
+.statement-mark{width:clamp(84px,12vw,142px);aspect-ratio:560/490;mix-blend-mode:screen;opacity:calc(.28 + var(--p) * .72);filter:drop-shadow(0 0 calc(8px + var(--p) * 34px) #0a7bffaa)}
+.statement-mark svg{width:100%;height:100%}
+.statement-text{font-family:Manrope,Arial,sans-serif;font-size:clamp(34px,5.1vw,72px);font-weight:600;letter-spacing:-.05em;line-height:1.14;color:#eff5ff;max-width:none;margin:0}
+.js .word{opacity:calc(.14 + var(--o,0) * .86);transition:opacity .12s linear}
+.word.hl{background:linear-gradient(110deg,#a4e3ff,#158dff 70%,#0757cb);-webkit-background-clip:text;background-clip:text;color:transparent}
+.statement-kicker{font-size:11px;letter-spacing:2.2px;color:#6f94bd;margin:0;opacity:calc(var(--p) * 1.4)}
+/* Aviso pequeno: some assim que a pessoa começa a rolar */
+.scroll-hint{position:absolute;left:50%;bottom:clamp(26px,6vh,54px);translate:-50% 0;display:grid;justify-items:center;gap:7px;margin:0;font-size:11px;letter-spacing:1.4px;color:#8fb4dd;transition:opacity .45s ease}
+.scroll-hint i{width:7px;height:7px;border-right:1px solid #53beff;border-bottom:1px solid #53beff;transform:rotate(45deg);animation:hint-bob 1.8s ease-in-out infinite}
+.statement.is-started .scroll-hint{opacity:0}
+@keyframes hint-bob{0%,100%{translate:0 -2px;opacity:.45}50%{translate:0 3px;opacity:1}}
+
+/* ---------- 02 O ciclo ---------- */
+.cycle{background:radial-gradient(ellipse at 8% 100%,#0632632b,transparent 55%),#030509}
+.cycle-layout{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:clamp(36px,7vw,110px);align-items:start;margin-top:clamp(36px,4vw,56px)}
+.cycle-intro{position:sticky;top:calc(var(--header-height) + 40px)}
+.cycle-intro h2{margin-bottom:26px}
+.cycle-intro p{font-size:16px;line-height:1.85;color:var(--muted);max-width:44ch}
+.cycle-steps{--line:0;position:relative;display:grid;gap:clamp(30px,4vw,52px);margin:0;padding:0;list-style:none}
+.cycle-steps::before,.cycle-steps::after{content:"";position:absolute;left:27px;top:28px;bottom:28px;width:1px}
+.cycle-steps::before{background:#1f2e44}
+.cycle-steps::after{background:linear-gradient(#38b6ff,#086bff);box-shadow:0 0 12px #008cff;transform-origin:top;transform:scaleY(var(--line))}
+.cycle-step{position:relative;display:grid;grid-template-columns:56px minmax(0,1fr);gap:clamp(18px,2.4vw,28px);align-items:start}
+.cycle-node{position:relative;z-index:1;display:grid;place-items:center;width:56px;height:56px;border-radius:16px;font-size:22px;color:#6f84a0;background:linear-gradient(145deg,#1a2332,#070d18 55%);border:1px solid #2f4059;transition:color .5s,border-color .5s,box-shadow .5s,background .5s}
+.cycle-step.is-lit .cycle-node{color:#d4f3ff;border-color:#51c7ff;background:linear-gradient(145deg,#1b5b97,#06132d 54%,#072145);box-shadow:inset 0 1px 0 #d1edff60,0 0 26px #0077ff44}
+.cycle-tag{display:block;font-size:11px;letter-spacing:1.5px;color:#53b8ff;margin:4px 0 10px}
+.cycle-step h3{font-family:Manrope,Arial,sans-serif;font-size:clamp(23px,2.3vw,31px);font-weight:600;letter-spacing:-.04em;line-height:1.2;margin-bottom:10px}
+.cycle-slogan{font-size:17px;line-height:1.6;color:#eff5ff;margin-bottom:10px}
+.cycle-handoff{font-size:15px;line-height:1.75;color:#93bde6;max-width:52ch}
+.cycle-handoff span{color:#39b7ff;margin-right:6px}
+.cycle-loop .cycle-node{color:#39b7ff;font-size:26px;border-color:#2e6fae}
+.cycle-loop h3{font-size:clamp(25px,2.8vw,38px)}
+.cycle-loop .cycle-handoff{color:#a5b0c0}
+
+/* ---------- 04 Pacotes ---------- */
+.packages{background:radial-gradient(ellipse at 85% 100%,#0632632b,transparent 58%),#030509}
+.packages-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;align-items:stretch;padding-top:12px}
+.package-card{position:relative;display:flex;flex-direction:column;gap:14px;padding:30px 26px 20px;border:1px solid #2e4260;border-radius:12px;background:linear-gradient(145deg,#111d2f88,#060c17e6);box-shadow:inset 0 1px 0 #d3eaff12}
+.package-card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;border:1px solid #34b5ff;box-shadow:0 0 34px #0a6bff26;opacity:0;transition:opacity .4s ease;pointer-events:none}
+.package-card:hover::before{opacity:.7}
+.package-no{font-size:12px;letter-spacing:1.6px;color:#6f94bd}
+.package-card h3{margin:0;font-family:Manrope,Arial,sans-serif;font-size:clamp(26px,2.4vw,32px);font-weight:600;letter-spacing:-.04em;line-height:1.15}
+.package-fronts{font-size:13px;line-height:1.6;color:#a5c5e8}
+.package-fronts>span[aria-hidden]{color:#53beff}
+.package-plus{color:#6d86a8;margin:0 2px}
+.package-for{font-size:16px;line-height:1.65;color:#d2deee}
+.package-list{display:grid;gap:10px;margin:4px 0 8px;padding:20px 0 0;list-style:none;border-top:1px solid #26354b}
+.package-list li{position:relative;padding-left:20px;font-size:14px;line-height:1.6;color:#9fb0c6}
+.package-list li::before{content:"";position:absolute;left:0;top:.72em;width:10px;height:1px;background:#38b6ff;box-shadow:0 0 6px #008cff}
+.package-link{margin-top:auto;display:inline-flex;align-items:center;gap:12px;min-height:46px;font-size:14px;font-weight:600;color:#c1ccdc;transition:color .2s}
+.package-link span{color:#39b7ff;font-size:18px}
+.package-link:hover{color:#fff}
+.package-featured{border-color:#34b5ff;background:linear-gradient(145deg,#0a3a72aa,#06122a 70%);box-shadow:inset 0 1px 0 #d1edff40,0 0 34px #006bff22}
+.package-badge{position:absolute;top:-13px;left:24px;padding:5px 12px;font-size:10px;font-weight:700;letter-spacing:1.4px;color:#06162c;border-radius:20px;background:linear-gradient(115deg,#9fe0ff,#2ea7ff)}
+
+/* ---------- 06 Perguntas frequentes ---------- */
+.faq-label{grid-column:1/-1;margin-bottom:8px}
+.faq summary{transition:color .2s}
+.faq summary:hover,.faq details[open] summary{color:#53beff}
+
+/* ---------- Rodapé ---------- */
+.footer-cols{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);gap:clamp(28px,5vw,72px);align-items:start}
+.footer-about p{margin:18px 0 0;max-width:36ch;font-size:14px;line-height:1.8;color:#a5b0c0}
+.footer-nav,.footer-contact{display:grid;align-content:start;gap:2px}
+.footer-title{margin-bottom:10px;font-size:10px;letter-spacing:1.6px;color:#53b8ff}
+.footer-nav a,.footer-contact a{display:flex;align-items:center;gap:8px;min-height:40px;font-size:14px;color:#c3cfdf;transition:color .2s}
+.footer-nav a:hover,.footer-contact a:hover{color:#fff}
+.footer-contact a span{color:#39b7ff}
+
+/* ---------- Tablet ---------- */
+@media(max-width:980px){
+  .problem-grid{gap:14px}
+  .cycle-layout{grid-template-columns:1fr;gap:36px}
+  .cycle-intro{position:static}
+  .packages-grid{grid-template-columns:1fr;max-width:620px;gap:26px}
+  .footer-cols{grid-template-columns:1fr 1fr}
+  .footer-about{grid-column:1/-1}
+}
+
+/* ---------- Celular ---------- */
+@media(max-width:760px){
+  .problem-grid{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .hero-fronts{margin-top:26px;padding-top:18px;gap:8px 16px}
+  .hero-fronts ul{gap:6px 16px}
+  .hero-fronts li{font-size:13px}
+  .art-tag{padding:6px 11px;font-size:10px}
+  .art-tag-a{top:8%;right:0}
+  .art-tag-b{top:40%;bottom:auto;left:0}
+  .problem-card{padding:24px 20px 26px}
+  .problem-card p{font-size:15px}
+  .statement-text{font-size:clamp(32px,9.4vw,46px);max-width:14ch}
+  .statement-kicker{font-size:10px;letter-spacing:1.6px;max-width:30ch}
+  .cycle-steps::before,.cycle-steps::after{left:21px;top:22px;bottom:22px}
+  .cycle-step{grid-template-columns:44px minmax(0,1fr);gap:16px}
+  .cycle-node{width:44px;height:44px;border-radius:13px;font-size:18px}
+  .cycle-slogan{font-size:16px}
+  .package-card{padding:26px 20px 14px}
+  .footer-cols{grid-template-columns:1fr 1fr;gap:26px}
+}
+@media(max-width:380px){
+  .footer-cols{grid-template-columns:1fr}
+}
+
+/* ---------- Sem movimento: reduzir movimento do aparelho ou "Pausar efeitos" ---------- */
+@media(prefers-reduced-motion:reduce){
+  .preloader{display:none!important}
+  .js .enter{opacity:1!important;animation:none!important}
+  .art-tag{animation:none}
+  .statement{--p:1!important}
+  .statement-pin{height:auto}
+  .statement-stage{position:static;height:auto;padding-top:clamp(96px,16vw,160px);padding-bottom:clamp(96px,16vw,160px)}
+  .js .word{opacity:1!important}
+  .scroll-hint{display:none}
+  .cycle-steps{--line:1!important}
+  .cycle-node{color:#d4f3ff;border-color:#51c7ff}
+}
+.motion-paused .statement{--p:1!important}
+.motion-paused .statement-pin{height:auto}
+.motion-paused .statement-stage{position:static;height:auto;padding-top:clamp(96px,16vw,160px);padding-bottom:clamp(96px,16vw,160px)}
+.motion-paused.js .word{opacity:1!important}
+.motion-paused .scroll-hint{display:none}
+.motion-paused .art-tag,.motion-paused .preloader-mark{animation-play-state:paused}
+
+/* Sem JavaScript: a frase aparece inteira, sem rolagem extra */
+html:not(.js) .statement-pin{height:auto}
+html:not(.js) .statement-stage{position:static;height:auto;padding-top:clamp(96px,16vw,160px);padding-bottom:clamp(96px,16vw,160px)}
+html:not(.js) .scroll-hint{display:none}
+html:not(.js) .statement{--p:1}
