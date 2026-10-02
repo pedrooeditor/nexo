@@ -30,7 +30,8 @@ document.addEventListener('keydown', event => {
 document.addEventListener('click', event => {
   if (!mobileNav.hidden && !mobileNav.contains(event.target) && !menuToggle.contains(event.target)) closeMenu();
 });
-window.matchMedia('(min-width: 761px)').addEventListener('change', event => { if (event.matches) closeMenu(); });
+const compactLayout = window.matchMedia('(max-width: 980px)');
+compactLayout.addEventListener('change', event => { if (!event.matches) closeMenu(); });
 
 const steps = [
   ['CONEXÃO 01 — AUDIOVISUAL', 'O primeiro segundo importa. Criamos vídeos e peças visuais que despertam interesse e dão à sua marca uma linguagem própria.', 0],
@@ -52,6 +53,14 @@ document.querySelectorAll('.connection-node').forEach(button => {
   });
 });
 const captions = ['FRAME 01 / IDEIAS EM MOVIMENTO', 'FRAME 02 / EXPERIÊNCIAS DIGITAIS', 'FRAME 03 / PRESENÇA COM INTENÇÃO', 'FRAME 04 / CONVERSAS QUE CONECTAM'];
+const serviceVisual = document.querySelector('.service-visual');
+const servicesLayout = document.querySelector('.services-layout');
+function positionServiceVisual() {
+  const destination = compactLayout.matches ? document.querySelector('.service-item.active') : servicesLayout;
+  if (serviceVisual.parentElement !== destination) destination.append(serviceVisual);
+}
+compactLayout.addEventListener('change', positionServiceVisual);
+positionServiceVisual();
 function selectService(index) {
   document.querySelectorAll('.service-trigger').forEach(button => {
     const active = Number(button.dataset.service) === index;
@@ -62,8 +71,16 @@ function selectService(index) {
   });
   document.querySelector('.service-visual').dataset.scene = String(index);
   document.querySelector('#scene-caption').textContent = captions[index];
+  positionServiceVisual();
 }
-document.querySelectorAll('.service-trigger').forEach(button => button.addEventListener('click', () => selectService(Number(button.dataset.service))));
+document.querySelectorAll('.service-trigger').forEach(button => button.addEventListener('click', () => {
+  selectService(Number(button.dataset.service));
+  // Collapsing the previous scene can move a tapped heading above the viewport.
+  if (compactLayout.matches) requestAnimationFrame(() => {
+    const headerBottom = document.querySelector('.header').getBoundingClientRect().bottom;
+    if (button.getBoundingClientRect().top < headerBottom) button.scrollIntoView({ block: 'start', behavior: 'instant' });
+  });
+}));
 document.querySelector('#step-link').addEventListener('click', () => selectService(steps[selectedStep][2]));
 
 // No form data is stored or sent to a server. WhatsApp opens with a draft.
@@ -92,6 +109,25 @@ if ('IntersectionObserver' in window) {
   }, { threshold: .08 });
   document.querySelectorAll('.reveal').forEach(element => observer.observe(element));
 } else document.querySelectorAll('.reveal').forEach(element => element.classList.add('visible'));
+
+// Stop continuous decorative animations outside the viewport.
+if ('IntersectionObserver' in window) {
+  const animationObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => entry.target.classList.toggle('offscreen-animation', !entry.isIntersecting));
+  }, { rootMargin: '80px' });
+  document.querySelectorAll('.hero-art, .ticker, .service-visual').forEach(element => animationObserver.observe(element));
+  const contactObserver = new IntersectionObserver(entries => {
+    document.querySelector('.floating-contact').classList.toggle('contact-in-view', entries[0].isIntersecting);
+  });
+  contactObserver.observe(document.querySelector('#contato'));
+}
+document.addEventListener('visibilitychange', () => {
+  document.documentElement.classList.toggle('page-inactive', document.hidden);
+});
+form.addEventListener('focusin', () => document.querySelector('.floating-contact').classList.add('keyboard-open'));
+form.addEventListener('focusout', event => {
+  if (!form.contains(event.relatedTarget)) document.querySelector('.floating-contact').classList.remove('keyboard-open');
+});
 
 const progress = document.querySelector('.scroll-progress');
 let scrollQueued = false;

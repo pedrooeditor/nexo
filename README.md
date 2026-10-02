@@ -11,6 +11,7 @@ Abra `index.html` no navegador ou sirva esta pasta com qualquer servidor estáti
 - `index.html`: conteúdo, metadados, navegação, serviços e formulário.
 - `styles.css`: estrutura, layouts responsivos e animações.
 - `identity.css`: acabamento visual baseado na logo oficial: metal, azul elétrico e preto.
+- `responsive.css`: layout fluido compartilhado, tipografia legível, navegação fixa e ajustes para toque.
 - `assets/nexo-logo.webp`: logo original fornecida pelo usuário, otimizada para WebP sem alterar a composição.
 - `script.js`: interações, navegação móvel e resumo para o WhatsApp.
 - O ícone do navegador usa a mesma logo original em WebP.
@@ -28,6 +29,8 @@ Fontes: DM Sans e Manrope via Google Fonts, com alternativas locais. Caso o serv
 
 ## Publicação no GitHub Pages
 
+Site publicado: https://pedrooeditor.github.io/nexo/
+
 No GitHub: **Settings → Pages → Deploy from a branch → main → /(root) → Save**. A URL padrão, depois de ativar o Pages, será `https://pedrooeditor.github.io/nexo/`. O envio do código ao repositório não ativa o Pages automaticamente.
 
 Também pode ser hospedado em qualquer serviço de arquivos estáticos, sem comando de build.
@@ -43,3 +46,14 @@ Também pode ser hospedado em qualquer serviço de arquivos estáticos, sem coma
 ## Personalizar
 
 As cores base estão em `styles.css` e as cores e tratamentos da logo estão em `identity.css`. Os textos das etapas e legendas interativas ficam em `script.js`; o restante está em `index.html`. Para trocar o WhatsApp, atualize todas as ocorrências de `5511933596263` e o número exibido no HTML.
+
+## Experiência responsiva
+
+- A abertura usa CSS Grid e altura determinada pelo conteúdo. A composição tem duas colunas no desktop e uma sequência vertical no celular, sem coordenadas fixas para a logo.
+- Até 980 px, o menu compacto fica disponível durante a rolagem e a cena do serviço é movida para o item ativo. Acima disso, a cena aparece ao lado da lista. A seleção e o formulário são preservados ao redimensionar ou girar a tela.
+- Até 640 px, textos principais têm 16 px, controles importantes oferecem pelo menos 44 px de altura e o campo de mensagem usa 16 px para evitar o zoom de foco em navegadores móveis.
+- O atalho flutuante do WhatsApp desaparece quando a seção de contato está visível ou o formulário está em uso. Espaçamentos respeitam as áreas seguras do dispositivo.
+- Animações decorativas pausam fora da tela e quando a página fica em segundo plano. O botão de pausa e a preferência do sistema por movimento reduzido continuam funcionando.
+- As fontes iniciam o carregamento pelo HTML com conexões antecipadas, sem a dependência de um `@import` em CSS. A logo continua sendo um único WebP de aproximadamente 49 KB.
+
+Validação no navegador: 320×568, 360×800, 390×844, 430×932, 600×900, 768×1024, 844×390, 980×800, 1024×768, 1440×900 e 1920×1080. Conferidos transbordamento, separação entre logo e texto, dimensões dos controles, menu, troca de serviços, seleção do formulário, continuidade ao redimensionar e pausa de animações. Sem erros de JavaScript observados.
