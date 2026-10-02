@@ -33,11 +33,12 @@ document.addEventListener('click', event => {
 const compactLayout = window.matchMedia('(max-width: 980px)');
 compactLayout.addEventListener('change', event => { if (!event.matches) closeMenu(); });
 
+// Etapas do ecossistema: [rótulo, slogan, descrição, passagem para a próxima frente, índice do serviço]
 const steps = [
-  ['CONEXÃO 01 — AUDIOVISUAL', 'O primeiro segundo importa. Criamos vídeos e peças visuais que despertam interesse e dão à sua marca uma linguagem própria.', 0],
-  ['CONEXÃO 02 — SOCIAL MEDIA', 'Interesse vira proximidade. Planejamento e conteúdo consistente conectam sua marca às pessoas certas e mantêm a conversa acontecendo.', 2],
-  ['CONEXÃO 03 — SITES & LANDING PAGES', 'Cada clique precisa de um destino. Criamos experiências digitais que apresentam seu valor e facilitam o próximo passo: falar com você.', 1],
-  ['CONEXÃO 04 — WHATSAPP & COMERCIAL', 'Boas conversas abrem possibilidades. Estruturamos o atendimento e o acompanhamento de interessados para que as oportunidades tenham continuidade.', 3]
+  ['CONEXÃO 01 — MOTION DESIGNER · PEDRO', 'O primeiro segundo decide. A gente faz ele valer.', 'Vídeos e peças em movimento que param a rolagem e dão à sua marca uma linguagem própria.', 'Entrega para o Social Media: os cortes e vídeos do mês, prontos para o feed.', 0],
+  ['CONEXÃO 02 — SOCIAL MEDIA · KAUÃ', 'Quem é lembrado é escolhido.', 'Planejamento e conteúdo consistente mantêm sua marca presente para as pessoas certas.', 'Entrega para o Pages Builder: quem se interessou, levado até a página certa.', 1],
+  ['CONEXÃO 03 — PAGES BUILDER · BRENO', 'Uma página. Um caminho. Uma decisão.', 'Landing pages que apresentam seu valor com clareza e levam ao próximo passo: falar com você.', 'Entrega para o Especialista em X1: o cliente chega ao WhatsApp sabendo o que quer.', 2],
+  ['CONEXÃO 04 — ESPECIALISTA EM X1 · PEDRO', 'Onde a conversa vira venda.', 'Atendimento individual no WhatsApp, do primeiro contato ao fechamento.', 'Fecha o ciclo: as dúvidas e objeções das conversas voltam como pauta para o próximo vídeo.', 3]
 ];
 let selectedStep = 0;
 document.querySelectorAll('.connection-node').forEach(button => {
@@ -48,11 +49,14 @@ document.querySelectorAll('.connection-node').forEach(button => {
       node.classList.toggle('active', active);
       node.setAttribute('aria-pressed', String(active));
     });
-    document.querySelector('#step-label').textContent = steps[selectedStep][0];
-    document.querySelector('#step-description').textContent = steps[selectedStep][1];
+    const [label, slogan, description, handoff] = steps[selectedStep];
+    document.querySelector('#step-label').textContent = label;
+    document.querySelector('#step-slogan').textContent = slogan;
+    document.querySelector('#step-description').textContent = description;
+    document.querySelector('#step-handoff').textContent = handoff;
   });
 });
-const captions = ['FRAME 01 / IDEIAS EM MOVIMENTO', 'FRAME 02 / EXPERIÊNCIAS DIGITAIS', 'FRAME 03 / PRESENÇA COM INTENÇÃO', 'FRAME 04 / CONVERSAS QUE CONECTAM'];
+const captions = ['FRAME 01 / MOTION DESIGNER', 'FRAME 02 / SOCIAL MEDIA', 'FRAME 03 / PAGES BUILDER', 'FRAME 04 / ESPECIALISTA EM X1'];
 const serviceVisual = document.querySelector('.service-visual');
 const servicesLayout = document.querySelector('.services-layout');
 function positionServiceVisual() {
@@ -81,22 +85,48 @@ document.querySelectorAll('.service-trigger').forEach(button => button.addEventL
     if (button.getBoundingClientRect().top < headerBottom) button.scrollIntoView({ block: 'start', behavior: 'instant' });
   });
 }));
-document.querySelector('#step-link').addEventListener('click', () => selectService(steps[selectedStep][2]));
+document.querySelector('#step-link').addEventListener('click', () => selectService(steps[selectedStep][4]));
 
 // No form data is stored or sent to a server. WhatsApp opens with a draft.
 const form = document.querySelector('#brief-form');
-const choices = [...form.querySelectorAll('input[name="service"]')];
-const completeChoice = choices.find(input => input.value === 'Ecossistema completo');
-choices.forEach(input => input.addEventListener('change', () => {
-  if (input === completeChoice && input.checked) choices.forEach(other => { if (other !== input) other.checked = false; });
-  else if (input.checked) completeChoice.checked = false;
+const fronts = [...form.querySelectorAll('input[name="service"]')];
+const packages = [...form.querySelectorAll('input[name="package"]')];
+const packageFronts = {
+  'Pacote Presença': 'Motion Designer + Social Media',
+  'Pacote Conversão': 'Pages Builder + Especialista em X1',
+  'Ecossistema Nexo': 'as quatro frentes'
+};
+// Uma combinação substitui as frentes avulsas, e vice-versa.
+packages.forEach(input => input.addEventListener('change', () => {
+  if (!input.checked) return;
+  packages.forEach(other => { if (other !== input) other.checked = false; });
+  fronts.forEach(front => { front.checked = false; });
+}));
+fronts.forEach(input => input.addEventListener('change', () => {
+  if (input.checked) packages.forEach(pack => { pack.checked = false; });
+}));
+// Os botões "Quero esse pacote" já deixam a combinação marcada no formulário.
+document.querySelectorAll('[data-package]').forEach(link => link.addEventListener('click', () => {
+  const target = packages.find(input => input.value === link.dataset.package);
+  if (!target) return;
+  target.checked = true;
+  target.dispatchEvent(new Event('change'));
 }));
 form.addEventListener('submit', event => {
   event.preventDefault();
-  const selected = choices.filter(input => input.checked).map(input => input.value);
+  const pack = packages.find(input => input.checked);
+  const selected = fronts.filter(input => input.checked).map(input => input.value);
+  const company = form.elements.company.value.trim();
+  const segment = form.elements.segment.value.trim();
   const note = form.elements.note.value.trim();
-  let message = 'Olá, Nexo Studio! Quero conectar minha marca à próxima fase.';
-  message += selected.length ? '\n\nTenho interesse em: ' + selected.join(', ') + '.' : '\n\nGostaria de ajuda para entender quais soluções fazem sentido para minha marca.';
+  // A etiqueta de origem ajuda o atendimento a saber, antes de responder, quem do time envolver.
+  const origin = pack ? pack.value : selected.length ? selected.join(' + ') : 'Contato geral';
+  let message = '[Site · ' + origin + ']\n\nOlá, Nexo Studio! Quero conectar minha marca à próxima fase.';
+  if (company) message += '\n\nEmpresa: ' + company;
+  if (segment) message += (company ? '\n' : '\n\n') + 'Segmento: ' + segment;
+  if (pack) message += '\n\nTenho interesse no ' + pack.value + ' (' + packageFronts[pack.value] + ').';
+  else if (selected.length) message += '\n\nTenho interesse em: ' + selected.join(', ') + '.';
+  else message += '\n\nGostaria de ajuda para entender quais frentes fazem sentido para minha marca.';
   if (note) message += '\n\nSobre meu projeto: ' + note;
   const url = 'https://wa.me/5511933596263?text=' + encodeURIComponent(message);
   // Same-tab navigation works reliably with popup blockers and mobile WhatsApp.
