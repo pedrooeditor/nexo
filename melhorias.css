@@ -1,0 +1,271 @@
+/* =============================================================
+   NEXO STUDIO — melhorias.css
+   -------------------------------------------------------------
+   Camada de melhorias que funciona POR CIMA do CSS atual.
+   Não altera a paleta, as fontes nem o layout do template.
+
+   Como usar: no <head> do index.html, coloque o link para este
+   arquivo DEPOIS do seu CSS principal:
+   <link rel="stylesheet" href="melhorias.css">
+
+   Seletores com :where() têm especificidade zero, ou seja,
+   qualquer regra do seu CSS original continua valendo por cima.
+   ============================================================= */
+
+
+/* -------------------------------------------------------------
+   0. AJUSTES RÁPIDOS
+   Mude estes valores se precisar. Não é preciso mexer no resto.
+   ------------------------------------------------------------- */
+:root {
+  /* Altura do menu fixo. Se, ao clicar no menu, o título da seção
+     ficar escondido atrás dele, aumente este valor. */
+  --nx-altura-header: 88px;
+
+  /* Contorno de foco (navegação por teclado). Usa a cor do próprio
+     elemento (currentColor), então respeita sua paleta. */
+  --nx-foco-largura: 2px;
+  --nx-foco-distancia: 3px;
+
+  /* O site é escuro (theme-color #030509): isso deixa barras de
+     rolagem, autocompletar e controles nativos no modo escuro. */
+  color-scheme: dark;
+}
+
+
+/* -------------------------------------------------------------
+   1. BASE E ESTABILIDADE
+   ------------------------------------------------------------- */
+
+/* Impede que o iPhone aumente o texto sozinho ao girar a tela */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+/* Evita a rolagem lateral no celular (o "site balançando"),
+   sem quebrar menus fixos ou elementos sticky */
+body {
+  overflow-x: clip;
+  -webkit-font-smoothing: antialiased;   /* texto mais nítido em fundo escuro */
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Mídia nunca ultrapassa a largura da tela */
+:where(img, video, iframe, canvas) {
+  max-width: 100%;
+}
+
+/* Garante que elementos com o atributo hidden sumam de verdade */
+[hidden] {
+  display: none !important;
+}
+
+
+/* -------------------------------------------------------------
+   2. NAVEGAÇÃO POR ÂNCORAS (links do menu)
+   ------------------------------------------------------------- */
+
+/* Ao clicar em "O ecossistema", "Como funciona" etc., o título
+   para abaixo do menu fixo, e não escondido atrás dele */
+:where(section[id], article[id], header[id], main[id], footer[id], div[id]) {
+  scroll-margin-top: var(--nx-altura-header);
+}
+
+/* Rolagem suave só para quem não pediu menos movimento.
+   Se o site já usa uma biblioteca de rolagem (Lenis), não interfere. */
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.lenis):not(.lenis-smooth) {
+    scroll-behavior: smooth;
+  }
+}
+
+
+/* -------------------------------------------------------------
+   3. TIPOGRAFIA (sem trocar fontes nem tamanhos)
+   ------------------------------------------------------------- */
+
+/* Títulos com linhas equilibradas e sem palavra cortando para
+   fora da tela em celulares pequenos */
+:where(h1, h2, h3, h4) {
+  text-wrap: balance;
+  overflow-wrap: break-word;
+}
+
+/* Parágrafos sem aquela palavra sozinha na última linha */
+:where(p, li, dd, blockquote, figcaption) {
+  text-wrap: pretty;
+}
+
+
+/* -------------------------------------------------------------
+   4. FOCO VISÍVEL (acessibilidade para teclado)
+   O contorno aparece só ao navegar com Tab, não no clique.
+   ------------------------------------------------------------- */
+:focus-visible {
+  outline: var(--nx-foco-largura) solid currentColor;
+  outline-offset: var(--nx-foco-distancia);
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Botões de seleção do formulário feitos com checkbox ou radio
+   escondido: o contorno aparece no rótulo visível */
+label:has(input:is([type="checkbox"], [type="radio"]):focus-visible) {
+  outline: var(--nx-foco-largura) solid currentColor;
+  outline-offset: var(--nx-foco-distancia);
+}
+
+
+/* -------------------------------------------------------------
+   5. FORMULÁRIO DE CONTATO
+   ------------------------------------------------------------- */
+
+/* Campos herdam a fonte do site (o navegador usa outra por padrão) */
+:where(input, textarea, select, button) {
+  font: inherit;
+  letter-spacing: inherit;
+}
+
+/* O campo de mensagem cresce conforme a pessoa digita
+   (Chrome e Edge; nos outros navegadores fica como está) */
+:where(textarea) {
+  resize: vertical;
+  field-sizing: content;
+  min-block-size: 5lh;
+  max-block-size: 50vh;
+}
+
+/* No celular, o iPhone dá zoom sozinho em campos com fonte menor
+   que 16px. Isso impede o zoom indesejado ao tocar no campo. */
+@media (max-width: 768px) {
+  :is(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    textarea,
+    select
+  ) {
+    font-size: max(16px, 1em);
+  }
+}
+
+/* O autocompletar do navegador não pinta o campo de amarelo/azul:
+   mantém as cores do seu formulário */
+:is(input, textarea, select):-webkit-autofill,
+:is(input, textarea, select):-webkit-autofill:hover,
+:is(input, textarea, select):-webkit-autofill:focus {
+  -webkit-text-fill-color: inherit;
+  caret-color: currentColor;
+  transition: background-color 600000s 0s, color 600000s 0s;
+}
+
+
+/* -------------------------------------------------------------
+   6. TOQUE NO CELULAR
+   ------------------------------------------------------------- */
+
+/* Remove o "flash" cinza ao tocar e o atraso de toque duplo */
+:where(a, button, summary, label, [role="button"], [role="tab"]) {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+
+/* -------------------------------------------------------------
+   7. MOVIMENTO REDUZIDO
+   Pessoas que ativam "reduzir movimento" no celular ou computador
+   (por enjoo, labirintite, sensibilidade) veem o site sem
+   animações contínuas. Complementa o seu botão "Pausar efeitos".
+   ------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* -------------------------------------------------------------
+   8. MODO DE ALTO CONTRASTE (Windows)
+   Garante que as opções selecionadas e o foco continuem visíveis.
+   ------------------------------------------------------------- */
+@media (forced-colors: active) {
+  :is(button, [role="button"])[aria-pressed="true"],
+  label:has(input:checked) {
+    outline: 2px solid Highlight;
+    outline-offset: 2px;
+  }
+
+  :focus-visible {
+    outline-color: Highlight;
+  }
+}
+
+
+/* -------------------------------------------------------------
+   9. CLASSES USADAS PELO melhorias.js
+   ------------------------------------------------------------- */
+
+/* Texto lido apenas por leitores de tela */
+.nx-sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* O botão flutuante "Vamos conectar" some enquanto a seção de
+   contato está na tela, para não cobrir o formulário no celular */
+.nx-cta-recolhido {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity 0.3s ease, visibility 0s linear 0.3s !important;
+}
+
+
+/* -------------------------------------------------------------
+   10. IMPRESSÃO / SALVAR COMO PDF
+   Se alguém imprimir a página, sai legível e sem fundo preto.
+   ------------------------------------------------------------- */
+@media print {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    background: transparent !important;
+    color: #000 !important;
+  }
+
+  .nx-cta-flutuante,
+  video,
+  iframe,
+  [class*="marquee" i],
+  [class*="ticker" i] {
+    display: none !important;
+  }
+
+  :where(h1, h2, h3) {
+    break-after: avoid;
+  }
+
+  :where(img) {
+    break-inside: avoid;
+  }
+}
