@@ -123,3 +123,15 @@ p,li,dd{text-wrap:pretty}
 .tile-front strong{font-size:42px;letter-spacing:-.06em;white-space:nowrap}
 .tile-front strong span{font-size:44px;top:10px;right:14px}
 @media(max-width:640px){.tile-front strong{font-size:34px}.tile-front strong span{font-size:36px;top:8px;right:10px}}
+
+/* ---------- Time: contato direto com o Pedro ---------- */
+.team-cta{align-self:flex-start;display:inline-flex;align-items:center;gap:12px;min-height:46px;margin-top:4px;padding:12px 18px;font-size:14px;font-weight:600;color:#fff;border:1px solid #42b8ff;border-radius:5px;background:linear-gradient(115deg,#087ff5,#064dd7 75%,#053ba6);box-shadow:inset 0 1px 0 #bceaff70,0 0 24px #006bff30;transition:box-shadow .3s,background .3s}
+.team-cta span{font-size:18px}
+.team-cta:hover{background:linear-gradient(115deg,#1599ff,#085ae9);box-shadow:inset 0 1px 0 #d0eeff90,0 0 38px #007cff66}
+
+/* ---------- Contato: quem responde e primeiras vagas ---------- */
+.contact-notes{display:grid;gap:14px;margin-top:28px;max-width:420px}
+.contact-grid>div>.contact-notes>p{margin:0}
+.contact-reply{display:flex;align-items:center;gap:14px;font-size:15px;line-height:1.6;color:#d2deee}
+.contact-badge{display:inline-flex;align-items:center;align-self:start;justify-self:start;gap:4px;padding:8px 14px;font-size:13px;line-height:1.5;color:#d4f3ff;border:1px solid #2e6fae;border-radius:40px;background:#0754b322}
+@media(max-width:640px){.contact-reply{font-size:15px}.contact-badge{font-size:12px}}
