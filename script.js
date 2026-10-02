@@ -3,6 +3,12 @@
 // Keep the page readable when JavaScript is unavailable.
 document.documentElement.classList.add('js');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const motionToggle = document.querySelector('.motion-toggle');
+motionToggle.addEventListener('click', () => {
+  const paused = document.documentElement.classList.toggle('motion-paused');
+  motionToggle.setAttribute('aria-pressed', String(paused));
+  motionToggle.innerHTML = paused ? 'Ativar efeitos <span aria-hidden="true">▷</span>' : 'Pausar efeitos <span aria-hidden="true">Ⅱ</span>';
+});
 const menuToggle = document.querySelector('.menu-toggle');
 const mobileNav = document.querySelector('#mobile-nav');
 function closeMenu(restoreFocus = false) {
@@ -103,7 +109,7 @@ updateScroll();
 const heroArt = document.querySelector('.hero-art');
 const finePointer = window.matchMedia('(pointer: fine)');
 heroArt.addEventListener('pointermove', event => {
-  if (reducedMotion.matches || !finePointer.matches) return;
+  if (reducedMotion.matches || !finePointer.matches || document.documentElement.classList.contains('motion-paused')) return;
   const rect = heroArt.getBoundingClientRect();
   heroArt.style.setProperty('--ry', ((event.clientX - rect.left) / rect.width - .5) * 22 + 'deg');
   heroArt.style.setProperty('--rx', -((event.clientY - rect.top) / rect.height - .5) * 16 + 'deg');
