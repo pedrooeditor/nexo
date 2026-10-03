@@ -11,19 +11,20 @@
   <meta property="og:url" content="https://pedrooeditor.github.io/nexo/">
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Nexo Studio","url":"https://pedrooeditor.github.io/nexo/","telephone":"+55-11-93359-6263","description":"Conteúdo, social media, sites e atendimento comercial trabalhando em um único ecossistema."}</script>
   <link rel="preload" as="image" href="assets/nexo-logo-clean.webp">
-  <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="preload" as="font" href="assets/fonts/dm-sans-v17-latin.woff2" type="font/woff2" crossorigin>
+  <link rel="preload" as="font" href="assets/fonts/manrope-v20-latin.woff2" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="styles.css?v=12">
   <!-- Marca a página como "carregando" antes do primeiro desenho: a tela de abertura não pisca e, se algo falhar, o site aparece sozinho em 8 s. -->
   <script>
     (function () {
       var root = document.documentElement;
       root.classList.add('js');
+      try { if (sessionStorage.getItem('nexo-intro-seen') === '1') root.classList.add('is-returning'); } catch (error) {}
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) root.classList.add('is-loading');
       setTimeout(function () { root.classList.remove('is-loading'); root.classList.add('is-entered'); }, 8000);
     })();
   </script>
-  <script defer src="script.js?v=11"></script>
+  <script defer src="script.js?v=12"></script>
   <noscript><style>#brief,.menu,.effects-toggle{display:none!important}.manifesto{height:auto}.manifesto-stage{position:relative}@media(max-width:900px){.header{height:auto;flex-wrap:wrap;padding-block:20px}.header nav{display:flex;position:static;flex-basis:100%;padding:0;flex-direction:row;flex-wrap:wrap;gap:16px}}</style></noscript>
 </head>
 <body>

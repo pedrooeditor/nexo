@@ -1,4 +1,25 @@
 /* NEXO STUDIO — preto profundo, azul elétrico, prata e movimento. */
+/* As mesmas fontes, servidas junto ao site; licenças em assets/fonts. */
+@font-face {
+  font-family:'DM Sans'; font-style:normal; font-weight:400 700; font-display:swap;
+  src:url(assets/fonts/dm-sans-v17-latin-ext.woff2) format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family:'DM Sans'; font-style:normal; font-weight:400 700; font-display:swap;
+  src:url(assets/fonts/dm-sans-v17-latin.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
+@font-face {
+  font-family:Manrope; font-style:normal; font-weight:400 800; font-display:swap;
+  src:url(assets/fonts/manrope-v20-latin-ext.woff2) format('woff2');
+  unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF;
+}
+@font-face {
+  font-family:Manrope; font-style:normal; font-weight:400 800; font-display:swap;
+  src:url(assets/fonts/manrope-v20-latin.woff2) format('woff2');
+  unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD;
+}
 :root {
   --bg:#02040a; --surface:#071120; --text:#eef5ff; --muted:#a7b7cf;
   --blue:#1495ff; --ice:#74d8ff; --accent:#0867ff;
@@ -328,7 +349,10 @@ textarea { resize:vertical }
 .footer-bottom>span:nth-child(2) { font-size:10px; letter-spacing:.1em }
 .to-top { display:inline-flex; align-items:center; gap:8px; color:#a9c9ec; transition:color .25s }
 .to-top:hover { color:#9cddff }
-.floating { position:fixed; bottom:max(23px,env(safe-area-inset-bottom)); right:max(23px,env(safe-area-inset-right)); width:54px; height:54px; display:grid; place-items:center; color:#d3edff; border:1px solid #75c5ff88; border-radius:50%; background:linear-gradient(145deg,#1478d5,#06408b); box-shadow:0 7px 32px #0055f273,inset 0 1px 0 #cbf1ff38; z-index:45; transition:transform .3s,opacity .3s; animation:fab-breathe 4s ease-in-out infinite }
+.floating { position:fixed; bottom:max(23px,env(safe-area-inset-bottom)); right:max(23px,env(safe-area-inset-right)); width:54px; height:54px; display:grid; place-items:center; color:#d3edff; border:1px solid #75c5ff88; border-radius:50%; background:linear-gradient(145deg,#1478d5,#06408b); z-index:45; transition:transform .3s,opacity .3s; isolation:isolate }
+.floating::before,.floating::after { content:''; position:absolute; inset:0; border-radius:inherit; z-index:-1; pointer-events:none }
+.floating::before { box-shadow:0 7px 25px #006cff55,inset 0 1px 0 #b0dcff38; animation:fab-breathe-low 4s ease-in-out infinite }
+.floating::after { box-shadow:0 7px 40px #147bff85,inset 0 1px 0 #d6f1ff55; animation:fab-breathe 4s ease-in-out infinite }
 .floating svg { width:26px; height:26px }
 .floating:hover { transform:translateY(-3px) }
 .floating.is-hidden { opacity:0; pointer-events:none; transform:translateY(20px) }
@@ -390,11 +414,14 @@ textarea { resize:vertical }
 @keyframes chat-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-6px)} }
 @keyframes typing-bounce { 0%,70%,100%{transform:translateY(0);opacity:.5} 35%{transform:translateY(-3px);opacity:1} }
 @keyframes footer-breathe { 0%,100%{opacity:.65} 50%{opacity:.9} }
-@keyframes fab-breathe { 0%,100%{box-shadow:0 7px 25px #006cff55,inset 0 1px 0 #b0dcff38} 50%{box-shadow:0 7px 40px #147bff85,inset 0 1px 0 #d6f1ff55} }
+@keyframes fab-breathe { 0%,100%{opacity:0} 50%{opacity:1} }
+@keyframes fab-breathe-low { 0%,100%{opacity:1} 50%{opacity:0} }
 .motion-paused *, .motion-paused *::before, .motion-paused *::after,.tab-hidden *, .tab-hidden *::before, .tab-hidden *::after { animation-play-state:paused!important }
 .motion-paused .tilt-card,.motion-paused .logo-parallax { --tilt-x:0deg!important; --tilt-y:0deg!important; --logo-rx:0deg!important; --logo-ry:0deg!important }
 .motion-paused .tilt-card { translate:none!important; scale:none!important }
 .motion-paused .reveal { opacity:1!important; transform:none!important; transition:none!important }
+.motion-paused details p,.motion-paused .connection-detail.switching { animation:none!important; opacity:1!important; transform:none!important }
+.motion-zone:not(.in-view) { animation-play-state:paused }
 .motion-zone:not(.in-view) *, .motion-zone:not(.in-view) *::before, .motion-zone:not(.in-view) *::after { animation-play-state:paused }
 
 /* Desktop intermediário e tablet. */
@@ -569,7 +596,7 @@ textarea { resize:vertical }
   .footer-large svg { width:95% }
   .footer-bottom { font-size:11px; flex-wrap:wrap; gap:12px 20px }
   .footer-bottom>span:nth-child(2) { display:none }
-  .floating { width:49px; height:49px; bottom:18px; right:18px }
+  .floating { width:49px; height:49px; bottom:max(18px,env(safe-area-inset-bottom)); right:max(18px,env(safe-area-inset-right)) }
 }
 @media(max-width:360px) {
   .brand-type { width:83px }

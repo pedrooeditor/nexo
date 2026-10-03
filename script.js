@@ -15,15 +15,16 @@ const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
    1. O brilho azul atrás da logo cresce conforme a página carrega (--pl, de 0 a 1).
    2. Ao terminar, acontece a faísca azul (.is-sparking).
    3. Logo depois a tela some com fade e o site aparece (.is-entered).
-   Fica no mínimo MIN_PRELOADER_MS na tela e sai quando a página termina de carregar.
+   Mantém a mesma sequência, com menos espera no celular e nos retornos da sessão.
    O <head> tem uma rede de segurança: depois de 8 s o site aparece de qualquer jeito.
 ------------------------------------------------------------------- */
-const MIN_PRELOADER_MS = 2600;   // tempo mínimo na tela
+const MIN_PRELOADER_MS = root.classList.contains('is-returning') ? 900 : window.matchMedia('(max-width: 760px)').matches ? 1500 : 2600;
 const SPARK_MS = 620;            // da faísca até a tela começar a sumir
 const preloader = document.querySelector('.preloader');
 function enterSite() {
   root.classList.remove('is-loading');
   root.classList.add('is-entered');
+  try { sessionStorage.setItem('nexo-intro-seen', '1'); } catch (error) {}
   if (preloader) setTimeout(() => preloader.remove(), 1500);
 }
 function exitPreloader() {
@@ -37,7 +38,8 @@ if (!preloader || !root.classList.contains('is-loading')) {
 } else {
   let pageLoaded = document.readyState === 'complete';
   if (!pageLoaded) window.addEventListener('load', () => { pageLoaded = true; }, { once: true });
-  const startedAt = performance.now();
+  // performance.now() conta desde a navegação: baixar o script não reinicia a espera.
+  const startedAt = 0;
   let shown = 0;
   let last = startedAt;
   const easeInOut = t => .5 - Math.cos(Math.PI * t) / 2;
@@ -105,7 +107,7 @@ root.classList.add('has-motion');
 const zoneObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => entry.target.classList.toggle('in-view', entry.isIntersecting));
 }, {rootMargin:'100px 0px'});
-document.querySelectorAll('.hero-art, .service-card, .connection, .footer-large').forEach(element => {
+document.querySelectorAll('.hero-art, .service-card, .connection, .footer-large, .metal, .ticker, .button.primary, .data-loop>span:first-child').forEach(element => {
   element.classList.add('motion-zone');
   zoneObserver.observe(element);
 });
