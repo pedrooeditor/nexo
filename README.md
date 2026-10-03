@@ -6,13 +6,15 @@ Site: https://pedrooeditor.github.io/nexo/
 
 ## Arquivos utilizados
 
-- `index.html`: conteúdo, navegação, serviços, FAQ, formulário e metadados.
+- `index.html`: conteúdo, tela de abertura, navegação, serviços, formulário, FAQ, rodapé e metadados.
 - `styles.css`: identidade visual, layout, componentes e regras responsivas. As cores estão em `:root`; os ajustes para celular ficam nas regras `@media` ao final do arquivo.
-- `script.js`: animações ligadas à rolagem, partículas, pausa de efeitos, menu móvel, seleção das etapas do ecossistema e preparação da mensagem para o WhatsApp.
-- `assets/nexo-logo.webp`: logo original da Nexo Studio.
+- `script.js`: tela de abertura, animações ligadas à rolagem, luz e inclinação das caixas, partículas, pausa de efeitos, menu móvel, seleção das etapas do ecossistema e preparação da mensagem para o WhatsApp.
+- `assets/nexo-logo-clean.webp`: a logo **sem fundo** (transparente). É a que o site usa em todos os lugares: abertura, cabeçalho, topo, frase que se revela e rodapé.
+- `assets/nexo-icon.png`: ícone da aba do navegador (o N sobre fundo escuro).
+- `assets/nexo-logo.webp`: logo original da Nexo Studio, preservada como arquivo-fonte (o site não a carrega mais).
 - `.nojekyll`: entrega direta dos arquivos no GitHub Pages.
 
-Os arquivos `identity.css`, `responsive.css`, `ecossistema.css` e `experiencia.css` pertencem à versão anterior e não são carregados pela página atual. O estilo ativo está em `styles.css`.
+Os arquivos `identity.css`, `responsive.css`, `ecossistema.css` e `experiencia.css` pertencem a versões anteriores e **não são carregados** pela página atual. O estilo ativo está em `styles.css`. Eles podem ser apagados do repositório sem afetar o site.
 
 ## Conteúdo
 
@@ -61,10 +63,29 @@ O GitHub Pages usa a branch `main` e a pasta raiz. A publicação acompanha os c
 - Prévia animada para cada serviço: vídeo, conteúdo social, site e conversa.
 - Brilho e inclinação nos cartões em dispositivos com ponteiro; composição própria para celular.
 
-A logo é exibida a partir de `assets/nexo-logo.webp`, com recortes de visualização em SVG para o símbolo e a assinatura. O arquivo original é preservado. Os efeitos usam CSS e APIs nativas do navegador, sem bibliotecas de animação.
+### Tela de abertura
+
+Só a logo sem fundo, sem barra de carregamento. O brilho azul atrás dela cresce conforme a página carrega; quando termina, acontece uma faísca azul e a tela some com fade, revelando o site. Fica no mínimo 2,6 s e sai quando a página termina de carregar (`MIN_PRELOADER_MS` em `script.js`). Uma rede de segurança no `<head>` mostra o site em até 8 s, mesmo que algo falhe. Quem usa "reduzir movimento" no sistema não vê a abertura.
+
+### Frase "Cada frente alimenta a próxima"
+
+A logo (N sem fundo) fica acima da frase e ganha um brilho azul atrás que se intensifica continuamente conforme a pessoa rola. A variável `--emblem-glow` (0 a 1) é calculada em `script.js` e usada em `styles.css` (`.manifesto-logo`).
+
+### Caixas
+
+- **01 O desafio, 03 Nossas frentes e 05 Formas de trabalhar:** luz azul que acompanha o cursor, contorno brilhante e leve inclinação para o lado do cursor, com uma pequena subida. A força da inclinação está em `TILT_X` e `TILT_Y` no começo da seção "Caixas" de `script.js`.
+- **02 O ecossistema:** as etapas dão uma leve saltada quando o cursor passa (ou quando recebem foco pelo teclado), com luz e brilho na borda.
+- Os efeitos só aparecem com mouse/trackpad. No celular as caixas ficam paradas; com "reduzir movimento" ou "Pausar efeitos" também.
+
+### Dúvidas frequentes e rodapé
+
+- `#faq` é a última seção, abaixo do contato (`#contato`): título em cima e as nove perguntas empilhadas embaixo, com destaque azul ao passar o mouse.
+- O rodapé tem descrição, coluna **Navegação**, coluna **Contato** (hoje só o WhatsApp), a assinatura grande e a linha final. Há espaços prontos, dentro de comentários no `index.html`, para Instagram, e-mail e uma terceira coluna de redes: basta apagar o "abre comentário" (`<!--`) e o "fecha comentário" (`-->`) da linha desejada e trocar o endereço.
+
+A logo é exibida a partir de `assets/nexo-logo-clean.webp` (recorte transparente da logo original), com janelas SVG para o símbolo e a assinatura. O recorte vem do arquivo raster original; se houver um arquivo vetorial (SVG, AI ou PDF) da logo, vale substituir para ficar ainda mais nítida em telas grandes. Os efeitos usam CSS e APIs nativas do navegador, sem bibliotecas de animação.
 
 ## Personalizar
 
-Edite `styles.css` para alterar cores e aparência. Os textos das quatro etapas interativas estão em `script.js`; os demais textos estão em `index.html`. As âncoras anteriores `#problema`, `#essencia`, `#ciclo`, `#frentes` e `#pacotes` continuam disponíveis.
+Edite `styles.css` para alterar cores e aparência. Os textos das quatro etapas interativas estão em `script.js`; os demais textos estão em `index.html`. As âncoras anteriores `#problema`, `#essencia`, `#ciclo`, `#frentes` e `#pacotes` continuam disponíveis. A numeração das seções vai de 01 a 07: 06 é o contato e 07 são as dúvidas frequentes.
 
 Para trocar o WhatsApp, atualize `5511933596263` nos arquivos HTML e JavaScript e o número exibido no HTML. Para mudar a hospedagem, atualize o canonical, `og:url` e a URL no JSON-LD.

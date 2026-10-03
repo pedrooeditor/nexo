@@ -8,6 +8,55 @@ const menu = document.querySelector('.menu');
 const nav = document.getElementById('nav');
 const motionToggle = document.querySelector('.effects-toggle');
 let effectsPaused = false;
+const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+
+/* ------------------------------------------------------------------
+   Tela de abertura (só a logo, sem barra de carregamento)
+   1. O brilho azul atrás da logo cresce conforme a página carrega (--pl, de 0 a 1).
+   2. Ao terminar, acontece a faísca azul (.is-sparking).
+   3. Logo depois a tela some com fade e o site aparece (.is-entered).
+   Fica no mínimo MIN_PRELOADER_MS na tela e sai quando a página termina de carregar.
+   O <head> tem uma rede de segurança: depois de 8 s o site aparece de qualquer jeito.
+------------------------------------------------------------------- */
+const MIN_PRELOADER_MS = 2600;   // tempo mínimo na tela
+const SPARK_MS = 620;            // da faísca até a tela começar a sumir
+const preloader = document.querySelector('.preloader');
+function enterSite() {
+  root.classList.remove('is-loading');
+  root.classList.add('is-entered');
+  if (preloader) setTimeout(() => preloader.remove(), 1500);
+}
+function exitPreloader() {
+  if (root.classList.contains('is-entered') || root.classList.contains('is-sparking')) return;
+  root.classList.add('is-sparking');
+  setTimeout(enterSite, SPARK_MS);
+}
+if (!preloader || !root.classList.contains('is-loading')) {
+  // Sem abertura (movimento reduzido, por exemplo): o site já aparece.
+  enterSite();
+} else {
+  let pageLoaded = document.readyState === 'complete';
+  if (!pageLoaded) window.addEventListener('load', () => { pageLoaded = true; }, { once: true });
+  const startedAt = performance.now();
+  let shown = 0;
+  let last = startedAt;
+  const easeInOut = t => .5 - Math.cos(Math.PI * t) / 2;
+  (function tick(now) {
+    if (root.classList.contains('is-entered')) return;
+    const elapsed = now - startedAt;
+    const dt = Math.min(64, now - last);
+    last = now;
+    // Enquanto a página carrega, o brilho avança até ~90%. Quando termina, vai a 100%.
+    const waiting = .9 * (1 - Math.exp(-elapsed / 950));
+    const ceiling = easeInOut(clamp(elapsed / MIN_PRELOADER_MS));
+    const target = Math.min(pageLoaded ? 1 : waiting, ceiling);
+    shown += (target - shown) * (1 - Math.exp(-dt / 110));
+    const value = pageLoaded && elapsed >= MIN_PRELOADER_MS && shown > .996 ? 1 : shown;
+    preloader.style.setProperty('--pl', value.toFixed(4));
+    if (value >= 1) { exitPreloader(); return; }
+    requestAnimationFrame(tick);
+  })(startedAt);
+}
 
 function closeMenu(restoreFocus = false) {
   nav.classList.remove('open');
@@ -39,6 +88,8 @@ const revealObserver = new IntersectionObserver(entries => {
     if (!entry.isIntersecting) return;
     entry.target.classList.add('is-visible');
     revealObserver.unobserve(entry.target);
+    // Depois da entrada, o atraso em cascata sai de cena para não atrasar o efeito do mouse.
+    setTimeout(() => entry.target.style.setProperty('--reveal-delay', '0ms'), 1300);
   });
 }, {threshold: 0.08, rootMargin: '0px 0px -4% 0px'});
 revealElements.forEach((element, index) => {
@@ -82,25 +133,68 @@ document.querySelectorAll('.node').forEach(node => node.addEventListener('click'
   connectionDetail.classList.add('switching');
 }));
 
-// Brilho que acompanha o ponteiro e inclinação leve de cartões.
-const tiltCards = document.querySelectorAll('.problem-grid article, .service-card, .package-grid article');
-tiltCards.forEach(card => {
-  card.classList.add('tilt-card');
-  card.addEventListener('pointermove', event => {
-    if (!finePointer.matches || reducedMotion.matches || effectsPaused) return;
-    const rect = card.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    card.style.setProperty('--mx', x + 'px');
-    card.style.setProperty('--my', y + 'px');
-    card.style.setProperty('--tilt-x', ((y / rect.height - .5) * -4).toFixed(2) + 'deg');
-    card.style.setProperty('--tilt-y', ((x / rect.width - .5) * 4).toFixed(2) + 'deg');
-  });
-  card.addEventListener('pointerleave', () => {
-    card.style.setProperty('--tilt-x', '0deg');
-    card.style.setProperty('--tilt-y', '0deg');
-  });
-});
+// Caixas: luz que acompanha o cursor + inclinação leve para o lado do cursor (01, 03 e 05).
+// Etapas do ecossistema (02): luz e uma leve saltada. Quem manda é o JavaScript, com uma folga de 10 px
+// na borda: assim a caixa não fica tremendo quando sobe e o cursor passa a encostar na beirada.
+const TILT_X = 5.5;   // graus de inclinação para cima/baixo
+const TILT_Y = 7.5;   // graus de inclinação para os lados
+const EDGE = 10;      // folga da borda, em px
+const tiltCards = [...document.querySelectorAll('.problem-grid article, .service-card, .package-grid article')];
+const nodeCards = [...document.querySelectorAll('.node')];
+tiltCards.forEach(card => card.classList.add('tilt-card'));
+const canHover = event => event.pointerType !== 'touch' && finePointer.matches && !reducedMotion.matches && !effectsPaused;
+let activeCard = null;
+let pointerX = 0;
+let pointerY = 0;
+let paintFrame = 0;
+function releaseCard(card) {
+  card.classList.remove('tilt-live', 'node-live');
+  card.style.setProperty('--tilt-x', '0deg');
+  card.style.setProperty('--tilt-y', '0deg');
+}
+function setActive(card) {
+  if (card === activeCard) return;
+  if (activeCard) releaseCard(activeCard);
+  activeCard = card;
+  if (card) card.classList.add(card.classList.contains('node') ? 'node-live' : 'tilt-live');
+}
+function paintActive() {
+  paintFrame = 0;
+  if (!activeCard) return;
+  const rect = activeCard.getBoundingClientRect();
+  const x = pointerX - rect.left;
+  const y = pointerY - rect.top;
+  activeCard.style.setProperty('--mx', x.toFixed(0) + 'px');
+  activeCard.style.setProperty('--my', y.toFixed(0) + 'px');
+  if (activeCard.classList.contains('tilt-card')) {
+    activeCard.style.setProperty('--tilt-x', ((clamp(y / rect.height) - .5) * -2 * TILT_X).toFixed(2) + 'deg');
+    activeCard.style.setProperty('--tilt-y', ((clamp(x / rect.width) - .5) * 2 * TILT_Y).toFixed(2) + 'deg');
+  }
+}
+function pointerInside(card) {
+  const rect = card.getBoundingClientRect();
+  return pointerX >= rect.left - EDGE && pointerX <= rect.right + EDGE && pointerY >= rect.top - EDGE && pointerY <= rect.bottom + EDGE;
+}
+[...tiltCards, ...nodeCards].forEach(card => card.addEventListener('pointerenter', event => {
+  if (!canHover(event)) return;
+  pointerX = event.clientX;
+  pointerY = event.clientY;
+  setActive(card);
+  paintActive();
+}));
+document.addEventListener('pointermove', event => {
+  if (!activeCard) return;
+  if (!canHover(event)) { setActive(null); return; }
+  pointerX = event.clientX;
+  pointerY = event.clientY;
+  if (!pointerInside(activeCard)) { setActive(null); return; }
+  if (!paintFrame) paintFrame = requestAnimationFrame(paintActive);
+}, {passive:true});
+document.documentElement.addEventListener('pointerleave', () => setActive(null));
+window.addEventListener('scroll', () => {
+  if (activeCard && !pointerInside(activeCard)) setActive(null);
+}, {passive:true});
+window.addEventListener('blur', () => setActive(null));
 document.querySelectorAll('.button').forEach(button => {
   button.addEventListener('pointermove', event => {
     if (!finePointer.matches || reducedMotion.matches || effectsPaused) return;
@@ -133,7 +227,6 @@ const manifesto = document.getElementById('manifesto');
 const manifestoWords = manifesto.querySelectorAll('.manifesto-word');
 const processGrid = document.querySelector('.process-grid');
 const hero = document.querySelector('.hero');
-const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
 let scrollFrame = 0;
 function updateScroll() {
   scrollFrame = 0;
@@ -156,8 +249,11 @@ function updateScroll() {
       word.style.setProperty('--word-opacity', (.16 + on * .84).toFixed(3));
       word.style.setProperty('--word-y', (12 * (1 - on)).toFixed(1) + 'px');
     });
-    manifesto.style.setProperty('--manifesto-glow', (.2 + clamp(progress * 3) * .8).toFixed(3));
-    manifesto.style.setProperty('--emblem-opacity', (.3 + clamp(progress * 5) * .7).toFixed(3));
+    // O brilho azul atrás da logo cresce de forma contínua, de 0 a 100% ao longo da rolagem da seção.
+    const glow = clamp(progress / .92);
+    manifesto.style.setProperty('--emblem-glow', glow.toFixed(3));
+    manifesto.style.setProperty('--manifesto-glow', (.15 + glow * .85).toFixed(3));
+    manifesto.style.setProperty('--emblem-opacity', (.4 + clamp(progress * 5) * .6).toFixed(3));
     manifesto.style.setProperty('--emblem-scale', (.82 + clamp(progress * 4) * .18).toFixed(3));
     manifesto.style.setProperty('--sub-opacity', (.2 + clamp((progress - .55) * 3) * .8).toFixed(3));
   }
