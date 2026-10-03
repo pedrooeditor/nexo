@@ -1,113 +1,263 @@
 'use strict';
 
 const root = document.documentElement;
-// Keep the page readable when JavaScript is unavailable.
-root.classList.add('js');
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
-const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
+const header = document.querySelector('.header');
+const menu = document.querySelector('.menu');
+const nav = document.getElementById('nav');
+const motionToggle = document.querySelector('.effects-toggle');
+let effectsPaused = false;
 
-/* ------------------------------------------------------------------
-   Tela de abertura: logo brilhando, depois o topo do site entra.
-   Fica no mínimo 1,8 s na tela e sai assim que a página termina de carregar.
-------------------------------------------------------------------- */
-const MIN_PRELOADER_MS = 1800;
-function finishLoading() {
-  if (root.classList.contains('is-entered')) return;
-  root.classList.remove('is-loading');
-  root.classList.add('is-entered');
-}
-function scheduleFinish() {
-  if (!root.classList.contains('is-loading')) { finishLoading(); return; }
-  // performance.now() conta desde que a página começou a abrir.
-  setTimeout(finishLoading, Math.max(0, MIN_PRELOADER_MS - performance.now()));
-}
-if (document.readyState === 'complete') scheduleFinish();
-else window.addEventListener('load', scheduleFinish, { once: true });
-
-/* ------------------------------------------------------------------
-   Pausar efeitos
-------------------------------------------------------------------- */
-const motionToggle = document.querySelector('.motion-toggle');
-motionToggle.addEventListener('click', () => {
-  const paused = root.classList.toggle('motion-paused');
-  motionToggle.setAttribute('aria-pressed', String(paused));
-  motionToggle.innerHTML = paused ? 'Ativar efeitos <span aria-hidden="true">▷</span>' : 'Pausar efeitos <span aria-hidden="true">Ⅱ</span>';
-  queueScroll();
-});
-
-/* ------------------------------------------------------------------
-   Menu do celular
-------------------------------------------------------------------- */
-const menuToggle = document.querySelector('.menu-toggle');
-const mobileNav = document.querySelector('#mobile-nav');
 function closeMenu(restoreFocus = false) {
-  menuToggle.setAttribute('aria-expanded', 'false');
-  menuToggle.setAttribute('aria-label', 'Abrir menu');
-  mobileNav.hidden = true;
-  if (restoreFocus) menuToggle.focus();
+  nav.classList.remove('open');
+  menu.setAttribute('aria-expanded', 'false');
+  menu.setAttribute('aria-label', 'Abrir menu');
+  if (restoreFocus) menu.focus();
 }
-menuToggle.addEventListener('click', () => {
-  const open = menuToggle.getAttribute('aria-expanded') !== 'true';
-  menuToggle.setAttribute('aria-expanded', String(open));
-  menuToggle.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
-  mobileNav.hidden = !open;
+menu.addEventListener('click', () => {
+  const open = !nav.classList.contains('open');
+  nav.classList.toggle('open', open);
+  menu.setAttribute('aria-expanded', String(open));
+  menu.setAttribute('aria-label', open ? 'Fechar menu' : 'Abrir menu');
 });
-mobileNav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMenu()));
+nav.querySelectorAll('a').forEach(link => link.addEventListener('click', () => closeMenu()));
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape' && !mobileNav.hidden) closeMenu(true);
+  if (event.key === 'Escape' && nav.classList.contains('open')) closeMenu(true);
 });
 document.addEventListener('click', event => {
-  if (!mobileNav.hidden && !mobileNav.contains(event.target) && !menuToggle.contains(event.target)) closeMenu();
+  if (nav.classList.contains('open') && !nav.contains(event.target) && !menu.contains(event.target)) closeMenu();
 });
-const compactLayout = window.matchMedia('(max-width: 980px)');
-compactLayout.addEventListener('change', event => { if (!event.matches) closeMenu(); });
+window.matchMedia('(min-width: 901px)').addEventListener('change', event => {
+  if (event.matches) closeMenu();
+});
 
-/* ------------------------------------------------------------------
-   As quatro frentes (lista com cena ao lado)
-------------------------------------------------------------------- */
-const captions = ['FRAME 01 / MOTION DESIGNER', 'FRAME 02 / SOCIAL MEDIA', 'FRAME 03 / PAGES BUILDER', 'FRAME 04 / ESPECIALISTA EM X1'];
-const serviceVisual = document.querySelector('.service-visual');
-const servicesLayout = document.querySelector('.services-layout');
-function positionServiceVisual() {
-  const destination = compactLayout.matches ? document.querySelector('.service-item.active') : servicesLayout;
-  if (serviceVisual.parentElement !== destination) destination.append(serviceVisual);
-}
-compactLayout.addEventListener('change', positionServiceVisual);
-positionServiceVisual();
-function selectService(index) {
-  document.querySelectorAll('.service-trigger').forEach(button => {
-    const active = Number(button.dataset.service) === index;
-    button.setAttribute('aria-expanded', String(active));
-    button.closest('.service-item').classList.toggle('active', active);
-    document.getElementById(button.getAttribute('aria-controls')).hidden = !active;
-    button.querySelector('.service-plus').textContent = active ? '−' : '+';
+// Entradas em cascata. Sem JavaScript, o conteúdo permanece visível.
+const revealElements = document.querySelectorAll('.section-label, .section-heading, .problem-grid article, .node, .connection-detail, .data-loop, .service-card, .process-grid li, .package-grid article, .faq>div, .contact-grid>div, .brief');
+const revealObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.add('is-visible');
+    revealObserver.unobserve(entry.target);
   });
-  document.querySelector('.service-visual').dataset.scene = String(index);
-  document.querySelector('#scene-caption').textContent = captions[index];
-  positionServiceVisual();
-}
-document.querySelectorAll('.service-trigger').forEach(button => button.addEventListener('click', () => {
-  selectService(Number(button.dataset.service));
-  // Collapsing the previous scene can move a tapped heading above the viewport.
-  if (compactLayout.matches) requestAnimationFrame(() => {
-    const headerBottom = document.querySelector('.header').getBoundingClientRect().bottom;
-    if (button.getBoundingClientRect().top < headerBottom) button.scrollIntoView({ block: 'start', behavior: 'instant' });
+}, {threshold: 0.08, rootMargin: '0px 0px -4% 0px'});
+revealElements.forEach((element, index) => {
+  element.classList.add('reveal');
+  if (element.matches('.problem-grid article, .node, .service-card, .process-grid li, .package-grid article')) {
+    element.style.setProperty('--reveal-delay', ((index % 3) * 70) + 'ms');
+  }
+  revealObserver.observe(element);
+});
+root.classList.add('has-motion');
+
+// Movimentos contínuos param quando a seção sai da tela.
+const zoneObserver = new IntersectionObserver(entries => {
+  entries.forEach(entry => entry.target.classList.toggle('in-view', entry.isIntersecting));
+}, {rootMargin:'100px 0px'});
+document.querySelectorAll('.hero-art, .service-card, .connection, .footer-large').forEach(element => {
+  element.classList.add('motion-zone');
+  zoneObserver.observe(element);
+});
+
+// Etapas do ecossistema: a seleção é do visitante.
+const steps = [
+  ['01 / MOTION DESIGNER', 'O primeiro segundo decide. A gente faz ele valer.', 'Ritmo, narrativa e personalidade. O Motion Designer entrega para o Social Media os cortes e vídeos do mês, prontos para o feed.'],
+  ['02 / SOCIAL MEDIA', 'Quem é lembrado é escolhido.', 'Planejamento e conteúdo com uma linguagem consistente. O Social Media leva quem se interessou até a página certa, dando continuidade à mensagem da sua marca.'],
+  ['03 / PAGES BUILDER', 'Uma página. Um caminho. Uma decisão.', 'A página continua a história e organiza a oferta. O próximo passo leva o interessado ao Especialista em X1, pelo WhatsApp, com mais clareza sobre o que sua marca oferece.'],
+  ['04 / ESPECIALISTA EM X1', 'Onde a conversa vira venda.', 'Atendimento individual no WhatsApp, do primeiro contato ao fechamento. As dúvidas e objeções das conversas voltam como pauta para os próximos vídeos: o ciclo recomeça.']
+];
+const connectionDetail = document.getElementById('connection-detail');
+document.querySelectorAll('.node').forEach(node => node.addEventListener('click', () => {
+  document.querySelectorAll('.node').forEach(other => {
+    const active = other === node;
+    other.classList.toggle('active', active);
+    other.setAttribute('aria-pressed', String(active));
   });
+  const step = steps[Number(node.dataset.step)];
+  document.getElementById('step-label').textContent = step[0];
+  document.getElementById('step-title').textContent = step[1];
+  document.getElementById('step-copy').textContent = step[2];
+  connectionDetail.classList.remove('switching');
+  void connectionDetail.offsetWidth;
+  connectionDetail.classList.add('switching');
 }));
 
-/* ------------------------------------------------------------------
-   Formulário: nada é guardado nem enviado a um servidor.
-   O WhatsApp abre com a mensagem pronta.
-------------------------------------------------------------------- */
-const form = document.querySelector('#brief-form');
-const fronts = [...form.querySelectorAll('input[name="service"]')];
-const packages = [...form.querySelectorAll('input[name="package"]')];
+// Brilho que acompanha o ponteiro e inclinação leve de cartões.
+const tiltCards = document.querySelectorAll('.problem-grid article, .service-card, .package-grid article');
+tiltCards.forEach(card => {
+  card.classList.add('tilt-card');
+  card.addEventListener('pointermove', event => {
+    if (!finePointer.matches || reducedMotion.matches || effectsPaused) return;
+    const rect = card.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+    card.style.setProperty('--mx', x + 'px');
+    card.style.setProperty('--my', y + 'px');
+    card.style.setProperty('--tilt-x', ((y / rect.height - .5) * -4).toFixed(2) + 'deg');
+    card.style.setProperty('--tilt-y', ((x / rect.width - .5) * 4).toFixed(2) + 'deg');
+  });
+  card.addEventListener('pointerleave', () => {
+    card.style.setProperty('--tilt-x', '0deg');
+    card.style.setProperty('--tilt-y', '0deg');
+  });
+});
+document.querySelectorAll('.button').forEach(button => {
+  button.addEventListener('pointermove', event => {
+    if (!finePointer.matches || reducedMotion.matches || effectsPaused) return;
+    const rect = button.getBoundingClientRect();
+    const x = (event.clientX - rect.left - rect.width / 2) * .045;
+    const y = (event.clientY - rect.top - rect.height / 2) * .09;
+    button.style.setProperty('--button-x', x.toFixed(1) + 'px');
+    button.style.setProperty('--button-y', y.toFixed(1) + 'px');
+  });
+  button.addEventListener('pointerleave', () => {
+    button.style.setProperty('--button-x', '0px');
+    button.style.setProperty('--button-y', '0px');
+  });
+});
+const heroArt = document.querySelector('.hero-art');
+const logoLayer = document.querySelector('.logo-parallax');
+heroArt.addEventListener('pointermove', event => {
+  if (!finePointer.matches || reducedMotion.matches || effectsPaused) return;
+  const rect = heroArt.getBoundingClientRect();
+  logoLayer.style.setProperty('--logo-rx', ((event.clientY - rect.top - rect.height / 2) * -.025).toFixed(1) + 'deg');
+  logoLayer.style.setProperty('--logo-ry', ((event.clientX - rect.left - rect.width / 2) * .025).toFixed(1) + 'deg');
+});
+heroArt.addEventListener('pointerleave', () => {
+  logoLayer.style.setProperty('--logo-rx', '0deg');
+  logoLayer.style.setProperty('--logo-ry', '0deg');
+});
+
+// Manifesto fixado pela própria estrutura CSS, sem bibliotecas externas.
+const manifesto = document.getElementById('manifesto');
+const manifestoWords = manifesto.querySelectorAll('.manifesto-word');
+const processGrid = document.querySelector('.process-grid');
+const hero = document.querySelector('.hero');
+const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+let scrollFrame = 0;
+function updateScroll() {
+  scrollFrame = 0;
+  const viewport = window.innerHeight;
+  const scrollRange = root.scrollHeight - viewport;
+  root.style.setProperty('--scroll', scrollRange > 0 ? clamp(window.scrollY / scrollRange) : 0);
+  header.classList.toggle('scrolled', window.scrollY > 22);
+  const motionEnabled = !reducedMotion.matches && !effectsPaused;
+  if (motionEnabled && finePointer.matches) {
+    const heroRect = hero.getBoundingClientRect();
+    heroArt.style.setProperty('--hero-parallax', (clamp(-heroRect.top, 0, heroRect.height) * .065).toFixed(1) + 'px');
+  } else {
+    heroArt.style.setProperty('--hero-parallax', '0px');
+  }
+  const rect = manifesto.getBoundingClientRect();
+  if (rect.bottom >= 0 && rect.top <= viewport) {
+    const progress = motionEnabled ? clamp(-rect.top / Math.max(1, rect.height - viewport)) : 1;
+    manifestoWords.forEach((word, index) => {
+      const on = clamp(progress * (manifestoWords.length + 3) - index * .82);
+      word.style.setProperty('--word-opacity', (.16 + on * .84).toFixed(3));
+      word.style.setProperty('--word-y', (12 * (1 - on)).toFixed(1) + 'px');
+    });
+    manifesto.style.setProperty('--manifesto-glow', (.2 + clamp(progress * 3) * .8).toFixed(3));
+    manifesto.style.setProperty('--emblem-opacity', (.3 + clamp(progress * 5) * .7).toFixed(3));
+    manifesto.style.setProperty('--emblem-scale', (.82 + clamp(progress * 4) * .18).toFixed(3));
+    manifesto.style.setProperty('--sub-opacity', (.2 + clamp((progress - .55) * 3) * .8).toFixed(3));
+  }
+  const processRect = processGrid.getBoundingClientRect();
+  processGrid.style.setProperty('--rail-progress', reducedMotion.matches ? 1 : clamp((viewport * .8 - processRect.top) / Math.max(100, processRect.height + viewport * .15)));
+}
+function requestScroll() {
+  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScroll);
+}
+window.addEventListener('scroll', requestScroll, {passive:true});
+window.addEventListener('resize', requestScroll, {passive:true});
+window.addEventListener('load', requestScroll, {once:true});
+if (document.fonts) document.fonts.ready.then(requestScroll);
+requestScroll();
+
+// Partículas azuis e prateadas: desenho leve, até 30 quadros por segundo.
+const canvas = document.getElementById('particles');
+const context = canvas.getContext('2d');
+let particleFrame = 0;
+let particleWidth = 0;
+let particleHeight = 0;
+let lastPaint = 0;
+const particles = Array.from({length: finePointer.matches ? 38 : 20}, (_, index) => ({
+  x:Math.random(), y:Math.random(), depth:.25 + Math.random() * .75,
+  radius:.5 + Math.random() * 1.25, phase:Math.random() * Math.PI * 2,
+  silver:index % 4 === 0
+}));
+function sizeParticles() {
+  particleWidth = window.innerWidth;
+  particleHeight = window.innerHeight;
+  const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
+  canvas.width = Math.round(particleWidth * pixelRatio);
+  canvas.height = Math.round(particleHeight * pixelRatio);
+  if (context) context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
+}
+function paintParticles(timestamp) {
+  if (!context || reducedMotion.matches || effectsPaused || document.hidden) {
+    particleFrame = 0;
+    return;
+  }
+  if (timestamp - lastPaint >= 33) {
+    const delta = Math.min(60, timestamp - (lastPaint || timestamp));
+    lastPaint = timestamp;
+    context.clearRect(0, 0, particleWidth, particleHeight);
+    particles.forEach(particle => {
+      particle.y -= .000012 * particle.depth * delta;
+      if (particle.y < -.03) { particle.y = 1.03; particle.x = Math.random(); }
+      const opacity = (.2 + Math.sin(timestamp * .0006 + particle.phase) * .13) * particle.depth;
+      const x = particle.x * particleWidth;
+      const y = particle.y * particleHeight;
+      context.beginPath();
+      context.arc(x, y, particle.radius * particle.depth, 0, Math.PI * 2);
+      context.fillStyle = particle.silver ? 'rgba(206,233,255,' + opacity + ')' : 'rgba(39,155,255,' + opacity + ')';
+      context.fill();
+    });
+  }
+  particleFrame = requestAnimationFrame(paintParticles);
+}
+function syncMotion() {
+  root.classList.toggle('motion-paused', effectsPaused);
+  root.classList.toggle('tab-hidden', document.hidden);
+  motionToggle.hidden = reducedMotion.matches;
+  if (reducedMotion.matches || effectsPaused || document.hidden) {
+    cancelAnimationFrame(particleFrame);
+    particleFrame = 0;
+    if (reducedMotion.matches && context) context.clearRect(0, 0, particleWidth, particleHeight);
+  } else if (!particleFrame) {
+    lastPaint = 0;
+    particleFrame = requestAnimationFrame(paintParticles);
+  }
+  requestScroll();
+}
+motionToggle.addEventListener('click', () => {
+  effectsPaused = !effectsPaused;
+  motionToggle.setAttribute('aria-pressed', String(effectsPaused));
+  motionToggle.innerHTML = effectsPaused ? 'Ativar efeitos <span aria-hidden="true">▷</span>' : 'Pausar efeitos <span aria-hidden="true">Ⅱ</span>';
+  syncMotion();
+});
+reducedMotion.addEventListener('change', syncMotion);
+document.addEventListener('visibilitychange', syncMotion);
+window.addEventListener('resize', sizeParticles, {passive:true});
+sizeParticles();
+syncMotion();
+
+// O atalho sai do caminho quando o formulário está visível.
+const floating = document.querySelector('.floating');
+const contactObserver = new IntersectionObserver(entries => {
+  floating.classList.toggle('is-hidden', entries[0].isIntersecting);
+}, {threshold:.08});
+contactObserver.observe(document.getElementById('contato'));
+
+// Seleção de frentes e pacotes preservada da versão mais recente do projeto.
+const brief = document.getElementById('brief');
+const fronts = [...brief.querySelectorAll('input[name="service"]')];
+const packages = [...brief.querySelectorAll('input[name="package"]')];
 const packageFronts = {
-  'Pacote Presença': 'Motion Designer + Social Media',
-  'Pacote Conversão': 'Pages Builder + Especialista em X1',
-  'Ecossistema Nexo': 'as quatro frentes'
+  'Pacote Presença':'Motion Designer + Social Media',
+  'Pacote Conversão':'Pages Builder + Especialista em X1',
+  'Ecossistema Nexo':'as quatro frentes'
 };
-// Uma combinação substitui as frentes avulsas, e vice-versa.
 packages.forEach(input => input.addEventListener('change', () => {
   if (!input.checked) return;
   packages.forEach(other => { if (other !== input) other.checked = false; });
@@ -116,130 +266,40 @@ packages.forEach(input => input.addEventListener('change', () => {
 fronts.forEach(input => input.addEventListener('change', () => {
   if (input.checked) packages.forEach(pack => { pack.checked = false; });
 }));
-// Os botões "Quero esse pacote" já deixam a combinação marcada no formulário.
 document.querySelectorAll('[data-package]').forEach(link => link.addEventListener('click', () => {
   const target = packages.find(input => input.value === link.dataset.package);
   if (!target) return;
   target.checked = true;
   target.dispatchEvent(new Event('change'));
 }));
-form.addEventListener('submit', event => {
+document.querySelectorAll('[data-interest]').forEach(link => link.addEventListener('click', () => {
+  const target = fronts.find(input => input.value === link.dataset.interest);
+  if (!target) return;
+  target.checked = true;
+  target.dispatchEvent(new Event('change'));
+}));
+brief.addEventListener('focusin', () => floating.classList.add('is-hidden'));
+brief.addEventListener('focusout', event => {
+  if (!brief.contains(event.relatedTarget)) {
+    floating.classList.toggle('is-hidden', document.getElementById('contato').getBoundingClientRect().top < window.innerHeight);
+  }
+});
+brief.addEventListener('submit', event => {
   event.preventDefault();
+  if (!brief.reportValidity()) return;
   const pack = packages.find(input => input.checked);
   const selected = fronts.filter(input => input.checked).map(input => input.value);
-  const company = form.elements.company.value.trim();
-  const segment = form.elements.segment.value.trim();
-  const note = form.elements.note.value.trim();
-  // A etiqueta de origem ajuda o atendimento a saber, antes de responder, quem do time envolver.
+  const company = document.getElementById('company-name').value.trim();
+  const segment = document.getElementById('company-segment').value.trim();
+  const note = document.getElementById('project-note').value.trim();
   const origin = pack ? pack.value : selected.length ? selected.join(' + ') : 'Contato geral';
-  let message = '[Site · ' + origin + ']\n\nOlá, Nexo Studio! Quero conectar minha marca à próxima fase.';
-  if (company) message += '\n\nEmpresa: ' + company;
-  if (segment) message += (company ? '\n' : '\n\n') + 'Segmento: ' + segment;
-  if (pack) message += '\n\nTenho interesse no ' + pack.value + ' (' + packageFronts[pack.value] + ').';
-  else if (selected.length) message += '\n\nTenho interesse em: ' + selected.join(', ') + '.';
-  else message += '\n\nGostaria de ajuda para entender quais frentes fazem sentido para minha marca.';
-  if (note) message += '\n\nSobre meu projeto: ' + note;
-  const url = 'https://wa.me/5511933596263?text=' + encodeURIComponent(message);
-  // Same-tab navigation works reliably with popup blockers and mobile WhatsApp.
-  window.location.assign(url);
+  const lines = [
+    '[Site · ' + origin + ']',
+    'Olá, Nexo Studio! Quero conectar minha marca à próxima fase.',
+    company ? 'Empresa: ' + company : '',
+    segment ? 'Segmento: ' + segment : '',
+    pack ? 'Tenho interesse no ' + pack.value + ' (' + packageFronts[pack.value] + ').' : selected.length ? 'Tenho interesse em: ' + selected.join(', ') + '.' : 'Gostaria de ajuda para entender quais frentes fazem sentido para minha marca.',
+    note ? 'Sobre meu projeto: ' + note : ''
+  ].filter(Boolean);
+  window.location.assign('https://wa.me/5511933596263?text=' + encodeURIComponent(lines.join('\n\n')));
 });
-
-/* ------------------------------------------------------------------
-   Entrada suave dos blocos e pausa das animações fora da tela
-------------------------------------------------------------------- */
-if ('IntersectionObserver' in window) {
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); observer.unobserve(entry.target); } });
-  }, { threshold: .08 });
-  document.querySelectorAll('.reveal').forEach(element => observer.observe(element));
-} else document.querySelectorAll('.reveal').forEach(element => element.classList.add('visible'));
-
-if ('IntersectionObserver' in window) {
-  const animationObserver = new IntersectionObserver(entries => {
-    entries.forEach(entry => entry.target.classList.toggle('offscreen-animation', !entry.isIntersecting));
-  }, { rootMargin: '80px' });
-  document.querySelectorAll('.hero-art, .ticker, .service-visual').forEach(element => animationObserver.observe(element));
-  const contactObserver = new IntersectionObserver(entries => {
-    document.querySelector('.floating-contact').classList.toggle('contact-in-view', entries[0].isIntersecting);
-  });
-  contactObserver.observe(document.querySelector('#contato'));
-}
-document.addEventListener('visibilitychange', () => {
-  root.classList.toggle('page-inactive', document.hidden);
-});
-form.addEventListener('focusin', () => document.querySelector('.floating-contact').classList.add('keyboard-open'));
-form.addEventListener('focusout', event => {
-  if (!form.contains(event.relatedTarget)) document.querySelector('.floating-contact').classList.remove('keyboard-open');
-});
-
-/* ------------------------------------------------------------------
-   Efeitos ligados à rolagem (uma única atualização por quadro):
-   1. barra de progresso no topo
-   2. frase que se revela palavra por palavra
-   3. linha do ciclo que vai se preenchendo
-------------------------------------------------------------------- */
-const progress = document.querySelector('.scroll-progress');
-const statement = document.querySelector('.statement');
-const statementWords = [...document.querySelectorAll('.statement .word')];
-const cycleSteps = document.querySelector('.cycle-steps');
-const cycleItems = [...document.querySelectorAll('.cycle-step')];
-
-function updateStatement() {
-  const rect = statement.getBoundingClientRect();
-  const distance = rect.height - window.innerHeight;
-  // 0 quando a seção chega ao topo, 1 quando termina de rolar.
-  const p = distance > 0 ? clamp(-rect.top / distance, 0, 1) : 1;
-  const count = statementWords.length;
-  // Cada palavra acende numa faixa própria, com uma sobreposição pequena entre elas.
-  const usable = .86;
-  const slot = usable / count;
-  statementWords.forEach((word, index) => {
-    const start = index * slot;
-    word.style.setProperty('--o', clamp((p - start) / (slot * 1.7), 0, 1).toFixed(3));
-  });
-  statement.style.setProperty('--p', p.toFixed(3));
-  statement.classList.toggle('is-started', p > .05);
-}
-
-function updateCycle() {
-  const rect = cycleSteps.getBoundingClientRect();
-  const line = clamp((window.innerHeight * .62 - rect.top) / rect.height, 0, 1);
-  cycleSteps.style.setProperty('--line', line.toFixed(3));
-  // Uma etapa fica "acesa" quando a linha já passou por ela.
-  cycleItems.forEach(item => {
-    const itemRect = item.getBoundingClientRect();
-    item.classList.toggle('is-lit', itemRect.top + itemRect.height * .35 < window.innerHeight * .62);
-  });
-}
-
-let scrollQueued = false;
-function updateScroll() {
-  const max = root.scrollHeight - window.innerHeight;
-  progress.style.transform = 'scaleX(' + (max > 0 ? window.scrollY / max : 0) + ')';
-  updateStatement();
-  updateCycle();
-  scrollQueued = false;
-}
-function queueScroll() {
-  if (!scrollQueued) { scrollQueued = true; requestAnimationFrame(updateScroll); }
-}
-window.addEventListener('scroll', queueScroll, { passive: true });
-window.addEventListener('resize', queueScroll, { passive: true });
-updateScroll();
-
-/* ------------------------------------------------------------------
-   Logo do topo acompanha o ponteiro (só com mouse)
-------------------------------------------------------------------- */
-const heroArt = document.querySelector('.hero-art');
-const finePointer = window.matchMedia('(pointer: fine)');
-heroArt.addEventListener('pointermove', event => {
-  if (reducedMotion.matches || !finePointer.matches || root.classList.contains('motion-paused')) return;
-  const rect = heroArt.getBoundingClientRect();
-  heroArt.style.setProperty('--ry', ((event.clientX - rect.left) / rect.width - .5) * 22 + 'deg');
-  heroArt.style.setProperty('--rx', -((event.clientY - rect.top) / rect.height - .5) * 16 + 'deg');
-});
-heroArt.addEventListener('pointerleave', () => {
-  heroArt.style.setProperty('--rx', '0deg');
-  heroArt.style.setProperty('--ry', '0deg');
-});
-document.querySelector('#year').textContent = String(new Date().getFullYear());
