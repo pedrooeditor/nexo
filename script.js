@@ -226,6 +226,7 @@ heroArt.addEventListener('pointerleave', () => {
 
 // Manifesto fixado pela própria estrutura CSS, sem bibliotecas externas.
 const manifesto = document.getElementById('manifesto');
+const manifestoStage = manifesto.querySelector('.manifesto-stage');
 const manifestoWords = manifesto.querySelectorAll('.manifesto-word');
 const processGrid = document.querySelector('.process-grid');
 const hero = document.querySelector('.hero');
@@ -255,7 +256,9 @@ function updateScroll() {
   const rect = manifesto.getBoundingClientRect();
   if (manifestoPaintedProgress < 0 || (rect.bottom >= 0 && rect.top <= viewport)) {
     // Cada estado depende da posição atual: descer revela, subir recolhe.
-    const progress = motionEnabled ? clamp(-rect.top / Math.max(1, rect.height - viewport)) : 1;
+    // A altura real do palco mantém a sequência estável quando a barra do celular recolhe.
+    const stageHeight = manifestoStage.offsetHeight || viewport;
+    const progress = motionEnabled ? clamp(-rect.top / Math.max(1, rect.height - stageHeight)) : 1;
     if (progress !== manifestoPaintedProgress) {
       manifestoPaintedProgress = progress;
       const textProgress = clamp((progress - .12) / .72) * manifestoWords.length;
@@ -283,6 +286,11 @@ window.addEventListener('scroll', requestScroll, {passive:true});
 window.addEventListener('resize', requestScroll, {passive:true});
 window.addEventListener('load', requestScroll, {once:true});
 if (document.fonts) document.fonts.ready.then(requestScroll);
+if (typeof ResizeObserver === 'function') {
+  const manifestoSizeObserver = new ResizeObserver(requestScroll);
+  manifestoSizeObserver.observe(manifestoStage);
+  manifestoSizeObserver.observe(manifesto);
+}
 requestScroll();
 
 // A roda do mouse mantém a distância nativa e ganha uma desaceleração curta.
@@ -377,8 +385,11 @@ const context = canvas.getContext('2d');
 let particleFrame = 0;
 let particleWidth = 0;
 let particleHeight = 0;
+let particleScale = 0;
 let lastPaint = 0;
-const particles = Array.from({length: finePointer.matches ? 38 : 20}, (_, index) => ({
+// O brilho e a revelação seguem no ritmo da rolagem; só o fundo custa menos no toque.
+const PARTICLE_INTERVAL_MS = finePointer.matches ? 33 : 50;
+const particles = Array.from({length: finePointer.matches ? 38 : 14}, (_, index) => ({
   x:Math.random(), y:Math.random(), depth:.25 + Math.random() * .75,
   radius:.5 + Math.random() * 1.25, phase:Math.random() * Math.PI * 2,
   silver:index % 4 === 0
@@ -386,9 +397,13 @@ const particles = Array.from({length: finePointer.matches ? 38 : 20}, (_, index)
 function sizeParticles() {
   particleWidth = window.innerWidth;
   particleHeight = window.innerHeight;
-  const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.5);
-  canvas.width = Math.round(particleWidth * pixelRatio);
-  canvas.height = Math.round(particleHeight * pixelRatio);
+  const pixelRatio = Math.min(window.devicePixelRatio || 1, finePointer.matches ? 1.5 : 1);
+  const width = Math.round(particleWidth * pixelRatio);
+  const height = Math.round(particleHeight * pixelRatio);
+  if (canvas.width === width && canvas.height === height && particleScale === pixelRatio) return;
+  particleScale = pixelRatio;
+  canvas.width = width;
+  canvas.height = height;
   if (context) context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 }
 function paintParticles(timestamp) {
@@ -396,7 +411,7 @@ function paintParticles(timestamp) {
     particleFrame = 0;
     return;
   }
-  if (timestamp - lastPaint >= 33) {
+  if (!root.classList.contains('pf-open') && timestamp - lastPaint >= PARTICLE_INTERVAL_MS) {
     const delta = Math.min(60, timestamp - (lastPaint || timestamp));
     lastPaint = timestamp;
     context.clearRect(0, 0, particleWidth, particleHeight);

@@ -17,7 +17,7 @@ html.pf-open,html.pf-open body { overflow:hidden }
 .pf-open .floating { opacity:0; pointer-events:none }
 
 .pf-dialog {
-  position:fixed; inset:0; width:100%; max-width:none; height:100dvh; max-height:none;
+  position:fixed; inset:0; width:100%; max-width:none; height:100vh; height:100dvh; max-height:none;
   margin:0; padding:0; border:0; color:#e7f0ff; background:#03070f;
   font-family:'DM Sans',sans-serif; overflow:hidden; color-scheme:dark;
 }
@@ -215,7 +215,7 @@ html.pf-open,html.pf-open body { overflow:hidden }
 @media(min-width:1700px) { .pf-workspace { grid-template-columns:270px minmax(0,1fr) } .pf-sidebar { padding-inline:30px } }
 @media(max-width:1200px) { .pf-workspace { grid-template-columns:205px minmax(0,1fr) } .pf-sidebar { padding-inline:13px } .pf-tab { gap:8px; padding-inline:9px } .pf-scroll { padding-inline:30px } .pf-detail { grid-template-columns:1fr; gap:28px } .pf-detail-info { display:block; max-width:650px } .pf-detail-info .pf-action { max-width:340px } }
 @media(max-width:900px) {
-  .pf-topbar { height:75px; padding-inline:24px }
+  .pf-topbar { height:calc(75px + env(safe-area-inset-top)); padding-top:env(safe-area-inset-top); padding-left:max(24px,env(safe-area-inset-left)); padding-right:max(24px,env(safe-area-inset-right)) }
   .pf-workspace { display:flex; flex-direction:column }
   .pf-sidebar { flex-shrink:0; display:block; padding:12px 20px; border-right:0; border-bottom:1px solid #70b0e522 }
   .pf-side-label,.pf-side-bottom { display:none }
@@ -233,7 +233,7 @@ html.pf-open,html.pf-open body { overflow:hidden }
   .pf-detail-info>p,.pf-approach p { font-size:14px }
 }
 @media(max-width:620px) {
-  .pf-topbar { height:65px; padding:0 18px; gap:12px }
+  .pf-topbar { height:calc(65px + env(safe-area-inset-top)); padding:env(safe-area-inset-top) max(18px,env(safe-area-inset-right)) 0 max(18px,env(safe-area-inset-left)); gap:12px }
   .pf-return>span:last-child { display:none }
   .pf-return { width:38px; min-height:42px; justify-content:center }
   .pf-logo { gap:12px; font-size:8px }
@@ -245,7 +245,7 @@ html.pf-open,html.pf-open body { overflow:hidden }
   .pf-tab { padding:9px 5px; gap:5px; min-height:44px }
   .pf-tab-number { font-size:8px }
   .pf-tab-short { font-size:10px }
-  .pf-scroll { padding:30px 20px max(26px,env(safe-area-inset-bottom)) }
+  .pf-scroll { padding:30px max(20px,env(safe-area-inset-right)) max(26px,env(safe-area-inset-bottom)) max(20px,env(safe-area-inset-left)) }
   .pf-eyebrow { font-size:9px; margin-bottom:16px }
   .pf-heading { margin-bottom:24px }
   .pf-heading h2 { font-size:36px; line-height:1.1 }
@@ -264,7 +264,14 @@ html.pf-open,html.pf-open body { overflow:hidden }
   .pf-bottom>span:last-child { display:none }
 }
 @media(max-width:360px) { .pf-scroll { padding-inline:16px } .pf-heading h2 { font-size:31px } .pf-tab-number { display:none } .pf-logo>span { display:none } }
-@media(hover:none),(pointer:coarse) { .pf-peek { opacity:1; transform:none } .pf-project:hover .pf-thumb { transform:none } }
+@media(hover:none),(pointer:coarse) {
+  .pf-peek { opacity:1; transform:none }
+  .pf-project:hover .pf-thumb { transform:none }
+  .pf-close { width:44px; height:44px }
+  .pf-return { min-width:44px; min-height:44px }
+  .pf-detail-back,.pf-demo-control button { min-height:44px }
+  .pf-detail-back { align-items:center }
+}
 .motion-paused .pf-dialog *,.motion-paused .pf-dialog *::before,.motion-paused .pf-dialog *::after { animation-play-state:paused!important; transition:none!important }
 @media(prefers-reduced-motion:reduce) {
   .pf-dialog *,.pf-dialog *::before,.pf-dialog *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important }

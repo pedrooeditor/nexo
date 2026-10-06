@@ -517,7 +517,7 @@ textarea { resize:vertical }
   .number { font-size:51px; margin-bottom:20px }
   .manifesto { height:195svh }
   .manifesto-stage { padding-block:95px 65px }
-  .manifesto h2 { font-size:clamp(32px,7.4vw,45px); line-height:1.25 }
+  .manifesto h2 { max-width:100%; font-size:clamp(27px,7.4vw,45px); line-height:1.25 }
   .manifesto-stage>.eyebrow { font-size:9px; margin-bottom:24px }
   .manifesto-logo { width:96px; margin-bottom:28px }
   .manifesto-sub { font-size:9px; letter-spacing:.12em; max-width:270px; margin-top:27px; line-height:1.9 }
@@ -620,6 +620,22 @@ textarea { resize:vertical }
   .manifesto-stage>.eyebrow { margin-bottom:12px; font-size:9px }
   .manifesto h2 { font-size:clamp(28px,4vw,45px); line-height:1.16 }
   .manifesto-sub { margin-top:16px; font-size:9px; line-height:1.7 }
+}
+/* Mantém inicial, frase e brilho visíveis também com o celular na horizontal. */
+@media(hover:none) and (pointer:coarse) and (orientation:landscape) and (max-height:500px) {
+  .manifesto-stage { padding-block:86px 18px }
+  .manifesto-logo { width:40px; margin-bottom:8px }
+  .manifesto-stage>.eyebrow { font-size:8px; margin-bottom:8px }
+  .manifesto h2 { font-size:clamp(20px,6svh,28px); line-height:1.16 }
+  .manifesto-sub { max-width:90%; font-size:8px; line-height:1.5; margin-top:10px }
+}
+/* Áreas de toque confortáveis, com rolagem interna para menus em telas baixas. */
+@media(hover:none) and (pointer:coarse) {
+  .menu { width:44px; flex-shrink:0; align-items:center }
+  .header-contact { min-height:44px }
+  .header nav.open { max-height:calc(100svh - 78px); overflow-y:auto; overscroll-behavior:contain }
+  .text-link,.effects-toggle,.hero-bottom>a,.footer-col a,.to-top { display:inline-flex; align-items:center; min-height:44px }
+  .footer-col ul { gap:6px }
 }
 @media(prefers-reduced-motion:reduce) {
   html { scroll-behavior:auto }
