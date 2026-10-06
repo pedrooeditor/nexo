@@ -2,7 +2,7 @@
 
 Site institucional da Nexo Studio em HTML, CSS e JavaScript puros. A identidade usa a logo original, preto profundo, azul elétrico e prata, com brilho e animações inspirados nas referências de movimento. Não exige instalação, compilação ou backend.
 
-Site: https://pedrooeditor.github.io/nexo/
+Site: https://nexostud.com.br/
 
 ## Arquivos utilizados
 
@@ -13,6 +13,7 @@ Site: https://pedrooeditor.github.io/nexo/
 - `assets/nexo-icon.png`: ícone da aba do navegador (o N sobre fundo escuro).
 - `assets/nexo-logo.webp`: logo original da Nexo Studio, preservada como arquivo-fonte (o site não a carrega mais).
 - `.nojekyll`: entrega direta dos arquivos no GitHub Pages.
+- `CNAME`: domínio personalizado `nexostud.com.br` usado pelo GitHub Pages.
 
 Os arquivos `identity.css`, `responsive.css`, `ecossistema.css` e `experiencia.css` pertencem a versões anteriores e **não são carregados** pela página atual. O estilo ativo está em `styles.css`. Eles podem ser apagados do repositório sem afetar o site.
 
@@ -37,9 +38,23 @@ O formulário permite selecionar uma ou mais frentes ou um pacote. A escolha de 
 
 ## Visualizar e publicar
 
-Abra `index.html` ou sirva a pasta com um servidor estático. Os caminhos dos arquivos são relativos e funcionam em `/nexo/`.
+Abra `index.html` ou sirva a pasta com um servidor estático. Os caminhos dos arquivos são relativos e funcionam tanto em `/` quanto em `/nexo/`.
 
-O GitHub Pages usa a branch `main` e a pasta raiz. A publicação acompanha os commits conforme a configuração do repositório. O endereço canônico e os metadados apontam para `https://pedrooeditor.github.io/nexo/`.
+O GitHub Pages usa a branch `main` e a pasta raiz. A publicação acompanha os commits conforme a configuração do repositório. O endereço canônico e os metadados apontam para `https://nexostud.com.br/`.
+
+### Domínio personalizado
+
+O arquivo `CNAME` na raiz vincula `nexostud.com.br` à publicação da branch `main`. O DNS do domínio deve apontar para o GitHub Pages:
+
+| Tipo | Nome | Valor |
+| --- | --- | --- |
+| A | @ | 185.199.108.153 |
+| A | @ | 185.199.109.153 |
+| A | @ | 185.199.110.153 |
+| A | @ | 185.199.111.153 |
+| CNAME | www | pedrooeditor.github.io |
+
+O domínio só fica acessível após configurar e propagar esses registros no provedor DNS. Depois da emissão do certificado, ative **Enforce HTTPS** em **Settings → Pages**. Referência: https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site
 
 ## Acessibilidade e responsividade
 
