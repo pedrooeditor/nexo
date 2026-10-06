@@ -13,7 +13,7 @@
   <link rel="preload" as="image" href="assets/nexo-logo-clean.webp">
   <link rel="preload" as="font" href="assets/fonts/dm-sans-v17-latin.woff2" type="font/woff2" crossorigin>
   <link rel="preload" as="font" href="assets/fonts/manrope-v20-latin.woff2" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=12">
+  <link rel="stylesheet" href="styles.css?v=13">
   <link rel="stylesheet" href="portfolio.css?v=1">
   <!-- Marca a página como "carregando" antes do primeiro desenho: a tela de abertura não pisca e, se algo falhar, o site aparece sozinho em 8 s. -->
   <script>
@@ -21,11 +21,15 @@
       var root = document.documentElement;
       root.classList.add('js');
       try { if (sessionStorage.getItem('nexo-intro-seen') === '1') root.classList.add('is-returning'); } catch (error) {}
+      var manifestoSeen = false;
+      try { manifestoSeen = localStorage.getItem('nexo-manifesto-seen') === '1'; } catch (error) {}
+      try { manifestoSeen = manifestoSeen || sessionStorage.getItem('nexo-manifesto-seen') === '1'; } catch (error) {}
+      if (manifestoSeen) root.classList.add('has-read-manifesto');
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) root.classList.add('is-loading');
       setTimeout(function () { root.classList.remove('is-loading'); root.classList.add('is-entered'); }, 8000);
     })();
   </script>
-  <script defer src="script.js?v=12"></script>
+  <script defer src="script.js?v=13"></script>
   <script defer src="portfolio-data.js?v=1"></script>
   <script defer src="portfolio.js?v=1"></script>
   <noscript><style>.portfolio-entry{display:none!important}</style></noscript>

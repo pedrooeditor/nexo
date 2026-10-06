@@ -229,6 +229,17 @@ const manifesto = document.getElementById('manifesto');
 const manifestoWords = manifesto.querySelectorAll('.manifesto-word');
 const processGrid = document.querySelector('.process-grid');
 const hero = document.querySelector('.hero');
+let manifestoComplete = root.classList.contains('has-read-manifesto');
+let manifestoProgress = manifestoComplete ? 1 : 0;
+let manifestoPaintedProgress = -1;
+function finishManifesto() {
+  if (manifestoComplete) return;
+  manifestoComplete = true;
+  manifestoProgress = 1;
+  root.classList.add('has-read-manifesto');
+  try { localStorage.setItem('nexo-manifesto-seen', '1'); } catch (error) {}
+  try { sessionStorage.setItem('nexo-manifesto-seen', '1'); } catch (error) {}
+}
 let scrollFrame = 0;
 function updateScroll() {
   scrollFrame = 0;
@@ -244,20 +255,31 @@ function updateScroll() {
     heroArt.style.setProperty('--hero-parallax', '0px');
   }
   const rect = manifesto.getBoundingClientRect();
-  if (rect.bottom >= 0 && rect.top <= viewport) {
-    const progress = motionEnabled ? clamp(-rect.top / Math.max(1, rect.height - viewport)) : 1;
-    manifestoWords.forEach((word, index) => {
-      const on = clamp(progress * (manifestoWords.length + 3) - index * .82);
-      word.style.setProperty('--word-opacity', (.16 + on * .84).toFixed(3));
-      word.style.setProperty('--word-y', (12 * (1 - on)).toFixed(1) + 'px');
-    });
-    // O brilho azul atrás da logo cresce de forma contínua, de 0 a 100% ao longo da rolagem da seção.
-    const glow = clamp(progress / .92);
-    manifesto.style.setProperty('--emblem-glow', glow.toFixed(3));
-    manifesto.style.setProperty('--manifesto-glow', (.15 + glow * .85).toFixed(3));
-    manifesto.style.setProperty('--emblem-opacity', (.4 + clamp(progress * 5) * .6).toFixed(3));
-    manifesto.style.setProperty('--emblem-scale', (.82 + clamp(progress * 4) * .18).toFixed(3));
-    manifesto.style.setProperty('--sub-opacity', (.2 + clamp((progress - .55) * 3) * .8).toFixed(3));
+  if ((rect.bottom >= 0 && rect.top <= viewport) || manifestoComplete) {
+    if (motionEnabled && !manifestoComplete) {
+      manifestoProgress = Math.max(manifestoProgress, clamp(-rect.top / Math.max(1, rect.height - viewport)));
+      if (manifestoProgress >= 1) finishManifesto();
+    }
+    const progress = motionEnabled && !manifestoComplete ? manifestoProgress : 1;
+    if (progress !== manifestoPaintedProgress) {
+      manifestoPaintedProgress = progress;
+      manifestoWords.forEach((word, index) => {
+        const on = clamp(progress * (manifestoWords.length + 3) - index * .82);
+        word.style.setProperty('--word-opacity', (.16 + on * .84).toFixed(3));
+        word.style.setProperty('--word-y', (12 * (1 - on)).toFixed(1) + 'px');
+      });
+      // O brilho azul conserva a mesma progressão da versão anterior.
+      const glow = clamp(progress / .92);
+      manifesto.style.setProperty('--emblem-glow', glow.toFixed(3));
+      manifesto.style.setProperty('--manifesto-glow', (.15 + glow * .85).toFixed(3));
+      manifesto.style.setProperty('--emblem-opacity', (.4 + clamp(progress * 5) * .6).toFixed(3));
+      manifesto.style.setProperty('--emblem-scale', (.82 + clamp(progress * 4) * .18).toFixed(3));
+      manifesto.style.setProperty('--sub-opacity', (.2 + clamp((progress - .55) * 3) * .8).toFixed(3));
+    }
+  } else if (motionEnabled && !manifestoComplete && manifestoProgress > 0 && rect.bottom < 0) {
+    // Uma rolagem rápida também conclui a leitura sem deixar palavras pela metade.
+    finishManifesto();
+    requestScroll();
   }
   const processRect = processGrid.getBoundingClientRect();
   processGrid.style.setProperty('--rail-progress', reducedMotion.matches ? 1 : clamp((viewport * .8 - processRect.top) / Math.max(100, processRect.height + viewport * .15)));
@@ -270,6 +292,92 @@ window.addEventListener('resize', requestScroll, {passive:true});
 window.addEventListener('load', requestScroll, {once:true});
 if (document.fonts) document.fonts.ready.then(requestScroll);
 requestScroll();
+
+// A roda do mouse mantém a distância nativa e ganha uma desaceleração curta.
+// A página continua usando a rolagem real: sticky, âncoras e portfólios são preservados.
+(() => {
+  const RESPONSE_MS = 110;
+  let frame = 0;
+  let target = window.scrollY;
+  let writtenY = window.scrollY;
+  let lastTime = 0;
+  const maxScroll = () => Math.max(0, root.scrollHeight - window.innerHeight);
+  const allowed = () => finePointer.matches && !reducedMotion.matches && !effectsPaused
+    && !document.hidden && !root.classList.contains('is-loading')
+    && !root.classList.contains('pf-open') && !document.querySelector('dialog[open]');
+
+  function stop() {
+    if (frame) cancelAnimationFrame(frame);
+    frame = 0;
+    lastTime = 0;
+    target = writtenY = window.scrollY;
+    root.classList.remove('is-smooth-scrolling');
+  }
+
+  function tick(now) {
+    frame = 0;
+    if (!allowed()) { stop(); return; }
+    const elapsed = lastTime ? clamp(now - lastTime, 1, 50) : 1000 / 60;
+    lastTime = now;
+    target = clamp(target, 0, maxScroll());
+    const current = window.scrollY;
+    const next = current + (target - current) * (1 - Math.exp(-elapsed / RESPONSE_MS));
+    const done = Math.abs(target - next) < .5;
+    window.scrollTo({top:done ? target : next, behavior:'instant'});
+    writtenY = window.scrollY;
+    if (done) stop();
+    else frame = requestAnimationFrame(tick);
+  }
+
+  function nestedScroll(event) {
+    const elements = typeof event.composedPath === 'function' ? event.composedPath() : [event.target];
+    for (const element of elements) {
+      if (!(element instanceof Element)) continue;
+      if (element === root || element === document.body) break;
+      if (element.matches('input, textarea, select, [contenteditable]:not([contenteditable="false"]), [data-native-scroll]')) return true;
+      if (element.scrollHeight > element.clientHeight + 1) {
+        const overflow = window.getComputedStyle(element).overflowY;
+        if (/auto|scroll|overlay/.test(overflow)) return true;
+      }
+    }
+    return false;
+  }
+
+  window.addEventListener('wheel', event => {
+    if (event.defaultPrevented || !event.cancelable || event.ctrlKey || event.metaKey || event.shiftKey
+      || !event.deltaY || Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+    if (!allowed() || nestedScroll(event)) { stop(); return; }
+    const delta = event.deltaY * (event.deltaMode === 1 ? 20 : event.deltaMode === 2 ? window.innerHeight : 1);
+    const current = window.scrollY;
+    // Uma inversão de direção responde imediatamente, sem continuar a descida anterior.
+    const base = !frame || Math.sign(delta) !== Math.sign(target - current) ? current : target;
+    const nextTarget = clamp(base + delta, 0, maxScroll());
+    if (Math.abs(nextTarget - current) < .5) { stop(); return; }
+    event.preventDefault();
+    target = nextTarget;
+    root.classList.add('is-smooth-scrolling');
+    if (!frame) { lastTime = 0; frame = requestAnimationFrame(tick); }
+  }, {passive:false});
+
+  // Teclado, toque, barra de rolagem e links continuam com o comportamento nativo.
+  window.addEventListener('scroll', () => {
+    if (frame && Math.abs(window.scrollY - writtenY) > 2) stop();
+  }, {passive:true});
+  document.addEventListener('pointerdown', stop, {passive:true});
+  document.addEventListener('touchstart', stop, {passive:true});
+  document.addEventListener('keydown', event => {
+    if (['ArrowUp','ArrowDown','PageUp','PageDown','Home','End',' '].includes(event.key)) stop();
+  });
+  document.addEventListener('click', event => {
+    if (event.target.closest?.('a[href^="#"]')) stop();
+  });
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
+  window.addEventListener('resize', stop, {passive:true});
+  window.addEventListener('hashchange', stop);
+  window.addEventListener('popstate', stop);
+  reducedMotion.addEventListener('change', stop);
+  finePointer.addEventListener('change', stop);
+})();
 
 // Partículas azuis e prateadas: desenho leve, até 30 quadros por segundo.
 const canvas = document.getElementById('particles');
