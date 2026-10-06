@@ -455,12 +455,24 @@ window.addEventListener('resize', sizeParticles, {passive:true});
 sizeParticles();
 syncMotion();
 
-// O atalho sai do caminho quando o formulário está visível.
+// No toque, o atalho também sai do caminho quando o CTA ou o contato do rodapé aparecem.
 const floating = document.querySelector('.floating');
+const visibleContactZones = new Set();
+let briefHasFocus = Boolean(document.activeElement?.closest?.('#brief'));
+function syncFloating() {
+  const contactVisible = [...visibleContactZones].some(zone => zone.id === 'contato' || !finePointer.matches);
+  floating.classList.toggle('is-hidden', contactVisible || briefHasFocus);
+}
 const contactObserver = new IntersectionObserver(entries => {
-  floating.classList.toggle('is-hidden', entries[0].isIntersecting);
+  entries.forEach(entry => {
+    if (entry.isIntersecting) visibleContactZones.add(entry.target);
+    else visibleContactZones.delete(entry.target);
+  });
+  syncFloating();
 }, {threshold:.08});
-contactObserver.observe(document.getElementById('contato'));
+document.querySelectorAll('#contato, .final-cta-button, .footer-contact').forEach(zone => contactObserver.observe(zone));
+finePointer.addEventListener('change', syncFloating);
+syncFloating();
 
 // Seleção de frentes e pacotes preservada da versão mais recente do projeto.
 const brief = document.getElementById('brief');
@@ -491,10 +503,14 @@ document.querySelectorAll('[data-interest]').forEach(link => link.addEventListen
   target.checked = true;
   target.dispatchEvent(new Event('change'));
 }));
-brief.addEventListener('focusin', () => floating.classList.add('is-hidden'));
+brief.addEventListener('focusin', () => {
+  briefHasFocus = true;
+  syncFloating();
+});
 brief.addEventListener('focusout', event => {
   if (!brief.contains(event.relatedTarget)) {
-    floating.classList.toggle('is-hidden', document.getElementById('contato').getBoundingClientRect().top < window.innerHeight);
+    briefHasFocus = false;
+    syncFloating();
   }
 });
 brief.addEventListener('submit', event => {

@@ -592,7 +592,8 @@ textarea { resize:vertical }
   .brief legend { font-size:22px }
   .brief .service-choices label>span { font-size:12px; padding:12px 10px }
   .final-cta { padding-block:72px }
-  .final-cta h2 { margin-block:20px 22px; font-size:clamp(30px,7.8vw,42px); line-height:1.2 }
+  .final-cta h2 { margin-block:20px 22px; font-size:clamp(30px,7.8vw,42px); line-height:1.2; text-wrap:balance }
+  .final-cta h2 br { display:none }
   .final-cta p { font-size:15px }
   .final-cta-button { width:min(100%,300px); min-width:0; min-height:58px; margin-top:32px; padding-inline:24px; font-size:15px }
   .footer { padding-top:52px; padding-bottom:85px }
@@ -615,6 +616,8 @@ textarea { resize:vertical }
   .node strong { font-size:21px }
   .service-card { padding:24px }
   .brief { padding:23px }
+  .final-cta { padding-block:64px }
+  .footer-top { column-gap:16px }
 }
 /* O manifesto cabe também em celulares menores e telas na horizontal. */
 @media(max-height:650px) {
@@ -631,6 +634,9 @@ textarea { resize:vertical }
   .manifesto-stage>.eyebrow { font-size:8px; margin-bottom:8px }
   .manifesto h2 { font-size:clamp(20px,6svh,28px); line-height:1.16 }
   .manifesto-sub { max-width:90%; font-size:8px; line-height:1.5; margin-top:10px }
+  .final-cta { padding-block:46px }
+  .final-cta h2 { font-size:clamp(28px,4vw,38px); margin-block:18px 20px }
+  .final-cta-button { margin-top:24px }
 }
 /* Áreas de toque confortáveis, com rolagem interna para menus em telas baixas. */
 @media(hover:none) and (pointer:coarse) {
@@ -639,11 +645,14 @@ textarea { resize:vertical }
   .header nav.open { max-height:calc(100svh - 78px); overflow-y:auto; overscroll-behavior:contain }
   .text-link,.effects-toggle,.hero-bottom>a,.footer-col a,.to-top { display:inline-flex; align-items:center; min-height:44px }
   .footer-col ul { gap:6px }
+  .final-cta-button { transition-duration:.18s }
+  .final-cta-button:active { transform:scale(.98); box-shadow:inset 0 1px 0 #fff9,0 6px 28px #147fff70 }
 }
 @media(prefers-reduced-motion:reduce) {
   html { scroll-behavior:auto }
   *,*::before,*::after { animation:none!important; transition:none!important }
   .has-motion .reveal,.has-motion .reveal.is-visible { opacity:1!important; transform:none!important }
+  .final-cta-button:active { transform:none }
   .manifesto { height:auto }
   .manifesto-stage { position:relative; min-height:85svh }
   .manifesto-word,.manifesto-logo,.manifesto-sub,.manifesto-glow { opacity:1!important; transform:none!important }
