@@ -335,20 +335,16 @@ textarea { resize:vertical }
 .brief-fields { display:grid; grid-template-columns:1fr; gap:0 }
 .process-contact { color:#96badd; font-size:13px; margin-top:32px }
 .footer { padding-top:76px; padding-bottom:35px }
-.footer-top { display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:48px 80px }
+.footer-top { display:grid; grid-template-columns:minmax(0,1.35fr) repeat(2,minmax(0,1fr)); align-items:start; gap:clamp(24px,5vw,72px) }
 .footer-about { max-width:380px }
-.footer-about .brand { margin-bottom:24px }
+.footer-about .brand { margin-bottom:18px }
 .footer-about p { font-size:14px; line-height:1.85; color:#9fb4d2 }
-.footer-tag { display:block; margin-top:20px; font-size:10px; letter-spacing:.14em; color:#6fa9dd }
-.footer-cols { display:flex; flex-wrap:wrap; gap:40px clamp(40px,7vw,110px) }
 .footer-col h3 { margin:0 0 22px; font-family:'DM Sans',Arial,sans-serif; font-size:11px; font-weight:500; letter-spacing:.16em; line-height:1.5; color:#76c8ff }
 .footer-col ul { list-style:none; margin:0; padding:0; display:grid; gap:13px }
 .footer-col a { display:inline-block; font-size:14px; line-height:1.5; color:#b9cae3; transition:color .25s,transform .3s var(--ease),text-shadow .25s }
 .footer-col a:hover { color:#9cddff; transform:translateX(4px); text-shadow:0 0 16px #138fff55 }
-.footer-col small { display:block; margin-top:2px; font-size:12px; color:#7f9bc0 }
-.footer-large { padding-block:56px 40px; display:flex; justify-content:center; overflow:hidden }
-.footer-large svg { width:min(690px,80%); height:auto; opacity:.85; animation:footer-breathe 8s ease-in-out infinite }
-.footer-bottom { display:flex; justify-content:space-between; align-items:center; gap:24px; border-top:1px solid var(--line); padding-top:24px; font-size:11px; color:#8fa8c9 }
+.footer-contact a { white-space:nowrap }
+.footer-bottom { display:flex; justify-content:space-between; align-items:center; gap:24px; margin-top:48px; border-top:1px solid var(--line); padding-top:24px; font-size:11px; color:#8fa8c9 }
 .footer-bottom>span:nth-child(2) { font-size:10px; letter-spacing:.1em }
 .to-top { display:inline-flex; align-items:center; gap:8px; color:#a9c9ec; transition:color .25s }
 .to-top:hover { color:#9cddff }
@@ -590,14 +586,11 @@ textarea { resize:vertical }
   .brief legend { font-size:22px }
   .brief .service-choices label>span { font-size:12px; padding:12px 10px }
   .footer { padding-top:52px; padding-bottom:85px }
-  .footer-top { gap:38px }
-  .footer-about { max-width:none }
-  .footer-cols { width:100%; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:34px 22px }
+  .footer-top { grid-template-columns:repeat(2,minmax(0,1fr)); gap:38px 22px }
+  .footer-about { max-width:none; grid-column:1/-1 }
   .footer-col h3 { margin-bottom:18px }
   .footer-col a { padding-block:3px }
-  .footer-large { padding-block:42px 30px }
-  .footer-large svg { width:95% }
-  .footer-bottom { font-size:11px; flex-wrap:wrap; gap:12px 20px }
+  .footer-bottom { font-size:11px; flex-wrap:wrap; gap:12px 20px; margin-top:36px; padding-top:20px }
   .footer-bottom>span:nth-child(2) { display:none }
   .floating { width:49px; height:49px; bottom:max(18px,env(safe-area-inset-bottom)); right:max(18px,env(safe-area-inset-right)) }
 }
