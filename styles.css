@@ -168,11 +168,6 @@ h2 { font-size:clamp(33px,3.65vw,52px) }
 .manifesto-word { display:inline-block; opacity:var(--word-opacity,1); transform:translateY(var(--word-y,0)); will-change:opacity,transform }
 .manifesto-sub { position:relative; font-size:11px; letter-spacing:.16em; color:#85c5ff; margin-top:28px; opacity:var(--sub-opacity,1) }
 
-/* Depois da primeira leitura completa, conserva a composição no estado final. */
-.has-read-manifesto .manifesto-word { opacity:1; transform:none; will-change:auto }
-.has-read-manifesto .manifesto-logo { opacity:1; transform:scale(1) }
-.has-read-manifesto .manifesto-sub,.has-read-manifesto .manifesto-glow { opacity:1 }
-.has-read-manifesto .manifesto { --emblem-glow:1 }
 /* Evita somar a animação nativa ao deslocamento suave da roda do mouse. */
 html.is-smooth-scrolling { scroll-behavior:auto }
 

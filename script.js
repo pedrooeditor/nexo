@@ -229,16 +229,14 @@ const manifesto = document.getElementById('manifesto');
 const manifestoWords = manifesto.querySelectorAll('.manifesto-word');
 const processGrid = document.querySelector('.process-grid');
 const hero = document.querySelector('.hero');
-let manifestoComplete = root.classList.contains('has-read-manifesto');
-let manifestoProgress = manifestoComplete ? 1 : 0;
 let manifestoPaintedProgress = -1;
-function finishManifesto() {
-  if (manifestoComplete) return;
-  manifestoComplete = true;
-  manifestoProgress = 1;
-  root.classList.add('has-read-manifesto');
-  try { localStorage.setItem('nexo-manifesto-seen', '1'); } catch (error) {}
-  try { sessionStorage.setItem('nexo-manifesto-seen', '1'); } catch (error) {}
+// Remove a trava da atualização anterior, inclusive para quem já viu a seção.
+root.classList.remove('has-read-manifesto');
+try { localStorage.removeItem('nexo-manifesto-seen'); } catch (error) {}
+try { sessionStorage.removeItem('nexo-manifesto-seen'); } catch (error) {}
+function manifestoPhase(value, start, end) {
+  const phase = clamp((value - start) / (end - start));
+  return phase * phase * (3 - 2 * phase);
 }
 let scrollFrame = 0;
 function updateScroll() {
@@ -255,31 +253,25 @@ function updateScroll() {
     heroArt.style.setProperty('--hero-parallax', '0px');
   }
   const rect = manifesto.getBoundingClientRect();
-  if ((rect.bottom >= 0 && rect.top <= viewport) || manifestoComplete) {
-    if (motionEnabled && !manifestoComplete) {
-      manifestoProgress = Math.max(manifestoProgress, clamp(-rect.top / Math.max(1, rect.height - viewport)));
-      if (manifestoProgress >= 1) finishManifesto();
-    }
-    const progress = motionEnabled && !manifestoComplete ? manifestoProgress : 1;
+  if (manifestoPaintedProgress < 0 || (rect.bottom >= 0 && rect.top <= viewport)) {
+    // Cada estado depende da posição atual: descer revela, subir recolhe.
+    const progress = motionEnabled ? clamp(-rect.top / Math.max(1, rect.height - viewport)) : 1;
     if (progress !== manifestoPaintedProgress) {
       manifestoPaintedProgress = progress;
+      const textProgress = clamp((progress - .12) / .72) * manifestoWords.length;
       manifestoWords.forEach((word, index) => {
-        const on = clamp(progress * (manifestoWords.length + 3) - index * .82);
-        word.style.setProperty('--word-opacity', (.16 + on * .84).toFixed(3));
-        word.style.setProperty('--word-y', (12 * (1 - on)).toFixed(1) + 'px');
+        const on = manifestoPhase(textProgress - index, 0, 1);
+        word.style.setProperty('--word-opacity', (.07 + on * .93).toFixed(3));
+        word.style.setProperty('--word-y', '0px');
       });
-      // O brilho azul conserva a mesma progressão da versão anterior.
-      const glow = clamp(progress / .92);
+      // A inicial acende primeiro; o halo cresce durante a leitura das palavras.
+      const glow = manifestoPhase(progress, 0, .85);
       manifesto.style.setProperty('--emblem-glow', glow.toFixed(3));
-      manifesto.style.setProperty('--manifesto-glow', (.15 + glow * .85).toFixed(3));
-      manifesto.style.setProperty('--emblem-opacity', (.4 + clamp(progress * 5) * .6).toFixed(3));
-      manifesto.style.setProperty('--emblem-scale', (.82 + clamp(progress * 4) * .18).toFixed(3));
-      manifesto.style.setProperty('--sub-opacity', (.2 + clamp((progress - .55) * 3) * .8).toFixed(3));
+      manifesto.style.setProperty('--manifesto-glow', (.02 + glow * .98).toFixed(3));
+      manifesto.style.setProperty('--emblem-opacity', (.05 + manifestoPhase(progress, 0, .23) * .95).toFixed(3));
+      manifesto.style.setProperty('--emblem-scale', '1');
+      manifesto.style.setProperty('--sub-opacity', (.07 + manifestoPhase(progress, .78, .95) * .93).toFixed(3));
     }
-  } else if (motionEnabled && !manifestoComplete && manifestoProgress > 0 && rect.bottom < 0) {
-    // Uma rolagem rápida também conclui a leitura sem deixar palavras pela metade.
-    finishManifesto();
-    requestScroll();
   }
   const processRect = processGrid.getBoundingClientRect();
   processGrid.style.setProperty('--rail-progress', reducedMotion.matches ? 1 : clamp((viewport * .8 - processRect.top) / Math.max(100, processRect.height + viewport * .15)));
