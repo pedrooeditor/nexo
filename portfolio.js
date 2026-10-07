@@ -126,6 +126,7 @@
           '<span class="pf-peek">' + (website ? 'Visitar site' : project.media?.type === 'video' ? 'Assistir vídeo' : 'Explorar projeto') + ' <span aria-hidden="true">↗</span></span>',
         '</span>',
         '<span class="pf-project-caption"><span><span class="pf-project-format">' + html(project.format) + '</span><strong>' + html(project.title) + '</strong></span><span class="pf-project-arrow" aria-hidden="true">↗</span></span>',
+        project.description ? '<span class="pf-project-summary">' + html(project.description) + '</span>' : '',
         '<span class="pf-tags">' + (project.tags || []).map(tag => '<span>' + html(tag) + '</span>').join('') + '</span>',
       website ? '</a>' : '</button>'
     ].join(''); }).join('') + '</div>' : '<div class="pf-empty"><span aria-hidden="true">' + html(category.icon) + '</span><h3>Novos projetos. Em breve.</h3><p>Vamos conversar sobre o que sua marca precisa?</p><button class="pf-action" type="button" data-contact>Conversar com a Nexo <span aria-hidden="true">↗</span></button></div>');

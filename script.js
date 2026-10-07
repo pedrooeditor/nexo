@@ -22,56 +22,6 @@ function enableLightMotion() {
   document.dispatchEvent(new Event('nexo:motionprofile'));
 }
 
-/* ------------------------------------------------------------------
-   Tela de abertura (só a logo, sem barra de carregamento)
-   1. O brilho azul atrás da logo cresce conforme a página carrega (--pl, de 0 a 1).
-   2. Ao terminar, acontece a faísca azul (.is-sparking).
-   3. Logo depois a tela some com fade e o site aparece (.is-entered).
-   Mantém a mesma sequência, com menos espera no celular e nos retornos da sessão.
-   O <head> tem uma rede de segurança: depois de 8 s o site aparece de qualquer jeito.
-------------------------------------------------------------------- */
-const MIN_PRELOADER_MS = root.classList.contains('is-returning') ? 250 : lightMotion ? 850 : window.matchMedia('(max-width: 760px)').matches ? 1000 : 1500;
-const SPARK_MS = 620;            // da faísca até a tela começar a sumir
-const preloader = document.querySelector('.preloader');
-function enterSite() {
-  root.classList.remove('is-loading');
-  root.classList.add('is-entered');
-  try { sessionStorage.setItem('nexo-intro-seen', '1'); } catch (error) {}
-  if (preloader) setTimeout(() => preloader.remove(), 1500);
-}
-function exitPreloader() {
-  if (root.classList.contains('is-entered') || root.classList.contains('is-sparking')) return;
-  root.classList.add('is-sparking');
-  setTimeout(enterSite, SPARK_MS);
-}
-if (!preloader || !root.classList.contains('is-loading')) {
-  // Sem abertura (movimento reduzido, por exemplo): o site já aparece.
-  enterSite();
-} else {
-  let pageLoaded = document.readyState === 'complete';
-  if (!pageLoaded) window.addEventListener('load', () => { pageLoaded = true; }, { once: true });
-  // performance.now() conta desde a navegação: baixar o script não reinicia a espera.
-  const startedAt = 0;
-  let shown = 0;
-  let last = startedAt;
-  const easeInOut = t => .5 - Math.cos(Math.PI * t) / 2;
-  (function tick(now) {
-    if (root.classList.contains('is-entered')) return;
-    const elapsed = now - startedAt;
-    const dt = Math.min(64, now - last);
-    last = now;
-    // Enquanto a página carrega, o brilho avança até ~90%. Quando termina, vai a 100%.
-    const waiting = .9 * (1 - Math.exp(-elapsed / 950));
-    const ceiling = easeInOut(clamp(elapsed / MIN_PRELOADER_MS));
-    const target = Math.min(pageLoaded ? 1 : waiting, ceiling);
-    shown += (target - shown) * (1 - Math.exp(-dt / 110));
-    const value = pageLoaded && elapsed >= MIN_PRELOADER_MS && shown > .996 ? 1 : shown;
-    preloader.style.setProperty('--pl', value.toFixed(4));
-    if (value >= 1) { exitPreloader(); return; }
-    requestAnimationFrame(tick);
-  })(startedAt);
-}
-
 function closeMenu(restoreFocus = false) {
   nav.classList.remove('open');
   menu.setAttribute('aria-expanded', 'false');
@@ -96,7 +46,7 @@ window.matchMedia('(min-width: 901px)').addEventListener('change', event => {
 });
 
 // Entradas em cascata. Sem JavaScript, o conteúdo permanece visível.
-const revealElements = document.querySelectorAll('.section-label, .section-heading, .problem-grid article, .node, .connection-detail, .data-loop, .service-card, .process-grid li, .package-grid article, .faq>div, .contact-grid>div, .brief');
+const revealElements = document.querySelectorAll('.section-label, .section-heading, .problem-grid article, .service-card, .process-grid li, .package-grid article, .faq>div, .contact-grid>div, .brief');
 const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
@@ -119,36 +69,13 @@ root.classList.add('has-motion');
 const zoneObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => entry.target.classList.toggle('in-view', entry.isIntersecting));
 }, {rootMargin:'100px 0px'});
-document.querySelectorAll('.hero-art, .manifesto, .service-card, .connection, .package-grid article, .footer-large, .metal, .ticker, .scroll-cue, .button.primary, .data-loop>span:first-child').forEach(element => {
+document.querySelectorAll('.hero-art, .manifesto, .service-card, .package-grid article, .footer-large, .metal, .scroll-cue, .button.primary').forEach(element => {
   element.classList.add('motion-zone');
   zoneObserver.observe(element);
 });
 
-// Etapas do ecossistema: a seleção é do visitante.
-const steps = [
-  ['01 / MOTION DESIGNER', 'O primeiro segundo decide. A gente faz ele valer.', 'Ritmo, narrativa e personalidade. O Motion Designer entrega para o Social Media os cortes e vídeos do mês, prontos para o feed.'],
-  ['02 / SOCIAL MEDIA', 'Quem é lembrado é escolhido.', 'Planejamento e conteúdo com uma linguagem consistente. O Social Media leva quem se interessou até a página certa, dando continuidade à mensagem da sua marca.'],
-  ['03 / PAGES BUILDER', 'Uma página. Um caminho. Uma decisão.', 'A página continua a história e organiza a oferta. O próximo passo leva o interessado ao Especialista em X1, pelo WhatsApp, com mais clareza sobre o que sua marca oferece.'],
-  ['04 / ESPECIALISTA EM X1', 'Onde a conversa vira venda.', 'Atendimento individual no WhatsApp, do primeiro contato ao fechamento. As dúvidas e objeções das conversas voltam como pauta para os próximos vídeos: o ciclo recomeça.']
-];
-const connectionDetail = document.getElementById('connection-detail');
-document.querySelectorAll('.node').forEach(node => node.addEventListener('click', () => {
-  document.querySelectorAll('.node').forEach(other => {
-    const active = other === node;
-    other.classList.toggle('active', active);
-    other.setAttribute('aria-pressed', String(active));
-  });
-  const step = steps[Number(node.dataset.step)];
-  document.getElementById('step-label').textContent = step[0];
-  document.getElementById('step-title').textContent = step[1];
-  document.getElementById('step-copy').textContent = step[2];
-  connectionDetail.classList.remove('switching');
-  void connectionDetail.offsetWidth;
-  connectionDetail.classList.add('switching');
-}));
-
 // Caixas: luz que acompanha o cursor + inclinação leve para o lado do cursor (01, 03 e 05).
-// Etapas do ecossistema (02): luz e uma leve saltada. Quem manda é o JavaScript, com uma folga de 10 px
+// O efeito usa uma folga de 10 px
 // na borda: assim a caixa não fica tremendo quando sobe e o cursor passa a encostar na beirada.
 const TILT_X = 5.5;   // graus de inclinação para cima/baixo
 const TILT_Y = 7.5;   // graus de inclinação para os lados
@@ -355,7 +282,7 @@ requestScroll();
   const measureScrollLimit = () => { scrollLimit = Math.max(0, root.scrollHeight - window.innerHeight); };
   const maxScroll = () => scrollLimit;
   const allowed = () => finePointer.matches && !reducedMotion.matches && !effectsPaused && !lightMotion
-    && !document.hidden && !root.classList.contains('is-loading')
+    && !document.hidden
     && !root.classList.contains('pf-open') && !document.querySelector('dialog[open]');
 
   function stop() {
@@ -544,8 +471,8 @@ const brief = document.getElementById('brief');
 const fronts = [...brief.querySelectorAll('input[name="service"]')];
 const packages = [...brief.querySelectorAll('input[name="package"]')];
 const packageFronts = {
-  'Pacote Presença':'Motion Designer + Social Media',
-  'Pacote Conversão':'Pages Builder + Especialista em X1',
+  'Pacote Presença':'Vídeos e motion design + Gestão de redes sociais',
+  'Pacote Conversão':'Sites e landing pages + Atendimento no WhatsApp',
   'Ecossistema Nexo':'as quatro frentes'
 };
 packages.forEach(input => input.addEventListener('change', () => {

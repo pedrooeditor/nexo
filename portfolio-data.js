@@ -10,24 +10,24 @@
 'use strict';
 window.NEXO_PORTFOLIO = {
   categories: [
-    { id:'motion', number:'01', name:'Motion Designer', label:'Edição de vídeo', short:'Vídeos', icon:'▷',
+    { id:'motion', number:'01', name:'Vídeos e motion design', label:'Edição de vídeo', short:'Vídeos', icon:'▷',
       headline:'Histórias em movimento.',
       intro:'Ritmo, narrativa e direção visual. Escolha um vídeo na galeria e veja a edição de perto.',
       signature:'RITMO. NARRATIVA. PERSONALIDADE.' },
-    { id:'web', number:'02', name:'Pages Builder', label:'Criação de páginas', short:'Páginas', icon:'▣',
-      headline:'Páginas que realmente vendem',
+    { id:'web', number:'02', name:'Sites e landing pages', label:'Criação de páginas', short:'Páginas', icon:'▣',
+      headline:'Páginas para apresentar sua empresa.',
       intro:'Explore os exemplos e clique em um projeto para visitar o site.',
       signature:'IDENTIDADE. EXPERIÊNCIA. DIREÇÃO.' }
   ],
   projects: [
-    { id:'ritmo-narrativa', category:'motion', title:'Exemplo Viral 1', format:'Vídeo vertical · Edição',
+    { id:'ritmo-narrativa', category:'motion', title:'Exemplo de edição 1', format:'Vídeo vertical · Edição',
       tags:['Vídeo','Edição','Narrativa'], demo:false, visual:'motion',
-      description:'Um projeto de edição de vídeo para redes sociais.',
+      description:'Exemplo de vídeo vertical editado para publicação em redes sociais.',
       cover:'assets/portfolio/exemplo-viral-1-capa-v1.webp',
       media:{ type:'video', src:'assets/portfolio/exemplo-viral-1-web-v1.mp4', poster:'assets/portfolio/exemplo-viral-1-capa-v1.webp', width:720, height:1280, duration:70.820998 } },
-    { id:'marca-movimento', category:'motion', title:'Exemplo Viral 2', format:'Vídeo vertical · Edição',
+    { id:'marca-movimento', category:'motion', title:'Exemplo de edição 2', format:'Vídeo vertical · Edição',
       tags:['Vídeo','Edição','Narrativa'], demo:false, visual:'motion',
-      description:'Um projeto de edição de vídeo para redes sociais.',
+      description:'Exemplo de vídeo vertical editado para publicação em redes sociais.',
       cover:'assets/portfolio/exemplo-viral-2-capa-v1.webp',
       media:{ type:'video', src:'assets/portfolio/exemplo-viral-2-web-v1.mp4', poster:'assets/portfolio/exemplo-viral-2-capa-v1.webp', width:720, height:1280, duration:70.217007 } },
     { id:'nova-aco-armado', category:'web', title:'Exemplo 1', format:'Site institucional · Construção',
