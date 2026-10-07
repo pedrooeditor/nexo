@@ -109,7 +109,7 @@
 
   function renderGallery(category) {
     const categoryProjects = data.projects.filter(project => project.category === category.id);
-    const projects = category.id === 'motion' && categoryProjects.some(project => !project.demo) ? categoryProjects.filter(project => !project.demo) : categoryProjects;
+    const projects = categoryProjects.some(project => !project.demo) ? categoryProjects.filter(project => !project.demo) : categoryProjects;
     heading.textContent = category.headline;
     intro.textContent = category.intro;
     panel.innerHTML = '<div class="pf-collection"><span><strong>' + String(projects.length).padStart(2, '0') + '</strong> ' + (category.id === 'motion' ? 'VÍDEOS' : 'PROJETOS') + '</span><span>' + (category.id === 'motion' ? 'Escolha um vídeo para assistir' : 'Escolha um projeto para explorar') + '</span></div>' + demoNote(projects) + (projects.length ? '<div class="pf-grid">' + projects.map((project, index) => [
@@ -117,7 +117,7 @@
         '<span class="pf-thumb' + (project.media?.type === 'video' ? ' pf-thumb-video' : '') + '">',
           cover(project),
           project.demo ? '<span class="pf-demo-badge">PRÉVIA VISUAL</span>' : '',
-          project.media?.type === 'video' ? '<span class="pf-card-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>' : '',
+          project.media?.type === 'video' && !project.cover ? '<span class="pf-card-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>' : '',
           duration(project.media?.duration) ? '<span class="pf-duration">' + duration(project.media.duration) + '</span>' : '',
           '<span class="pf-peek">' + (project.media?.type === 'video' ? 'Assistir vídeo' : 'Explorar projeto') + ' <span aria-hidden="true">↗</span></span>',
         '</span>',

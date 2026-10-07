@@ -1,6 +1,6 @@
 /*
  * Nexo Studio — conteúdo do portfólio.
- * Vídeos publicados e prévias de apresentação dos projetos de páginas.
+ * Vídeos e projetos de páginas publicados, com prévias para futuros trabalhos.
  * Ao receber os trabalhos, substitua os itens de cada frente e marque demo:false.
  * Mídia: { type:'video'|'image'|'file', src:'assets/portfolio/...', poster:'...', alt:'...' }.
  * Para sites, use cover:'assets/portfolio/capa.webp' e websiteUrl:'https://...'.
@@ -23,11 +23,20 @@ window.NEXO_PORTFOLIO = {
     { id:'ritmo-narrativa', category:'motion', title:'Exemplo Viral 1', format:'Vídeo vertical · Edição',
       tags:['Vídeo','Edição','Narrativa'], demo:false, visual:'motion',
       description:'Um projeto de edição de vídeo para redes sociais.',
-      media:{ type:'video', src:'https://www.dropbox.com/scl/fi/s2m6w7j9r8uvov74ia9ep/Exemplo-Viral-1.mp4?rlkey=d46w751mcjbcwgi7rws4n7srk&raw=1', poster:'assets/portfolio/exemplo-viral-1-cover.webp', width:2160, height:3840, duration:70.820998 } },
+      cover:'assets/portfolio/exemplo-viral-1-capa-v1.webp',
+      media:{ type:'video', src:'https://www.dropbox.com/scl/fi/s2m6w7j9r8uvov74ia9ep/Exemplo-Viral-1.mp4?rlkey=d46w751mcjbcwgi7rws4n7srk&raw=1', poster:'assets/portfolio/exemplo-viral-1-capa-v1.webp', width:2160, height:3840, duration:70.820998 } },
     { id:'marca-movimento', category:'motion', title:'Exemplo Viral 2', format:'Vídeo vertical · Edição',
       tags:['Vídeo','Edição','Narrativa'], demo:false, visual:'motion',
       description:'Um projeto de edição de vídeo para redes sociais.',
-      media:{ type:'video', src:'https://www.dropbox.com/scl/fi/81nvqvfy39bjjb8d3s1w3/Exemplo-Viral-2.mp4?rlkey=ym0ubkpzwa5vvpittbjkki9da&raw=1', poster:'assets/portfolio/exemplo-viral-2-cover.webp', width:2160, height:3840, duration:70.217007 } },
+      cover:'assets/portfolio/exemplo-viral-2-capa-v1.webp',
+      media:{ type:'video', src:'https://www.dropbox.com/scl/fi/81nvqvfy39bjjb8d3s1w3/Exemplo-Viral-2.mp4?rlkey=ym0ubkpzwa5vvpittbjkki9da&raw=1', poster:'assets/portfolio/exemplo-viral-2-capa-v1.webp', width:2160, height:3840, duration:70.217007 } },
+    { id:'nova-aco-armado', category:'web', title:'Nova Aço', format:'Site institucional · Construção',
+      tags:['Site institucional','Catálogo','Orçamento'], demo:false,
+      cover:'assets/portfolio/nova-aco-projeto.webp',
+      description:'Site institucional da Nova Aço, com apresentação da empresa, produtos de ferragem armada e contato para orçamento.',
+      approach:'Navegação por seções, apresentação dos produtos e acesso ao orçamento pelo WhatsApp.',
+      websiteUrl:'https://novaacoarmado.com.br/',
+      media:{ type:'image', src:'assets/portfolio/nova-aco-projeto.webp', alt:'Imagem de apresentação do projeto Nova Aço, com ferragens armadas em uma obra.' } },
     { id:'site-experiencia', category:'web', title:'Um site, uma experiência', format:'Site institucional',
       tags:['Site','Interface','Responsivo'], demo:true, visual:'web',
       description:'Uma prévia do espaço para sites: apresentação ampla, contexto e acesso ao projeto publicado quando estiver disponível.',
