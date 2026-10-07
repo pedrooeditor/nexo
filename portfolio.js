@@ -32,7 +32,11 @@
   let directEntry = true;
   let fallbackInert = [];
   let player = null;
-  const entryVideo = category => category === 'motion' ? data.projects.find(project => project.category === category && !project.demo && project.media?.type === 'video' && safeURL(project.media.src))?.id : null;
+  const duration = value => {
+    if (!Number.isFinite(value) || value <= 0) return '';
+    const seconds = Math.round(value);
+    return Math.floor(seconds / 60) + ':' + String(seconds % 60).padStart(2, '0');
+  };
 
   const dialog = document.createElement('dialog');
   dialog.className = 'pf-dialog';
@@ -50,13 +54,12 @@
         '<button class="pf-close" type="button" data-close aria-label="Fechar portfólio" autofocus><span aria-hidden="true">×</span></button>',
       '</header>',
       '<div class="pf-workspace">',
-        '<aside class="pf-sidebar">',
-          '<span class="pf-side-label">QUATRO FRENTES.<br>UMA DIREÇÃO.</span>',
-          '<nav class="pf-tabs" role="tablist" aria-label="Frentes do portfólio">',
-            data.categories.map(category => '<button class="pf-tab" id="pf-tab-' + html(category.id) + '" type="button" role="tab" aria-controls="pf-panel" aria-selected="false" tabindex="-1" data-category="' + html(category.id) + '"><span class="pf-tab-number">' + html(category.number) + '</span><span class="pf-tab-label">' + html(category.name) + '</span><span class="pf-tab-short">' + html(category.short) + '</span><span class="pf-tab-icon" aria-hidden="true">' + html(category.icon) + '</span></button>').join(''),
+        '<div class="pf-navigation"><div class="pf-nav-inner">',
+          '<span class="pf-nav-label">ESCOLHA UMA FRENTE</span>',
+          '<nav class="pf-tabs" role="tablist" aria-label="Categorias do portfólio">',
+            data.categories.map(category => '<button class="pf-tab" id="pf-tab-' + html(category.id) + '" type="button" role="tab" aria-controls="pf-panel" aria-selected="false" tabindex="-1" data-category="' + html(category.id) + '"><span class="pf-tab-number">' + html(category.number) + '</span><span class="pf-tab-label">' + html(category.label || category.name) + '</span><span class="pf-tab-short">' + html(category.short) + '</span><span class="pf-tab-icon" aria-hidden="true">' + html(category.icon) + '</span></button>').join(''),
           '</nav>',
-          '<div class="pf-side-bottom"><svg viewBox="350 240 560 490" aria-hidden="true"><image href="assets/nexo-logo-clean.webp" width="1254" height="1254"/></svg><span>DA ATENÇÃO À VENDA.<br>TUDO CONECTADO.</span></div>',
-        '</aside>',
+        '</div></div>',
         '<div class="pf-scroll">',
           '<div class="pf-heading"><div class="pf-eyebrow"></div><h2 id="pf-title"></h2><p id="pf-intro"></p></div>',
           '<div id="pf-panel" class="pf-panel" role="tabpanel" tabindex="-1"></div>',
@@ -109,19 +112,21 @@
     const projects = category.id === 'motion' && categoryProjects.some(project => !project.demo) ? categoryProjects.filter(project => !project.demo) : categoryProjects;
     heading.textContent = category.headline;
     intro.textContent = category.intro;
-    panel.innerHTML = demoNote(projects) + (projects.length ? '<div class="pf-grid">' + projects.map((project, index) => [
-      '<button class="pf-project" type="button" data-case="' + html(project.id) + '" style="--pf-order:' + index + '" aria-label="Ver de perto: ' + html(project.title) + '">',
-        '<span class="pf-thumb">',
+    panel.innerHTML = '<div class="pf-collection"><span><strong>' + String(projects.length).padStart(2, '0') + '</strong> ' + (category.id === 'motion' ? 'VÍDEOS' : 'PROJETOS') + '</span><span>' + (category.id === 'motion' ? 'Escolha um vídeo para assistir' : 'Escolha um projeto para explorar') + '</span></div>' + demoNote(projects) + (projects.length ? '<div class="pf-grid">' + projects.map((project, index) => [
+      '<button class="pf-project" type="button" data-case="' + html(project.id) + '" style="--pf-order:' + index + '" aria-label="' + (project.media?.type === 'video' ? 'Assistir: ' : 'Explorar: ') + html(project.title) + '">',
+        '<span class="pf-thumb' + (project.media?.type === 'video' ? ' pf-thumb-video' : '') + '">',
           cover(project),
           project.demo ? '<span class="pf-demo-badge">PRÉVIA VISUAL</span>' : '',
-          '<span class="pf-peek">Ver de perto <span aria-hidden="true">↗</span></span>',
+          project.media?.type === 'video' ? '<span class="pf-card-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>' : '',
+          duration(project.media?.duration) ? '<span class="pf-duration">' + duration(project.media.duration) + '</span>' : '',
+          '<span class="pf-peek">' + (project.media?.type === 'video' ? 'Assistir vídeo' : 'Explorar projeto') + ' <span aria-hidden="true">↗</span></span>',
         '</span>',
         '<span class="pf-project-caption"><span><span class="pf-project-format">' + html(project.format) + '</span><strong>' + html(project.title) + '</strong></span><span class="pf-project-arrow" aria-hidden="true">↗</span></span>',
         '<span class="pf-tags">' + (project.tags || []).map(tag => '<span>' + html(tag) + '</span>').join('') + '</span>',
       '</button>'
     ].join('')).join('') + '</div>' : '<div class="pf-empty"><span aria-hidden="true">' + html(category.icon) + '</span><h3>Novos projetos. Em breve.</h3><p>Vamos conversar sobre o que sua marca precisa?</p><button class="pf-action" type="button" data-contact>Conversar com a Nexo <span aria-hidden="true">↗</span></button></div>');
     panel.setAttribute('aria-labelledby', 'pf-tab-' + category.id);
-    status.textContent = category.name + ': ' + projects.length + (projects.some(project => project.demo) ? ' prévias de apresentação.' : ' projetos.');
+    status.textContent = (category.label || category.name) + ': ' + projects.length + (projects.some(project => project.demo) ? ' prévias de apresentação.' : ' projetos.');
   }
 
   function renderProject(category, project) {
@@ -131,6 +136,7 @@
     const isAnimatedDemo = project.demo && !safeURL(project.cover) && !safeURL(project.media?.src);
     const gallery = Array.isArray(project.gallery) ? project.gallery.filter(item => safeURL(item.src)) : [];
     const ratio = project.media?.type === 'video' && Number.isFinite(project.media.width) && Number.isFinite(project.media.height) && project.media.width > 0 && project.media.height > 0 ? project.media.width / project.media.height : null;
+    const videos = project.media?.type === 'video' ? data.projects.filter(item => item.category === category.id && !item.demo && item.media?.type === 'video' && safeURL(item.media.src)) : [];
     panel.innerHTML = [
       '<button class="pf-detail-back" type="button" data-gallery><span aria-hidden="true">←</span> Voltar à galeria</button>',
       '<div class="pf-detail">',
@@ -147,6 +153,7 @@
           '<div class="pf-tags">' + (project.tags || []).map(tag => '<span>' + html(tag) + '</span>').join('') + '</div>',
           websiteURL ? '<a class="pf-action" href="' + html(websiteURL) + '" target="_blank" rel="noopener noreferrer">Visitar projeto <span aria-hidden="true">↗</span></a>' : '',
           '<button class="pf-action ' + (websiteURL ? 'pf-action-secondary' : '') + '" type="button" data-contact>Quero algo nessa direção <span aria-hidden="true">↗</span></button>',
+          videos.length > 1 ? '<div class="pf-switcher"><h4>NA GALERIA</h4>' + videos.map(item => '<button class="pf-switcher-row" type="button" data-case="' + html(item.id) + '"' + (item.id === project.id ? ' aria-current="true" disabled' : '') + '>' + cover(item) + '<span><strong>' + html(item.title) + '</strong><small>' + (item.id === project.id ? 'Selecionado' : 'Assistir vídeo') + (duration(item.media.duration) ? ' · ' + duration(item.media.duration) : '') + '</small></span><span class="pf-switcher-play" aria-hidden="true">▷</span></button>').join('') + '</div>' : '',
         '</aside>',
       '</div>'
     ].join('');
@@ -217,14 +224,9 @@
   }
 
   function renderRoute() {
-    let currentRoute = window.location.hash;
+    const currentRoute = window.location.hash;
     if (renderedRoute === currentRoute) return;
-    let next = route();
-    if (!renderedRoute && next && !next.project && entryVideo(next.category.id)) {
-      history.replaceState(history.state, '', '#portfolio/' + next.category.id + '/' + entryVideo(next.category.id));
-      currentRoute = window.location.hash;
-      next = route();
-    }
+    const next = route();
     renderedRoute = currentRoute;
     if (!next) { hideDialog(); return; }
     stopMedia();
@@ -232,7 +234,7 @@
     activeProject = next.project;
     dialog.dataset.category = next.category.id;
     dialog.dataset.view = next.project ? 'project' : 'gallery';
-    dialog.querySelector('.pf-eyebrow').textContent = next.category.number + ' / ' + next.category.name.toUpperCase();
+    dialog.querySelector('.pf-eyebrow').textContent = next.category.number + ' / ' + (next.category.label || next.category.name).toUpperCase();
     dialog.querySelector('.pf-signature').textContent = next.category.signature;
     dialog.querySelectorAll('.pf-tab').forEach(tab => {
       const selected = tab.dataset.category === activeCategory;
@@ -245,7 +247,7 @@
     const wasOpen = dialog.open;
     showDialog();
     if (next.project?.media?.type === 'video') player = window.NexoPortfolioPlayer?.mount(panel.querySelector('.pf-media-frame')) || null;
-    document.title = (next.project ? next.project.title : next.category.name) + ' | Portfólio — Nexo Studio';
+    document.title = (next.project ? next.project.title : (next.category.label || next.category.name)) + ' | Portfólio — Nexo Studio';
     if (focusTabAfterRender) {
       dialog.querySelector('#pf-tab-' + activeCategory).focus({preventScroll:true});
       focusTabAfterRender = false;
@@ -298,18 +300,18 @@
       origin = entry.closest('.service-card')?.getBoundingClientRect();
       directEntry = false;
     }
-    navigate(entry.dataset.portfolio, entryVideo(entry.dataset.portfolio));
+    navigate(entry.dataset.portfolio);
   });
 
   dialog.addEventListener('click', event => {
     const button = event.target.closest?.('button, [data-close]');
     if (!button) return;
     if (button.hasAttribute('data-close')) { event.preventDefault(); closePortfolio(); }
-    else if (button.dataset.category) navigate(button.dataset.category, entryVideo(button.dataset.category), true);
-    else if (button.dataset.case) navigate(activeCategory, button.dataset.case);
+    else if (button.dataset.category) navigate(button.dataset.category, null, true);
+    else if (button.dataset.case) navigate(activeCategory, button.dataset.case, Boolean(activeProject));
     else if (button.hasAttribute('data-gallery')) {
       const state = history.state?.nexoPortfolio;
-      if (state?.token === token && state.depth > 1) history.back();
+      if (state?.token === token && state.depth > 0) history.back();
       else navigate(activeCategory, null, true);
     } else if (button.hasAttribute('data-contact')) contact();
     else if (button.hasAttribute('data-pause')) {
@@ -332,7 +334,7 @@
       const direction = ['ArrowRight','ArrowDown'].includes(event.key) ? 1 : -1;
       const target = event.key === 'Home' ? 0 : event.key === 'End' ? data.categories.length - 1 : (index + direction + data.categories.length) % data.categories.length;
       focusTabAfterRender = true;
-      navigate(data.categories[target].id, entryVideo(data.categories[target].id), true);
+      navigate(data.categories[target].id, null, true);
     }
     if (typeof dialog.showModal !== 'function' && event.key === 'Tab') {
       const targets = [...dialog.querySelectorAll('button:not([disabled]), a[href], [tabindex="0"]')].filter(element => element.tabIndex >= 0 && !element.hidden);
