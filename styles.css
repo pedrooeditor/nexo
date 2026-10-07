@@ -91,7 +91,8 @@ h1 { font-size:clamp(48px,5.2vw,76px); font-weight:600; letter-spacing:-.055em; 
 .hero-fronts ul { display:flex; flex-wrap:wrap; gap:10px 18px; list-style:none; padding:0; margin:12px 0 0; font-size:12px; color:#bed5ef }
 .hero-fronts li { display:flex; align-items:center; gap:7px }
 .hero-fronts b { font-size:16px; font-weight:400; color:#60c7ff; text-shadow:0 0 13px #1c92ff77 }
-.hero-art { position:relative; min-width:0; width:100%; max-width:485px; justify-self:center; transform:translateY(var(--hero-parallax,0)); will-change:transform }
+.hero-art { position:relative; min-width:0; width:100%; max-width:485px; justify-self:center; transform:translateY(var(--hero-parallax,0)) }
+.hero-art.in-view { will-change:transform }
 .orbit-scene { width:100%; aspect-ratio:1; position:relative; perspective:900px }
 .orbit-halo { position:absolute; inset:5%; border-radius:50%; background:radial-gradient(circle,#159cff40 5%,#085fff22 35%,#077bff0b 55%,transparent 72%); filter:blur(12px); animation:halo-breathe 5s ease-in-out infinite }
 .orbit-track { position:absolute; inset:3%; border:1px solid #3fa5ff56; border-radius:50%; animation:orbit-spin 17s linear infinite; box-shadow:inset 0 0 24px #138cff06,0 0 20px #117aff09 }
@@ -165,7 +166,8 @@ h2 { font-size:clamp(33px,3.65vw,52px) }
 .manifesto-emblem { position:relative; z-index:1; display:block; width:100%; height:auto; filter:brightness(calc(.62 + var(--emblem-glow,1) * .42)) drop-shadow(0 0 calc(4px + var(--emblem-glow,1) * 26px) rgba(30,140,255,calc(.15 + var(--emblem-glow,1) * .75))) }
 .manifesto-stage>.eyebrow { font-size:10px; margin-bottom:24px }
 .manifesto h2 { position:relative; max-width:850px; font-size:clamp(35px,4.75vw,63px); font-weight:600; line-height:1.23; letter-spacing:-.05em }
-.manifesto-word { display:inline-block; opacity:var(--word-opacity,1); transform:translateY(var(--word-y,0)); will-change:opacity,transform }
+.manifesto-word { display:inline-block; opacity:var(--word-opacity,1); transform:translateY(var(--word-y,0)) }
+.manifesto.in-view .manifesto-word { will-change:opacity }
 .manifesto-sub { position:relative; font-size:11px; letter-spacing:.16em; color:#85c5ff; margin-top:28px; opacity:var(--sub-opacity,1) }
 
 /* Evita somar a animação nativa ao deslocamento suave da roda do mouse. */
@@ -426,8 +428,26 @@ textarea { resize:vertical }
 .motion-paused .tilt-card { translate:none!important; scale:none!important }
 .motion-paused .reveal { opacity:1!important; transform:none!important; transition:none!important }
 .motion-paused details p,.motion-paused .connection-detail.switching { animation:none!important; opacity:1!important; transform:none!important }
-.motion-zone:not(.in-view) { animation-play-state:paused }
-.motion-zone:not(.in-view) *, .motion-zone:not(.in-view) *::before, .motion-zone:not(.in-view) *::after { animation-play-state:paused }
+.motion-zone:not(.in-view), .motion-zone:not(.in-view)::before, .motion-zone:not(.in-view)::after,
+.motion-zone:not(.in-view) *, .motion-zone:not(.in-view) *::before, .motion-zone:not(.in-view) *::after { animation-play-state:paused!important }
+/* Durante o portfólio, o site ao fundo não disputa recursos com o vídeo. */
+html.pf-open body>:not(.pf-dialog), html.pf-open body>:not(.pf-dialog)::before, html.pf-open body>:not(.pf-dialog)::after,
+html.pf-open body>:not(.pf-dialog) *, html.pf-open body>:not(.pf-dialog) *::before, html.pf-open body>:not(.pf-dialog) *::after { animation-play-state:paused!important }
+/* Gradientes, luz azul e revelação das palavras permanecem no perfil leve. */
+.motion-light .ambient-glow, .motion-light .ambient-beam, .motion-light .orbit-halo, .motion-light .orbit-track,
+.motion-light .logo-float, .motion-light .orbit-tag, .motion-light .cross-one, .motion-light .cross-two,
+.motion-light .ticker-track, .motion-light .metal, .motion-light .waveform i, .motion-light .preview-play,
+.motion-light .social-mini, .motion-light .social-mini strong span, .motion-light .mini-browser, .motion-light .mini-browser i,
+.motion-light .web-cursor, .motion-light .chat-mini, .motion-light .typing i, .motion-light .data-loop>span:first-child,
+.motion-light .connection-energy::after, .motion-light .node.active::after, .motion-light .video-progress::after,
+.motion-light .featured-line, .motion-light .floating::before, .motion-light .floating::after { animation-play-state:paused!important }
+.motion-light .ambient-glow, .motion-light .orbit-halo { filter:none!important }
+.motion-light .header.scrolled { background:#020711f5; backdrop-filter:none; -webkit-backdrop-filter:none }
+.motion-light .orbit-tag, .motion-light .brief { backdrop-filter:none; -webkit-backdrop-filter:none }
+.motion-light .hero-art, .motion-light .manifesto-word { will-change:auto!important }
+.motion-light .logo-parallax { --logo-rx:0deg!important; --logo-ry:0deg!important }
+.motion-light .button { --button-x:0px!important; --button-y:0px!important }
+.motion-light .manifesto-emblem { filter:drop-shadow(0 0 10px #168cff77) }
 
 /* Desktop intermediário e tablet. */
 @media(max-width:1100px) {

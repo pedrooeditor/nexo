@@ -66,7 +66,7 @@ html.pf-open,html.pf-open body { overflow:hidden }
 .pf-notice strong { color:#bed8f2; font-weight:600 }
 .pf-notice-dot { flex-shrink:0; width:5px; height:5px; margin-top:7px; background:#64b8ee; border-radius:50%; box-shadow:0 0 9px #3ca8ff44 }
 .pf-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:32px 25px }
-.pf-project { display:block; width:100%; min-width:0; text-align:left; padding:8px; border:1px solid #6ba6e32b; border-radius:18px; background:linear-gradient(150deg,#0c1b2b8f,#060c1680); transition:border-color .3s,background .3s; animation:pf-enter .6s both; animation-delay:calc(var(--pf-order,0) * .08s) }
+.pf-project { display:block; width:100%; min-width:0; text-align:left; text-decoration:none; color:inherit; cursor:pointer; padding:8px; border:1px solid #6ba6e32b; border-radius:18px; background:linear-gradient(150deg,#0c1b2b8f,#060c1680); transition:border-color .3s; animation:pf-enter .6s both; animation-delay:calc(var(--pf-order,0) * .08s) }
 .pf-project:hover,.pf-project:focus-visible { border-color:#8bd4ff80; background:linear-gradient(150deg,#102c459f,#060c1680) }
 .pf-thumb { display:block; position:relative; aspect-ratio:16/10; overflow:hidden; isolation:isolate; border:1px solid #72b5f036; border-radius:13px; background:#08182b; transition:border-color .3s,transform .4s,box-shadow .4s; container-type:inline-size }
 .pf-thumb-video { aspect-ratio:4/3; background:#02050b }
@@ -110,9 +110,9 @@ html.pf-open,html.pf-open body { overflow:hidden }
 .pf-player-overlay { position:absolute; inset:0; pointer-events:none }
 .pf-player-overlay button,.pf-player-overlay input { pointer-events:auto; touch-action:manipulation }
 .pf-player-overlay [hidden] { display:none!important }
-.pf-player-center { position:absolute; top:50%; left:50%; translate:-50% -50%; display:grid; place-items:center; width:60px; height:60px; padding:0; border:1px solid #9cddff73; border-radius:50%; color:#e9f6ff; background:#061526d9; backdrop-filter:blur(12px) }
+.pf-player-center { position:absolute; top:50%; left:50%; translate:-50% -50%; display:grid; place-items:center; width:60px; height:60px; padding:0; border:1px solid #9cddff73; border-radius:50%; color:#e9f6ff; background:#061526f0 }
 .pf-player-center svg { width:26px; height:26px; margin-left:3px; fill:currentColor }
-.pf-player-controls { position:absolute; left:12px; right:12px; bottom:12px; padding:5px 8px; border:1px solid #8ec9f13d; border-radius:13px; background:linear-gradient(130deg,#06162cf0,#040a14e6); box-shadow:0 8px 28px #0005; backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px) }
+.pf-player-controls { position:absolute; left:12px; right:12px; bottom:12px; padding:5px 8px; border:1px solid #8ec9f13d; border-radius:13px; background:linear-gradient(130deg,#06162cf5,#040a14f0); box-shadow:0 8px 28px #0005 }
 .pf-player-row { display:flex; align-items:center; gap:6px }
 .pf-player-button { flex-shrink:0; display:flex; align-items:center; justify-content:center; gap:7px; min-width:44px; min-height:44px; padding:7px; border:1px solid transparent; border-radius:9px; background:transparent; color:#dceeff!important; transition:background .2s,border-color .2s }
 .pf-player-button:hover,.pf-player-center:hover { background:#134b768f; border-color:#92d3ff70 }

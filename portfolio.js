@@ -28,6 +28,7 @@
   let activeProject = null;
   let animation = null;
   let pointerFrame = 0;
+  let pointerSample = null;
   let focusTabAfterRender = false;
   let directEntry = true;
   let fallbackInert = [];
@@ -98,7 +99,7 @@
     const src = safeURL(project.media?.src);
     if (project.media?.type === 'video' && src) {
       const poster = safeURL(project.media.poster);
-      return '<video class="pf-real-media" controls playsinline webkit-playsinline muted preload="metadata" disablepictureinpicture disableremoteplayback controlslist="nodownload noremoteplayback"' + (poster ? ' poster="' + html(poster) + '"' : '') + ' aria-label="' + html(project.title) + '"><source src="' + html(src) + '">Seu navegador não conseguiu reproduzir este vídeo.</video>';
+      return '<video class="pf-real-media" controls playsinline webkit-playsinline muted preload="auto" disablepictureinpicture disableremoteplayback controlslist="nodownload noremoteplayback"' + (poster ? ' poster="' + html(poster) + '"' : '') + ' aria-label="' + html(project.title) + '"><source src="' + html(src) + '" type="video/mp4">Seu navegador não conseguiu reproduzir este vídeo.</video>';
     }
     if (project.media?.type === 'image' && src) return '<img class="pf-real-media" src="' + html(src) + '" alt="' + html(project.media.alt || project.title) + '" decoding="async">';
     if (project.media?.type === 'file' && src) return '<div class="pf-file"><span aria-hidden="true">↗</span><h3>' + html(project.title) + '</h3><a class="pf-action" href="' + html(src) + '" target="_blank" rel="noopener noreferrer">Abrir arquivo <span aria-hidden="true">↗</span></a></div>';
@@ -112,19 +113,22 @@
     const projects = categoryProjects.some(project => !project.demo) ? categoryProjects.filter(project => !project.demo) : categoryProjects;
     heading.textContent = category.headline;
     intro.textContent = category.intro;
-    panel.innerHTML = '<div class="pf-collection"><span><strong>' + String(projects.length).padStart(2, '0') + '</strong> ' + (category.id === 'motion' ? 'VÍDEOS' : 'PROJETOS') + '</span><span>' + (category.id === 'motion' ? 'Escolha um vídeo para assistir' : 'Escolha um projeto para explorar') + '</span></div>' + demoNote(projects) + (projects.length ? '<div class="pf-grid">' + projects.map((project, index) => [
-      '<button class="pf-project" type="button" data-case="' + html(project.id) + '" style="--pf-order:' + index + '" aria-label="' + (project.media?.type === 'video' ? 'Assistir: ' : 'Explorar: ') + html(project.title) + '">',
+    panel.innerHTML = '<div class="pf-collection"><span><strong>' + String(projects.length).padStart(2, '0') + '</strong> ' + (category.id === 'motion' ? 'VÍDEOS' : 'PROJETOS') + '</span><span>' + (category.id === 'motion' ? 'Escolha um vídeo para assistir' : 'Clique em um projeto para visitar o site') + '</span></div>' + demoNote(projects) + (projects.length ? '<div class="pf-grid">' + projects.map((project, index) => {
+      const website = category.id === 'web' && !project.demo ? safeURL(project.websiteUrl) : '';
+      const attributes = ' class="pf-project" style="--pf-order:' + index + '"';
+      return [
+      website ? '<a' + attributes + ' href="' + html(website) + '" target="_blank" rel="noopener noreferrer" aria-label="Visitar: ' + html(project.title) + ' (abre em uma nova aba)">' : '<button' + attributes + ' type="button" data-case="' + html(project.id) + '" aria-label="' + (project.media?.type === 'video' ? 'Assistir: ' : 'Explorar: ') + html(project.title) + '">',
         '<span class="pf-thumb' + (project.media?.type === 'video' ? ' pf-thumb-video' : '') + '">',
           cover(project),
           project.demo ? '<span class="pf-demo-badge">PRÉVIA VISUAL</span>' : '',
           project.media?.type === 'video' && !project.cover ? '<span class="pf-card-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>' : '',
           duration(project.media?.duration) ? '<span class="pf-duration">' + duration(project.media.duration) + '</span>' : '',
-          '<span class="pf-peek">' + (project.media?.type === 'video' ? 'Assistir vídeo' : 'Explorar projeto') + ' <span aria-hidden="true">↗</span></span>',
+          '<span class="pf-peek">' + (website ? 'Visitar site' : project.media?.type === 'video' ? 'Assistir vídeo' : 'Explorar projeto') + ' <span aria-hidden="true">↗</span></span>',
         '</span>',
         '<span class="pf-project-caption"><span><span class="pf-project-format">' + html(project.format) + '</span><strong>' + html(project.title) + '</strong></span><span class="pf-project-arrow" aria-hidden="true">↗</span></span>',
         '<span class="pf-tags">' + (project.tags || []).map(tag => '<span>' + html(tag) + '</span>').join('') + '</span>',
-      '</button>'
-    ].join('')).join('') + '</div>' : '<div class="pf-empty"><span aria-hidden="true">' + html(category.icon) + '</span><h3>Novos projetos. Em breve.</h3><p>Vamos conversar sobre o que sua marca precisa?</p><button class="pf-action" type="button" data-contact>Conversar com a Nexo <span aria-hidden="true">↗</span></button></div>');
+      website ? '</a>' : '</button>'
+    ].join(''); }).join('') + '</div>' : '<div class="pf-empty"><span aria-hidden="true">' + html(category.icon) + '</span><h3>Novos projetos. Em breve.</h3><p>Vamos conversar sobre o que sua marca precisa?</p><button class="pf-action" type="button" data-contact>Conversar com a Nexo <span aria-hidden="true">↗</span></button></div>');
     panel.setAttribute('aria-labelledby', 'pf-tab-' + category.id);
     status.textContent = (category.label || category.name) + ': ' + projects.length + (projects.some(project => project.demo) ? ' prévias de apresentação.' : ' projetos.');
   }
@@ -190,6 +194,7 @@
   function showDialog() {
     if (dialog.open) return;
     document.documentElement.classList.add('pf-open');
+    document.dispatchEvent(new Event('nexo:portfoliochange'));
     if (typeof dialog.showModal === 'function') dialog.showModal();
     else {
       dialog.setAttribute('open', '');
@@ -202,7 +207,8 @@
       const x = origin ? Math.max(0, Math.min(window.innerWidth, origin.left + origin.width / 2)) : window.innerWidth / 2;
       const y = origin ? Math.max(0, Math.min(window.innerHeight, origin.top + origin.height / 2)) : window.innerHeight / 2;
       shell.style.transformOrigin = x + 'px ' + y + 'px';
-      animation = shell.animate([{opacity:0, transform:'scale(.92)', filter:'blur(7px)'}, {opacity:1, transform:'scale(1)', filter:'blur(0)'}], {duration:520, easing:'cubic-bezier(.16,1,.3,1)'});
+      const frames = document.documentElement.classList.contains('motion-light') ? [{opacity:0}, {opacity:1}] : [{opacity:0, transform:'scale(.92)'}, {opacity:1, transform:'scale(1)'}];
+      animation = shell.animate(frames, {duration:420, easing:'cubic-bezier(.16,1,.3,1)'});
     }
     dialog.querySelector('.pf-close').focus({preventScroll:true});
   }
@@ -214,6 +220,7 @@
     if (typeof dialog.close === 'function') dialog.close();
     else dialog.removeAttribute('open');
     document.documentElement.classList.remove('pf-open');
+    document.dispatchEvent(new Event('nexo:portfoliochange'));
     fallbackInert.forEach(([element, wasInert]) => { element.inert = wasInert; });
     fallbackInert = [];
     document.title = titleBefore;
@@ -346,15 +353,18 @@
   });
 
   dialog.addEventListener('pointermove', event => {
-    if (!pointer.matches || !canAnimate() || event.pointerType === 'touch') return;
+    if (!pointer.matches || !canAnimate() || document.documentElement.classList.contains('motion-light') || event.pointerType === 'touch') return;
     const card = event.target.closest('.pf-project');
     if (!card) return;
-    const rect = card.getBoundingClientRect();
-    if (pointerFrame) cancelAnimationFrame(pointerFrame);
+    pointerSample = {card, x:event.clientX, y:event.clientY};
+    if (pointerFrame) return;
     pointerFrame = requestAnimationFrame(() => {
-      card.style.setProperty('--pf-x', (event.clientX - rect.left).toFixed(1) + 'px');
-      card.style.setProperty('--pf-y', (event.clientY - rect.top).toFixed(1) + 'px');
       pointerFrame = 0;
+      if (!dialog.open || !pointerSample.card.isConnected) return;
+      const {card, x, y} = pointerSample;
+      const rect = card.getBoundingClientRect();
+      card.style.setProperty('--pf-x', (x - rect.left).toFixed(1) + 'px');
+      card.style.setProperty('--pf-y', (y - rect.top).toFixed(1) + 'px');
     });
   });
   window.addEventListener('popstate', renderRoute);

@@ -9,6 +9,18 @@ const nav = document.getElementById('nav');
 const motionToggle = document.querySelector('.effects-toggle');
 let effectsPaused = false;
 const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
+// O conteúdo e a leitura animada continuam iguais; só a decoração se adapta.
+const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+let lightMotion = Boolean(connection?.saveData
+  || (navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4)
+  || (navigator.deviceMemory > 0 && navigator.deviceMemory <= 4));
+root.classList.toggle('motion-light', lightMotion);
+function enableLightMotion() {
+  if (lightMotion) return;
+  lightMotion = true;
+  root.classList.add('motion-light');
+  document.dispatchEvent(new Event('nexo:motionprofile'));
+}
 
 /* ------------------------------------------------------------------
    Tela de abertura (só a logo, sem barra de carregamento)
@@ -18,7 +30,7 @@ const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
    Mantém a mesma sequência, com menos espera no celular e nos retornos da sessão.
    O <head> tem uma rede de segurança: depois de 8 s o site aparece de qualquer jeito.
 ------------------------------------------------------------------- */
-const MIN_PRELOADER_MS = root.classList.contains('is-returning') ? 900 : window.matchMedia('(max-width: 760px)').matches ? 1500 : 2600;
+const MIN_PRELOADER_MS = root.classList.contains('is-returning') ? 250 : lightMotion ? 850 : window.matchMedia('(max-width: 760px)').matches ? 1000 : 1500;
 const SPARK_MS = 620;            // da faísca até a tela começar a sumir
 const preloader = document.querySelector('.preloader');
 function enterSite() {
@@ -107,7 +119,7 @@ root.classList.add('has-motion');
 const zoneObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => entry.target.classList.toggle('in-view', entry.isIntersecting));
 }, {rootMargin:'100px 0px'});
-document.querySelectorAll('.hero-art, .service-card, .connection, .footer-large, .metal, .ticker, .button.primary, .data-loop>span:first-child').forEach(element => {
+document.querySelectorAll('.hero-art, .manifesto, .service-card, .connection, .package-grid article, .footer-large, .metal, .ticker, .scroll-cue, .button.primary, .data-loop>span:first-child').forEach(element => {
   element.classList.add('motion-zone');
   zoneObserver.observe(element);
 });
@@ -144,7 +156,7 @@ const EDGE = 10;      // folga da borda, em px
 const tiltCards = [...document.querySelectorAll('.problem-grid article, .service-card, .package-grid article')];
 const nodeCards = [...document.querySelectorAll('.node')];
 tiltCards.forEach(card => card.classList.add('tilt-card'));
-const canHover = event => event.pointerType !== 'touch' && finePointer.matches && !reducedMotion.matches && !effectsPaused;
+const canHover = event => event.pointerType !== 'touch' && finePointer.matches && !reducedMotion.matches && !effectsPaused && !lightMotion && !root.classList.contains('pf-open');
 let activeCard = null;
 let pointerX = 0;
 let pointerY = 0;
@@ -164,6 +176,10 @@ function paintActive() {
   paintFrame = 0;
   if (!activeCard) return;
   const rect = activeCard.getBoundingClientRect();
+  if (pointerX < rect.left - EDGE || pointerX > rect.right + EDGE || pointerY < rect.top - EDGE || pointerY > rect.bottom + EDGE) {
+    setActive(null);
+    return;
+  }
   const x = pointerX - rect.left;
   const y = pointerY - rect.top;
   activeCard.style.setProperty('--mx', x.toFixed(0) + 'px');
@@ -172,10 +188,6 @@ function paintActive() {
     activeCard.style.setProperty('--tilt-x', ((clamp(y / rect.height) - .5) * -2 * TILT_X).toFixed(2) + 'deg');
     activeCard.style.setProperty('--tilt-y', ((clamp(x / rect.width) - .5) * 2 * TILT_Y).toFixed(2) + 'deg');
   }
-}
-function pointerInside(card) {
-  const rect = card.getBoundingClientRect();
-  return pointerX >= rect.left - EDGE && pointerX <= rect.right + EDGE && pointerY >= rect.top - EDGE && pointerY <= rect.bottom + EDGE;
 }
 [...tiltCards, ...nodeCards].forEach(card => card.addEventListener('pointerenter', event => {
   if (!canHover(event)) return;
@@ -189,37 +201,54 @@ document.addEventListener('pointermove', event => {
   if (!canHover(event)) { setActive(null); return; }
   pointerX = event.clientX;
   pointerY = event.clientY;
-  if (!pointerInside(activeCard)) { setActive(null); return; }
   if (!paintFrame) paintFrame = requestAnimationFrame(paintActive);
 }, {passive:true});
 document.documentElement.addEventListener('pointerleave', () => setActive(null));
 window.addEventListener('scroll', () => {
-  if (activeCard && !pointerInside(activeCard)) setActive(null);
+  if (activeCard && !paintFrame) paintFrame = requestAnimationFrame(paintActive);
 }, {passive:true});
 window.addEventListener('blur', () => setActive(null));
 document.querySelectorAll('.button').forEach(button => {
+  let frame = 0;
+  let pointer = null;
   button.addEventListener('pointermove', event => {
-    if (!finePointer.matches || reducedMotion.matches || effectsPaused) return;
-    const rect = button.getBoundingClientRect();
-    const x = (event.clientX - rect.left - rect.width / 2) * .045;
-    const y = (event.clientY - rect.top - rect.height / 2) * .09;
-    button.style.setProperty('--button-x', x.toFixed(1) + 'px');
-    button.style.setProperty('--button-y', y.toFixed(1) + 'px');
+    if (!canHover(event)) return;
+    pointer = {x:event.clientX, y:event.clientY};
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      frame = 0;
+      if (lightMotion || effectsPaused || reducedMotion.matches) return;
+      const rect = button.getBoundingClientRect();
+      button.style.setProperty('--button-x', ((pointer.x - rect.left - rect.width / 2) * .045).toFixed(1) + 'px');
+      button.style.setProperty('--button-y', ((pointer.y - rect.top - rect.height / 2) * .09).toFixed(1) + 'px');
+    });
   });
   button.addEventListener('pointerleave', () => {
+    cancelAnimationFrame(frame);
+    frame = 0;
     button.style.setProperty('--button-x', '0px');
     button.style.setProperty('--button-y', '0px');
   });
 });
 const heroArt = document.querySelector('.hero-art');
 const logoLayer = document.querySelector('.logo-parallax');
+let logoFrame = 0;
+let logoPointer = null;
 heroArt.addEventListener('pointermove', event => {
-  if (!finePointer.matches || reducedMotion.matches || effectsPaused) return;
-  const rect = heroArt.getBoundingClientRect();
-  logoLayer.style.setProperty('--logo-rx', ((event.clientY - rect.top - rect.height / 2) * -.025).toFixed(1) + 'deg');
-  logoLayer.style.setProperty('--logo-ry', ((event.clientX - rect.left - rect.width / 2) * .025).toFixed(1) + 'deg');
+  if (!canHover(event)) return;
+  logoPointer = {x:event.clientX, y:event.clientY};
+  if (logoFrame) return;
+  logoFrame = requestAnimationFrame(() => {
+    logoFrame = 0;
+    if (lightMotion || effectsPaused || reducedMotion.matches) return;
+    const rect = heroArt.getBoundingClientRect();
+    logoLayer.style.setProperty('--logo-rx', ((logoPointer.y - rect.top - rect.height / 2) * -.025).toFixed(1) + 'deg');
+    logoLayer.style.setProperty('--logo-ry', ((logoPointer.x - rect.left - rect.width / 2) * .025).toFixed(1) + 'deg');
+  });
 });
 heroArt.addEventListener('pointerleave', () => {
+  cancelAnimationFrame(logoFrame);
+  logoFrame = 0;
   logoLayer.style.setProperty('--logo-rx', '0deg');
   logoLayer.style.setProperty('--logo-ry', '0deg');
 });
@@ -240,44 +269,65 @@ function manifestoPhase(value, start, end) {
   return phase * phase * (3 - 2 * phase);
 }
 let scrollFrame = 0;
-function updateScroll() {
+let lastScrollPaint = 0;
+let scrollSamples = 0;
+let slowScrollSamples = 0;
+const scrollValues = new WeakMap();
+function paintValue(element, property, value) {
+  let values = scrollValues.get(element);
+  if (!values) { values = new Map(); scrollValues.set(element, values); }
+  const next = String(value);
+  if (values.get(property) === next) return;
+  values.set(property, next);
+  element.style.setProperty(property, next);
+}
+function updateScroll(timestamp) {
   scrollFrame = 0;
+  if (document.hidden || root.classList.contains('pf-open')) { lastScrollPaint = 0; return; }
+  const interval = timestamp - lastScrollPaint;
+  if (!lightMotion && lastScrollPaint && interval >= 8 && interval < 100) {
+    scrollSamples++;
+    if (interval > 30) slowScrollSamples++;
+    if (scrollSamples >= 24) {
+      if (slowScrollSamples >= 10) enableLightMotion();
+      scrollSamples = slowScrollSamples = 0;
+    }
+  } else if (interval >= 100) scrollSamples = slowScrollSamples = 0;
+  lastScrollPaint = timestamp;
+  // Todas as medidas vêm antes de qualquer escrita: evita recalcular o layout a cada palavra.
   const viewport = window.innerHeight;
   const scrollRange = root.scrollHeight - viewport;
-  root.style.setProperty('--scroll', scrollRange > 0 ? clamp(window.scrollY / scrollRange) : 0);
-  header.classList.toggle('scrolled', window.scrollY > 22);
+  const scrollY = window.scrollY;
   const motionEnabled = !reducedMotion.matches && !effectsPaused;
-  if (motionEnabled && finePointer.matches) {
-    const heroRect = hero.getBoundingClientRect();
-    heroArt.style.setProperty('--hero-parallax', (clamp(-heroRect.top, 0, heroRect.height) * .065).toFixed(1) + 'px');
-  } else {
-    heroArt.style.setProperty('--hero-parallax', '0px');
-  }
+  const heroRect = motionEnabled && finePointer.matches && !lightMotion ? hero.getBoundingClientRect() : null;
   const rect = manifesto.getBoundingClientRect();
+  const stageHeight = manifestoStage.offsetHeight || viewport;
+  const processRect = processGrid.getBoundingClientRect();
+  paintValue(root, '--scroll', (scrollRange > 0 ? clamp(scrollY / scrollRange) : 0).toFixed(4));
+  header.classList.toggle('scrolled', scrollY > 22);
+  paintValue(heroArt, '--hero-parallax', heroRect ? (clamp(-heroRect.top, 0, heroRect.height) * .065).toFixed(1) + 'px' : '0px');
   if (manifestoPaintedProgress < 0 || (rect.bottom >= 0 && rect.top <= viewport)) {
     // Cada estado depende da posição atual: descer revela, subir recolhe.
     // A altura real do palco mantém a sequência estável quando a barra do celular recolhe.
-    const stageHeight = manifestoStage.offsetHeight || viewport;
     const progress = motionEnabled ? clamp(-rect.top / Math.max(1, rect.height - stageHeight)) : 1;
     if (progress !== manifestoPaintedProgress) {
       manifestoPaintedProgress = progress;
       const textProgress = clamp((progress - .12) / .72) * manifestoWords.length;
       manifestoWords.forEach((word, index) => {
         const on = manifestoPhase(textProgress - index, 0, 1);
-        word.style.setProperty('--word-opacity', (.07 + on * .93).toFixed(3));
-        word.style.setProperty('--word-y', '0px');
+        paintValue(word, '--word-opacity', (.07 + on * .93).toFixed(3));
+        paintValue(word, '--word-y', '0px');
       });
       // A inicial acende primeiro; o halo cresce durante a leitura das palavras.
       const glow = manifestoPhase(progress, 0, .85);
-      manifesto.style.setProperty('--emblem-glow', glow.toFixed(3));
-      manifesto.style.setProperty('--manifesto-glow', (.02 + glow * .98).toFixed(3));
-      manifesto.style.setProperty('--emblem-opacity', (.05 + manifestoPhase(progress, 0, .23) * .95).toFixed(3));
-      manifesto.style.setProperty('--emblem-scale', '1');
-      manifesto.style.setProperty('--sub-opacity', (.07 + manifestoPhase(progress, .78, .95) * .93).toFixed(3));
+      paintValue(manifesto, '--emblem-glow', glow.toFixed(3));
+      paintValue(manifesto, '--manifesto-glow', (.02 + glow * .98).toFixed(3));
+      paintValue(manifesto, '--emblem-opacity', (.05 + manifestoPhase(progress, 0, .23) * .95).toFixed(3));
+      paintValue(manifesto, '--emblem-scale', '1');
+      paintValue(manifesto, '--sub-opacity', (.07 + manifestoPhase(progress, .78, .95) * .93).toFixed(3));
     }
   }
-  const processRect = processGrid.getBoundingClientRect();
-  processGrid.style.setProperty('--rail-progress', reducedMotion.matches ? 1 : clamp((viewport * .8 - processRect.top) / Math.max(100, processRect.height + viewport * .15)));
+  paintValue(processGrid, '--rail-progress', (reducedMotion.matches ? 1 : clamp((viewport * .8 - processRect.top) / Math.max(100, processRect.height + viewport * .15))).toFixed(4));
 }
 function requestScroll() {
   if (!scrollFrame) scrollFrame = requestAnimationFrame(updateScroll);
@@ -301,8 +351,10 @@ requestScroll();
   let target = window.scrollY;
   let writtenY = window.scrollY;
   let lastTime = 0;
-  const maxScroll = () => Math.max(0, root.scrollHeight - window.innerHeight);
-  const allowed = () => finePointer.matches && !reducedMotion.matches && !effectsPaused
+  let scrollLimit = Math.max(0, root.scrollHeight - window.innerHeight);
+  const measureScrollLimit = () => { scrollLimit = Math.max(0, root.scrollHeight - window.innerHeight); };
+  const maxScroll = () => scrollLimit;
+  const allowed = () => finePointer.matches && !reducedMotion.matches && !effectsPaused && !lightMotion
     && !document.hidden && !root.classList.contains('is-loading')
     && !root.classList.contains('pf-open') && !document.querySelector('dialog[open]');
 
@@ -373,6 +425,12 @@ requestScroll();
   });
   document.addEventListener('visibilitychange', () => { if (document.hidden) stop(); });
   window.addEventListener('resize', stop, {passive:true});
+  window.addEventListener('resize', measureScrollLimit, {passive:true});
+  window.addEventListener('load', measureScrollLimit, {once:true});
+  if (document.fonts) document.fonts.ready.then(measureScrollLimit);
+  if (typeof ResizeObserver === 'function') new ResizeObserver(measureScrollLimit).observe(document.body);
+  document.addEventListener('nexo:motionprofile', stop);
+  document.addEventListener('nexo:portfoliochange', stop);
   window.addEventListener('hashchange', stop);
   window.addEventListener('popstate', stop);
   reducedMotion.addEventListener('change', stop);
@@ -383,6 +441,7 @@ requestScroll();
 const canvas = document.getElementById('particles');
 const context = canvas.getContext('2d');
 let particleFrame = 0;
+let particleTimer = 0;
 let particleWidth = 0;
 let particleHeight = 0;
 let particleScale = 0;
@@ -407,11 +466,9 @@ function sizeParticles() {
   if (context) context.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0);
 }
 function paintParticles(timestamp) {
-  if (!context || reducedMotion.matches || effectsPaused || document.hidden) {
-    particleFrame = 0;
-    return;
-  }
-  if (!root.classList.contains('pf-open') && timestamp - lastPaint >= PARTICLE_INTERVAL_MS) {
+  particleFrame = 0;
+  if (!context || reducedMotion.matches || effectsPaused || document.hidden || lightMotion || root.classList.contains('pf-open')) return;
+  {
     const delta = Math.min(60, timestamp - (lastPaint || timestamp));
     lastPaint = timestamp;
     context.clearRect(0, 0, particleWidth, particleHeight);
@@ -427,17 +484,23 @@ function paintParticles(timestamp) {
       context.fill();
     });
   }
-  particleFrame = requestAnimationFrame(paintParticles);
+  // Não mantém um callback a 60 Hz para desenhar um fundo a 20–30 Hz.
+  particleTimer = setTimeout(() => {
+    particleTimer = 0;
+    particleFrame = requestAnimationFrame(paintParticles);
+  }, PARTICLE_INTERVAL_MS);
 }
 function syncMotion() {
   root.classList.toggle('motion-paused', effectsPaused);
   root.classList.toggle('tab-hidden', document.hidden);
   motionToggle.hidden = reducedMotion.matches;
-  if (reducedMotion.matches || effectsPaused || document.hidden) {
+  if (reducedMotion.matches || effectsPaused || document.hidden || lightMotion || root.classList.contains('pf-open')) {
     cancelAnimationFrame(particleFrame);
+    clearTimeout(particleTimer);
     particleFrame = 0;
-    if (reducedMotion.matches && context) context.clearRect(0, 0, particleWidth, particleHeight);
-  } else if (!particleFrame) {
+    particleTimer = 0;
+    if ((reducedMotion.matches || lightMotion) && context) context.clearRect(0, 0, particleWidth, particleHeight);
+  } else if (context && !particleFrame && !particleTimer) {
     lastPaint = 0;
     particleFrame = requestAnimationFrame(paintParticles);
   }
@@ -451,6 +514,8 @@ motionToggle.addEventListener('click', () => {
 });
 reducedMotion.addEventListener('change', syncMotion);
 document.addEventListener('visibilitychange', syncMotion);
+document.addEventListener('nexo:portfoliochange', syncMotion);
+document.addEventListener('nexo:motionprofile', () => { setActive(null); syncMotion(); });
 window.addEventListener('resize', sizeParticles, {passive:true});
 sizeParticles();
 syncMotion();
