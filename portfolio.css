@@ -319,6 +319,12 @@ html.pf-open,html.pf-open body { overflow:hidden }
   .pf-detail-back { align-items:center }
 }
 .motion-paused .pf-dialog *,.motion-paused .pf-dialog *::before,.motion-paused .pf-dialog *::after { animation-play-state:paused!important; transition:none!important }
+/* No perfil leve, as capas não criam camadas animadas ou luz de acompanhamento. */
+.motion-light .pf-project { animation:none }
+.motion-light .pf-cover { transition:none }
+.motion-light .pf-project:hover .pf-cover { transform:none }
+.motion-light .pf-thumb::after { display:none }
+.motion-light .pf-project:hover .pf-thumb,.motion-light .pf-project:focus-visible .pf-thumb { box-shadow:none }
 @media(prefers-reduced-motion:reduce) {
   .pf-dialog *,.pf-dialog *::before,.pf-dialog *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important }
   .pf-project:hover .pf-thumb,.pf-project:hover .pf-cover { transform:none }

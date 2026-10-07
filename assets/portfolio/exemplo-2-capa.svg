@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" fill="none">
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1200" y2="750" gradientUnits="userSpaceOnUse"><stop stop-color="#0b2545"/><stop offset="1" stop-color="#030a15"/></linearGradient>
+    <linearGradient id="glass" x1="724" y1="258" x2="1024" y2="555" gradientUnits="userSpaceOnUse"><stop stop-color="#b0ddff" stop-opacity=".8"/><stop offset=".5" stop-color="#196faf" stop-opacity=".65"/><stop offset="1" stop-color="#113257"/></linearGradient>
+    <linearGradient id="silver" x1="733" y1="225" x2="864" y2="225" gradientUnits="userSpaceOnUse"><stop stop-color="#6a90b1"/><stop offset=".5" stop-color="#edf8ff"/><stop offset="1" stop-color="#7da4c8"/></linearGradient>
+  </defs>
+  <rect width="1200" height="750" fill="url(#background)"/>
+  <circle cx="870" cy="364" r="290" fill="#0b4270" fill-opacity=".23"/>
+  <circle cx="870" cy="364" r="235" stroke="#4795c9" stroke-opacity=".18"/>
+  <rect x="76" y="66" width="1048" height="618" rx="20" fill="#061222" stroke="#507ea7" stroke-opacity=".5"/>
+  <path d="M76 115H1124" stroke="#426d93" stroke-opacity=".5"/>
+  <circle cx="104" cy="91" r="5" fill="#6696be"/><circle cx="125" cy="91" r="5" fill="#44779f"/><circle cx="146" cy="91" r="5" fill="#2b5981"/>
+  <rect x="403" y="80" width="394" height="22" rx="11" fill="#15304a"/>
+  <rect x="118" y="153" width="45" height="18" rx="5" fill="#a5d8ff"/>
+  <path d="M796 162H854M881 162H939M966 162H1024" stroke="#537897" stroke-width="6" stroke-linecap="round"/>
+  <text x="128" y="254" fill="#8bcbfa" font-size="14" letter-spacing="4" font-family="Arial,sans-serif">LOJA ONLINE</text>
+  <text x="124" y="322" fill="#e3f2ff" font-size="48" font-family="Arial,sans-serif">Uma nova</text>
+  <text x="124" y="381" fill="#8ccfff" font-size="48" font-family="Arial,sans-serif">experiência.</text>
+  <path d="M128 420H470M128 440H401" stroke="#3d607e" stroke-width="6" stroke-linecap="round"/>
+  <rect x="124" y="479" width="227" height="45" rx="22.5" fill="#85cfff"/>
+  <text x="156" y="507" fill="#052039" font-size="15" font-family="Arial,sans-serif">Explorar produtos</text>
+  <path d="M319 495L327 503L319 511M312 503H327" stroke="#052039" stroke-width="2"/>
+  <ellipse cx="842" cy="532" rx="160" ry="24" fill="#0c3050"/>
+  <rect x="910" y="279" width="93" height="238" rx="9" fill="#123653" stroke="#588daf"/>
+  <path d="M927 312H984M927 326H970M927 468H984" stroke="#76a3c0" stroke-width="2"/>
+  <rect x="739" y="259" width="148" height="257" rx="25" fill="url(#glass)" stroke="#9ad1f4" stroke-opacity=".6"/>
+  <rect x="781" y="238" width="64" height="23" rx="5" fill="#b8ddf4"/>
+  <rect x="756" y="202" width="114" height="45" rx="8" fill="url(#silver)"/>
+  <path d="M754 279V486" stroke="#c9eaff" stroke-opacity=".6" stroke-width="4" stroke-linecap="round"/>
+  <rect x="769" y="343" width="89" height="104" rx="9" fill="#0b2540" fill-opacity=".7" stroke="#7daccc" stroke-opacity=".5"/>
+  <circle cx="813" cy="385" r="18" stroke="#a0d5f7"/>
+  <path d="M794 420H832" stroke="#81b6d8" stroke-width="3" stroke-linecap="round"/>
+  <path d="M118 565H1082" stroke="#335576"/>
+  <g fill="#102840" stroke="#42698b" stroke-opacity=".5">
+    <rect x="124" y="586" width="285" height="65" rx="10"/><rect x="457" y="586" width="285" height="65" rx="10"/><rect x="790" y="586" width="285" height="65" rx="10"/>
+  </g>
+  <g fill="#68abd7"><rect x="143" y="601" width="25" height="34" rx="5"/><rect x="476" y="601" width="25" height="34" rx="5"/><rect x="809" y="601" width="25" height="34" rx="5"/></g>
+  <g stroke="#547e9f" stroke-width="5" stroke-linecap="round"><path d="M190 609H316M190 627H280M523 609H649M523 627H613M856 609H982M856 627H946"/></g>
+</svg>
