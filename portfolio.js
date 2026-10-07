@@ -99,7 +99,7 @@
     const src = safeURL(project.media?.src);
     if (project.media?.type === 'video' && src) {
       const poster = safeURL(project.media.poster);
-      return '<video class="pf-real-media" controls playsinline webkit-playsinline muted preload="auto" disablepictureinpicture disableremoteplayback controlslist="nodownload noremoteplayback"' + (poster ? ' poster="' + html(poster) + '"' : '') + ' aria-label="' + html(project.title) + '"><source src="' + html(src) + '" type="video/mp4">Seu navegador não conseguiu reproduzir este vídeo.</video>';
+      return '<video class="pf-real-media" controls playsinline webkit-playsinline preload="auto" disablepictureinpicture disableremoteplayback controlslist="nodownload noremoteplayback"' + (poster ? ' poster="' + html(poster) + '"' : '') + ' aria-label="' + html(project.title) + '"><source src="' + html(src) + '" type="video/mp4">Seu navegador não conseguiu reproduzir este vídeo.</video>';
     }
     if (project.media?.type === 'image' && src) return '<img class="pf-real-media" src="' + html(src) + '" alt="' + html(project.media.alt || project.title) + '" decoding="async">';
     if (project.media?.type === 'file' && src) return '<div class="pf-file"><span aria-hidden="true">↗</span><h3>' + html(project.title) + '</h3><a class="pf-action" href="' + html(src) + '" target="_blank" rel="noopener noreferrer">Abrir arquivo <span aria-hidden="true">↗</span></a></div>';

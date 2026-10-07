@@ -33,7 +33,9 @@
     frame.setAttribute('aria-label', 'Player: ' + video.getAttribute('aria-label'));
     frame.tabIndex = 0;
     video.controls = false;
-    video.muted = true;
+    video.removeAttribute('muted');
+    video.defaultMuted = false;
+    video.muted = false;
     video.playsInline = true;
     video.disablePictureInPicture = true;
     video.disableRemotePlayback = true;
@@ -50,7 +52,7 @@
         '<div class="pf-player-row">',
           '<button class="pf-player-button pf-player-play" type="button" aria-label="Reproduzir vídeo">' + icon('play') + '</button>',
           '<span class="pf-player-time" aria-hidden="true">0:00 / 0:00</span>',
-          '<button class="pf-player-button pf-player-sound" type="button" aria-label="Ativar som">' + icon('muted') + '<span>Ativar som</span></button>',
+          '<button class="pf-player-button pf-player-sound" type="button" aria-label="Silenciar vídeo">' + icon('sound') + '<span>Silenciar</span></button>',
           '<button class="pf-player-button pf-player-fullscreen" type="button" aria-label="Tela cheia">' + icon('expand') + '</button>',
         '</div>',
       '</div>'
@@ -196,6 +198,8 @@
     size();
     syncPlay();
     syncSound();
+    // A montagem acontece no clique do cartão: play() usa o mesmo gesto, com som.
+    // Links diretos que o navegador bloquear mantêm o botão para iniciar com áudio.
     resume();
 
     return {

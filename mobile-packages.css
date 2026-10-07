@@ -1,0 +1,59 @@
+/* Somente os pacotes no celular. A rolagem e o encaixe são nativos. */
+@media(max-width:760px) {
+  .package-grid.package-carousel {
+    position:relative;
+    width:calc(100% + 12vw);
+    margin-inline:-6vw;
+    padding:18px 8vw 22px;
+    display:grid;
+    grid-template-columns:none;
+    grid-auto-flow:column;
+    grid-auto-columns:100%;
+    align-items:stretch;
+    gap:12px;
+    overflow-x:auto;
+    overflow-y:hidden;
+    scroll-snap-type:x mandatory;
+    scroll-padding-inline:8vw;
+    overscroll-behavior-x:contain;
+    touch-action:pan-x pan-y pinch-zoom;
+    scrollbar-width:none;
+    perspective:none;
+  }
+  .package-grid.package-carousel::-webkit-scrollbar { display:none }
+  html .package-grid.package-carousel>article {
+    min-width:0;
+    padding:26px 23px;
+    scroll-snap-align:center;
+    scroll-snap-stop:always;
+    transform:scale(var(--package-scale,.93))!important;
+    transform-origin:var(--package-origin,50%) 50%;
+    opacity:var(--package-opacity,.7)!important;
+    translate:none!important;
+    scale:none!important;
+    transition:border-color .25s;
+    transition-delay:0ms;
+  }
+  .package-grid.package-carousel>article.is-package-current {
+    border-color:#77caff9e;
+  }
+  .package-grid.package-carousel .button { min-height:48px; max-width:100%; padding-inline:20px }
+  .package-carousel:focus-visible { outline:1px solid #78caff8c; outline-offset:2px; border-radius:17px }
+  .package-carousel-nav { display:grid; grid-template-columns:1fr auto 1fr; gap:8px; align-items:center; margin-top:-8px }
+  .package-carousel-hint,.package-carousel-count { color:#88a9ca; font-size:10px; letter-spacing:.06em }
+  .package-carousel-hint { white-space:nowrap }
+  .package-carousel-count { text-align:right; font-variant-numeric:tabular-nums }
+  .package-carousel-count strong { color:#cceaff; font-weight:500 }
+  .package-carousel-dots { display:flex; align-items:center }
+  .package-carousel-dot { display:grid; place-items:center; width:44px; height:44px; padding:0; border:0; border-radius:50%; color:#567ca4; background:transparent; cursor:pointer }
+  .package-carousel-dot::before { content:''; width:16px; height:3px; border-radius:9px; background:currentColor; transition:background .2s,width .2s }
+  .package-carousel-dot[aria-current=true] { color:#8ad7ff }
+  .package-carousel-dot[aria-current=true]::before { width:25px }
+  .package-carousel-dot:focus-visible { outline:1px solid #8ad7ff; outline-offset:-6px }
+  .package-carousel-status { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip-path:inset(50%); white-space:nowrap }
+  html.motion-paused .package-grid.package-carousel>article { transform:none!important; opacity:1!important }
+}
+@media(max-width:760px) and (prefers-reduced-motion:reduce) {
+  html .package-grid.package-carousel>article { transform:none!important; opacity:1!important; transition:none!important }
+  .package-carousel-dot::before { transition:none }
+}
