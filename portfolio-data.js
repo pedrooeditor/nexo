@@ -1,6 +1,6 @@
 /*
  * Nexo Studio — conteúdo do portfólio.
- * Esta primeira versão contém somente PRÉVIAS DE APRESENTAÇÃO, sem clientes ou resultados.
+ * Projetos publicados e prévias de apresentação das frentes ainda sem trabalhos enviados.
  * Ao receber os trabalhos, substitua os itens de cada frente e marque demo:false.
  * Mídia: { type:'video'|'image'|'file', src:'assets/portfolio/...', poster:'...', alt:'...' }.
  * Para sites, use cover:'assets/portfolio/capa.webp' e websiteUrl:'https://...'.
@@ -12,7 +12,7 @@ window.NEXO_PORTFOLIO = {
   categories: [
     { id:'motion', number:'01', name:'Motion Designer', short:'Conteúdo', icon:'▷',
       headline:'Ideias que ganham movimento.',
-      intro:'Um espaço para explorar ritmo, narrativa e direção visual. Entre em uma prévia e veja tudo de perto.',
+      intro:'Ritmo, narrativa e direção visual. Explore nossos projetos de edição e veja cada detalhe.',
       signature:'RITMO. NARRATIVA. PERSONALIDADE.' },
     { id:'social', number:'02', name:'Social Media', short:'Social', icon:'✳',
       headline:'Uma marca. Muitas conexões.',
@@ -28,10 +28,10 @@ window.NEXO_PORTFOLIO = {
       signature:'ESCUTA. CONTINUIDADE. PRÓXIMO PASSO.' }
   ],
   projects: [
-    { id:'ritmo-narrativa', category:'motion', title:'Ritmo & narrativa', format:'Vídeo e edição',
-      tags:['Reels','Edição','Narrativa'], demo:true, visual:'motion',
-      description:'Uma prévia visual do espaço dedicado a vídeos: capa em destaque, reprodução com controles e informações ao lado.',
-      approach:'Cortes, legendas, áudio e movimento podem ser apresentados juntos, mantendo o vídeo como protagonista.' },
+    { id:'ritmo-narrativa', category:'motion', title:'Exemplo Viral 1', format:'Vídeo vertical · Edição',
+      tags:['Vídeo','Edição','Narrativa'], demo:false, visual:'motion',
+      description:'Um projeto de edição de vídeo para redes sociais.',
+      media:{ type:'video', src:'https://www.dropbox.com/scl/fi/s2m6w7j9r8uvov74ia9ep/Exemplo-Viral-1.mp4?rlkey=d46w751mcjbcwgi7rws4n7srk&raw=1', poster:'assets/portfolio/exemplo-viral-1-cover.webp', width:2160, height:3840 } },
     { id:'marca-movimento', category:'motion', title:'Marca em movimento', format:'Motion design',
       tags:['Motion','Tipografia','Identidade'], demo:true, visual:'brand',
       description:'Uma prévia do espaço para animações, com uma composição da própria Nexo em movimento.',
