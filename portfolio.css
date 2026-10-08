@@ -1,18 +1,4 @@
 /* NEXO / PORTFÓLIO — estilos limitados aos acessos e à galeria. */
-.service-card .portfolio-entry {
-  display:flex; align-items:center; justify-content:space-between; gap:22px;
-  width:min(100%,242px); min-height:46px; margin:0 0 17px; padding:11px 18px;
-  border:1px solid #5dadf179; border-radius:99px; color:#e9f6ff;
-  background:linear-gradient(115deg,#0b4b9369,#0e274233); font-size:13px; font-weight:600;
-  transition:background .25s,border-color .25s,box-shadow .25s;
-}
-.portfolio-entry::after { content:''; position:absolute; inset:0; z-index:1; border-radius:inherit }
-.portfolio-entry>span { position:relative; z-index:2; pointer-events:none }
-.service-card>.text-link { position:relative; z-index:2 }
-.service-card:hover .portfolio-entry,.service-card:focus-within .portfolio-entry { border-color:#9cdbff; background:linear-gradient(115deg,#176cbd80,#14304c55); box-shadow:0 0 22px #1189ff1a }
-.portfolio-entry-arrow { font-size:20px; line-height:1; transition:transform .3s }
-.service-card:hover .portfolio-entry-arrow { transform:translate(3px,-3px) }
-.service-card:focus-within { outline:1px solid #9bddff; outline-offset:4px }
 html.pf-open,html.pf-open body { overflow:hidden }
 .pf-open .floating { opacity:0; pointer-events:none }
 

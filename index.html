@@ -13,26 +13,73 @@
   <link rel="preload" as="image" href="assets/nexo-logo-clean.webp">
   <link rel="preload" as="font" href="assets/fonts/dm-sans-v17-latin.woff2" type="font/woff2" crossorigin>
   <link rel="preload" as="font" href="assets/fonts/manrope-v20-latin.woff2" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="styles.css?v=23">
-  <link rel="stylesheet" href="portfolio.css?v=9">
+  <link rel="stylesheet" href="styles.css?v=24">
+  <link rel="stylesheet" href="portfolio.css?v=10">
   <link rel="stylesheet" href="mobile-packages.css?v=1" media="(max-width:760px)">
-  <script>document.documentElement.classList.add('js');</script>
-  <script defer src="script.js?v=19"></script>
+  <script>
+    (function () {
+      var root = document.documentElement;
+      root.classList.add('js');
+      var motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+      var seen = false;
+      try { seen = sessionStorage.getItem('nexo-intro-v2-seen') === '1'; } catch (error) {}
+      var navigation = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+      if (motion.matches || seen || location.hash || navigation && navigation.type === 'back_forward') {
+        root.classList.add('is-entered');
+        return;
+      }
+      var connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+      var quiet = Boolean(connection && connection.saveData || navigator.hardwareConcurrency > 0 && navigator.hardwareConcurrency <= 4 || navigator.deviceMemory > 0 && navigator.deviceMemory <= 4);
+      root.classList.add('is-loading');
+      root.classList.toggle('intro-quiet', quiet);
+      var finished = false;
+      var spark = setTimeout(function () { root.classList.add('is-sparking'); }, quiet ? 100 : 650);
+      var finish = setTimeout(enter, quiet ? 270 : 1000);
+      function enter() {
+        if (finished) return;
+        finished = true;
+        clearTimeout(spark);
+        clearTimeout(finish);
+        root.classList.remove('is-loading');
+        root.classList.add('is-entered', 'intro-fading');
+        try { sessionStorage.setItem('nexo-intro-v2-seen', '1'); } catch (error) {}
+        ['pointerdown', 'keydown', 'wheel', 'touchstart', 'hashchange', 'pagehide'].forEach(function (event) { window.removeEventListener(event, enter); });
+        if (motion.removeEventListener) motion.removeEventListener('change', enter);
+        setTimeout(function () {
+          root.classList.remove('intro-fading', 'intro-quiet', 'is-sparking');
+          var overlay = document.querySelector('.preloader');
+          if (overlay) overlay.remove();
+        }, quiet ? 140 : 320);
+      }
+      ['pointerdown', 'keydown', 'wheel', 'touchstart', 'hashchange', 'pagehide'].forEach(function (event) { window.addEventListener(event, enter, {passive:true}); });
+      if (motion.addEventListener) motion.addEventListener('change', enter);
+    })();
+  </script>
+  <script defer src="script.js?v=20"></script>
   <script defer src="mobile-packages.js?v=1"></script>
-  <script defer src="portfolio-data.js?v=8"></script>
+  <script defer src="portfolio-data.js?v=9"></script>
   <script defer src="portfolio-player.js?v=2"></script>
-  <script defer src="portfolio.js?v=9"></script>
+  <script defer src="portfolio.js?v=10"></script>
   <noscript><style>.portfolio-entry{display:none!important}</style></noscript>
   <noscript><style>#brief,.menu,.effects-toggle{display:none!important}.manifesto{height:auto}.manifesto-stage{position:relative}@media(max-width:900px){.header{height:auto;flex-wrap:wrap;padding-block:20px}.header nav{display:flex;position:static;flex-basis:100%;padding:0;flex-direction:row;flex-wrap:wrap;gap:16px}}</style></noscript>
 </head>
 <body>
+<div class="preloader" aria-hidden="true">
+  <div class="pre-stage">
+    <div class="pre-logo">
+      <span class="pre-aura"></span><span class="pre-core"></span>
+      <svg class="pre-mark" viewBox="225 235 805 755"><image href="assets/nexo-logo-clean.webp" width="1254" height="1254"/></svg>
+      <span class="pre-spark"><i class="sp-flash"></i><i class="sp-streak"></i><i class="sp-ray" style="--a:0deg;--len:34px;--r1:210px;--dl:0.0s"></i><i class="sp-ray" style="--a:24deg;--len:22px;--r1:160px;--dl:0.03s"></i><i class="sp-ray" style="--a:47deg;--len:40px;--r1:250px;--dl:0.01s"></i><i class="sp-ray" style="--a:71deg;--len:26px;--r1:180px;--dl:0.05s"></i><i class="sp-ray" style="--a:95deg;--len:36px;--r1:230px;--dl:0.02s"></i><i class="sp-ray" style="--a:118deg;--len:20px;--r1:150px;--dl:0.06s"></i><i class="sp-ray" style="--a:142deg;--len:42px;--r1:260px;--dl:0.0s"></i><i class="sp-ray" style="--a:166deg;--len:28px;--r1:190px;--dl:0.04s"></i><i class="sp-ray" style="--a:190deg;--len:34px;--r1:220px;--dl:0.02s"></i><i class="sp-ray" style="--a:214deg;--len:22px;--r1:170px;--dl:0.05s"></i><i class="sp-ray" style="--a:238deg;--len:40px;--r1:240px;--dl:0.01s"></i><i class="sp-ray" style="--a:262deg;--len:26px;--r1:200px;--dl:0.03s"></i><i class="sp-ray" style="--a:286deg;--len:36px;--r1:235px;--dl:0.0s"></i><i class="sp-ray" style="--a:310deg;--len:20px;--r1:155px;--dl:0.06s"></i><i class="sp-ray" style="--a:334deg;--len:42px;--r1:255px;--dl:0.02s"></i><i class="sp-ray" style="--a:352deg;--len:28px;--r1:185px;--dl:0.04s"></i><i class="sp-dot" style="--a:15deg;--r1:150px;--dl:0.02s"></i><i class="sp-dot" style="--a:60deg;--r1:210px;--dl:0.04s"></i><i class="sp-dot" style="--a:105deg;--r1:180px;--dl:0.01s"></i><i class="sp-dot" style="--a:150deg;--r1:240px;--dl:0.05s"></i><i class="sp-dot" style="--a:200deg;--r1:170px;--dl:0.03s"></i><i class="sp-dot" style="--a:245deg;--r1:225px;--dl:0s"></i><i class="sp-dot" style="--a:290deg;--r1:190px;--dl:0.04s"></i><i class="sp-dot" style="--a:335deg;--r1:215px;--dl:0.02s"></i></span>
+    </div>
+  </div>
+</div>
 <div class="ambient" aria-hidden="true"><div class="ambient-grid"></div><div class="ambient-glow glow-one"></div><div class="ambient-glow glow-two"></div><div class="ambient-beam"></div><canvas id="particles"></canvas></div>
 <div class="scroll-progress" aria-hidden="true"></div>
 <a class="skip" href="#conteudo">Ir para o conteúdo</a>
 <header class="header" id="inicio">
   <a class="brand" href="#inicio" aria-label="Nexo Studio, início"><svg class="brand-symbol" viewBox="350 240 560 490" aria-hidden="true"><image href="assets/nexo-logo-clean.webp" width="1254" height="1254"/></svg><svg class="brand-type" viewBox="245 775 770 220" aria-hidden="true"><image href="assets/nexo-logo-clean.webp" width="1254" height="1254"/></svg></a>
-  <nav id="nav" aria-label="Navegação principal"><a href="#servicos">Serviços</a><a href="#trabalhos">Portfólio</a><a href="#parcerias">Pacotes</a><a href="#processo">Como funciona</a></nav>
-  <a class="button primary header-contact" href="#contato">Vamos conversar</a>
+  <nav id="nav" aria-label="Navegação principal"><a href="#servicos">Serviços</a><a href="#trabalhos">Portfólio</a><a href="#parcerias">Planos</a><a href="#processo">Como funciona</a></nav>
+  <a class="button primary header-contact" href="https://wa.me/5511933596263?text=Oi%2C%20Pedro%21%20Tudo%20bem%3F%20Conheci%20a%20Nexo%20Studio%20e%20quero%20conversar%20sobre%20a%20presen%C3%A7a%20digital%20da%20minha%20empresa.%20Podemos%20entender%20quais%20servi%C3%A7os%20fazem%20sentido%20para%20o%20meu%20momento%3F" target="_blank" rel="noopener noreferrer">Vamos conversar</a>
   <button class="menu" type="button" aria-expanded="false" aria-controls="nav" aria-label="Abrir menu"><span></span><span></span></button>
 </header>
 <main id="conteudo">
@@ -40,8 +87,7 @@
     <div class="hero-copy"><span class="eyebrow"><i></i> VÍDEOS, REDES SOCIAIS E SITES</span>
       <h1 id="hero-title">Vídeos, sites<br>e redes sociais<br><span class="metal">no mesmo plano.</span></h1>
       <p>Seu vídeo chama atenção. Suas redes dão continuidade. Seu site apresenta a oferta. A Nexo conecta essas três frentes para sua marca ser vista, reconhecida e escolhida.</p>
-      <div class="actions"><a class="button primary" href="#contato">Falar sobre minha empresa</a><a class="text-link" href="#trabalhos">Ver nossos trabalhos</a></div>
-      <div class="hero-fronts"><span>O QUE PODEMOS CUIDAR PARA VOCÊ</span><ul><li><b aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg></b> Vídeos e motion design</li><li><b aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M5.6 18.4 18.4 5.6"/></svg></b> Gestão de redes sociais</li><li><b aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></b> Sites e landing pages</li></ul></div>
+      <div class="actions"><a class="button primary" href="https://wa.me/5511933596263?text=Oi%2C%20Pedro%21%20Tudo%20bem%3F%20Conheci%20a%20Nexo%20Studio%20e%20quero%20conversar%20sobre%20a%20presen%C3%A7a%20digital%20da%20minha%20empresa.%20Podemos%20entender%20quais%20servi%C3%A7os%20fazem%20sentido%20para%20o%20meu%20momento%3F" target="_blank" rel="noopener noreferrer">Falar sobre minha empresa</a><a class="text-link" href="#trabalhos">Ver nossos trabalhos</a></div>
     </div>
     <div class="hero-art" aria-label="Logo Nexo Studio, N em prata e azul metálico">
       <div class="orbit-scene" aria-hidden="true">
@@ -53,11 +99,21 @@
       </div>
       <div class="art-signature"><svg viewBox="245 775 770 220" aria-hidden="true"><image href="assets/nexo-logo-clean.webp" width="1254" height="1254"/></svg><span>CONTEÚDO. DIGITAL. CRESCIMENTO.</span></div>
     </div>
-    <div class="hero-bottom"><span>TRÊS FRENTES. UMA DIREÇÃO.</span><a href="#desafio"><i class="scroll-cue" aria-hidden="true"></i> EXPLORE A NEXO</a><button class="effects-toggle" type="button" aria-pressed="false">Pausar efeitos <span aria-hidden="true">Ⅱ</span></button></div>
+    <div class="hero-bottom"><span>TRÊS FRENTES. UMA DIREÇÃO.</span><a href="#trabalhos"><i class="scroll-cue" aria-hidden="true"></i> EXPLORE A NEXO</a><button class="effects-toggle" type="button" aria-pressed="false">Pausar efeitos <span aria-hidden="true">Ⅱ</span></button></div>
+  </section>
+
+  <section class="section wrap" id="trabalhos" aria-labelledby="work-title">
+    <div class="section-label"><span>01 / PORTFÓLIOS</span><span>TRABALHOS REAIS. CADA ENTREGA DE PERTO.</span></div>
+    <div class="section-heading"><h2 id="work-title">Veja alguns dos<br><span class="metal">nossos trabalhos.</span></h2><p>Assista aos vídeos editados e visite os sites publicados. Escolha uma frente para conhecer o trabalho da equipe.</p></div>
+    <div class="portfolio-access-grid">
+      <div class="portfolio-access"><span class="eyebrow">01 / EDIÇÃO DE VÍDEO</span><a class="button portfolio-entry" href="#portfolio/motion" data-portfolio="motion">Ver os vídeos <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><path d="m8 5 11 7-11 7Z"/></svg></span></a><p>Edições em formato vertical para redes sociais.</p></div>
+      <div class="portfolio-access"><span class="eyebrow">02 / SITES E PÁGINAS</span><a class="button portfolio-entry" href="#portfolio/web" data-portfolio="web">Visitar os sites <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a><p>Site institucional e loja virtual já publicados.</p></div>
+      <div class="portfolio-access portfolio-access-pending"><span class="eyebrow">03 / SOCIAL MEDIA</span><span class="portfolio-pending">Portfólio em breve</span><p>Estamos preparando a seleção dos trabalhos de redes sociais.</p></div>
+    </div>
   </section>
 
   <section class="section wrap" id="desafio"><span id="problema" class="anchor-alias" aria-hidden="true"></span>
-    <div class="section-label"><span>01 / O DESAFIO</span><span>OLHE PARA O CAMINHO INTEIRO.</span></div>
+    <div class="section-label"><span>02 / O DESAFIO</span><span>OLHE PARA O CAMINHO INTEIRO.</span></div>
     <div class="section-heading"><h2>Atenção sem caminho<br>vira <span class="metal">desperdício.</span></h2><p>Um bom vídeo abre a porta. A experiência continua nas redes sociais e no site, com a mesma identidade e uma oferta clara. É nessa conexão que a Nexo trabalha.</p></div>
     <div class="problem-grid">
         <article><span class="number" aria-hidden="true">01</span><span class="problem-tag"><span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg></span> Atrair</span><h3>O vídeo que ninguém viu chegar</h3><p>Conteúdo bonito, sem estratégia por trás, vira só mais um vídeo no feed. Chama atenção por um segundo e não leva a lugar nenhum.</p></article>
@@ -81,24 +137,20 @@
 
   <section class="section wrap" id="servicos"><span id="ecossistema" class="anchor-alias" aria-hidden="true"></span><span id="ciclo" class="anchor-alias" aria-hidden="true"></span><span id="frentes" class="anchor-alias" aria-hidden="true"></span>
     <span id="solucoes" class="anchor-alias" aria-hidden="true"></span>
-    <div class="section-label"><span>02 / SERVIÇOS</span><span>SERVIÇOS INDIVIDUAIS OU COMBINADOS.</span></div>
+    <div class="section-label"><span>03 / SERVIÇOS</span><span>SERVIÇOS INDIVIDUAIS OU COMBINADOS.</span></div>
     <div class="section-heading"><h2>O que sua empresa<br><span class="metal">precisa agora?</span></h2><p>Você pode contratar um serviço ou combinar as entregas. Vídeos apresentam a oferta, redes sociais dão continuidade e o site organiza as informações para o visitante dar o próximo passo.</p></div>
     <div class="service-grid">
-      <article class="service-card"><div class="card-top"><span>01 / CONTEÚDO</span><span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg></span></div><div class="service-preview preview-video" aria-hidden="true"><span class="preview-corner tl"></span><span class="preview-corner br"></span><span class="preview-play">▷</span><div class="waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="video-progress"></div></div><h3>Vídeos e motion design</h3><p>Ritmo, narrativa e personalidade. Edição de vídeo e motion design para sua mensagem ser vista, sentida e lembrada.</p><ul><li>Reels & vídeos</li><li>Motion design</li><li>Criativos</li></ul><a class="portfolio-entry" href="#portfolio/motion" data-portfolio="motion" aria-label="Explorar portfólio de Vídeos e motion design"><span>Explorar portfólio</span><span class="portfolio-entry-arrow" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a><a class="text-link" href="#contato" data-interest="Vídeos e motion design">Conversar sobre conteúdo</a></article>
-      <article class="service-card"><div class="card-top"><span>02 / SOCIAL</span><span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M5.6 18.4 18.4 5.6"/></svg></span></div><div class="service-preview preview-social" aria-hidden="true"><div class="social-mini back"><span>CRIATIVIDADE</span><strong>SUA<br>MARCA.</strong></div><div class="social-mini front"><span>CONTEÚDO COM DIREÇÃO</span><strong>CONEXÃO<span>✳</span></strong></div></div><h3>Gestão de redes sociais</h3><p>Presença é mais do que postar. Planejamento e conteúdo com uma linguagem consistente, alinhados à sua marca e ao seu público.</p><ul><li>Planejamento</li><li>Conteúdo</li><li>Gestão de redes</li></ul><a class="text-link" href="#contato" data-interest="Gestão de redes sociais">Conversar sobre social</a></article>
-      <article class="service-card"><div class="card-top"><span>03 / WEB</span><span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></span></div><div class="service-preview preview-web" aria-hidden="true"><div class="mini-browser"><span class="browser-dots">● ● ●</span><div><span>PRESENÇA DIGITAL</span><strong>Além do<br>comum.</strong><i></i></div></div><div class="web-cursor"></div></div><h3>Sites e landing pages</h3><p>Seu melhor ponto de encontro digital. Landing pages com identidade, navegação intuitiva e um caminho claro até o contato.</p><ul><li>Landing pages</li><li>Sites institucionais</li><li>Design responsivo</li></ul><a class="portfolio-entry" href="#portfolio/web" data-portfolio="web" aria-label="Explorar portfólio de Sites e landing pages"><span>Explorar portfólio</span><span class="portfolio-entry-arrow" aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a><a class="text-link" href="#contato" data-interest="Sites e landing pages">Conversar sobre seu site</a></article>
+      <article class="service-card"><div class="card-top"><span>01 / CONTEÚDO</span><span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg></span></div><div class="service-preview preview-video" aria-hidden="true"><span class="preview-corner tl"></span><span class="preview-corner br"></span><span class="preview-play">▷</span><div class="waveform"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="video-progress"></div></div><h3>Vídeos e motion design</h3><p>Ritmo, narrativa e personalidade. Edição de vídeo e motion design para sua mensagem ser vista, sentida e lembrada.</p><ul><li>Reels & vídeos</li><li>Motion design</li><li>Criativos</li></ul><a class="text-link" href="https://wa.me/5511933596263?text=Oi%2C%20Pedro%21%20Tudo%20bem%3F%20Conheci%20a%20Nexo%20Studio%20e%20me%20interessei%20pela%20edi%C3%A7%C3%A3o%20de%20v%C3%ADdeos%20e%20pelo%20motion%20design.%20Quero%20conversar%20sobre%20conte%C3%BAdos%20para%20minha%20empresa%20e%20entender%20como%20funciona%20a%20proposta." data-interest="Vídeos e motion design" target="_blank" rel="noopener noreferrer">Conversar sobre conteúdo</a></article>
+      <article class="service-card"><div class="card-top"><span>02 / SOCIAL</span><span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M5.6 18.4 18.4 5.6"/></svg></span></div><div class="service-preview preview-social" aria-hidden="true"><div class="social-mini back"><span>CRIATIVIDADE</span><strong>SUA<br>MARCA.</strong></div><div class="social-mini front"><span>CONTEÚDO COM DIREÇÃO</span><strong>CONEXÃO<span>✳</span></strong></div></div><h3>Gestão de redes sociais</h3><p>Presença é mais do que postar. Planejamento e conteúdo com uma linguagem consistente, alinhados à sua marca e ao seu público.</p><ul><li>Planejamento</li><li>Conteúdo</li><li>Gestão de redes</li></ul><a class="text-link" href="https://wa.me/5511933596263?text=Oi%2C%20Pedro%21%20Tudo%20bem%3F%20Conheci%20a%20Nexo%20Studio%20e%20me%20interessei%20pela%20gest%C3%A3o%20de%20redes%20sociais.%20Quero%20entender%20como%20voc%C3%AAs%20podem%20organizar%20o%20conte%C3%BAdo%20e%20a%20presen%C3%A7a%20digital%20da%20minha%20empresa." data-interest="Gestão de redes sociais" target="_blank" rel="noopener noreferrer">Conversar sobre social</a></article>
+      <article class="service-card"><div class="card-top"><span>03 / WEB</span><span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18"/></svg></span></div><div class="service-preview preview-web" aria-hidden="true"><div class="mini-browser"><span class="browser-dots">● ● ●</span><div><span>PRESENÇA DIGITAL</span><strong>Além do<br>comum.</strong><i></i></div></div><div class="web-cursor"></div></div><h3>Sites e landing pages</h3><p>Seu melhor ponto de encontro digital. Landing pages com identidade, navegação intuitiva e um caminho claro até o contato.</p><ul><li>Landing pages</li><li>Sites institucionais</li><li>Design responsivo</li></ul><a class="text-link" href="https://wa.me/5511933596263?text=Oi%2C%20Pedro%21%20Tudo%20bem%3F%20Conheci%20a%20Nexo%20Studio%20e%20me%20interessei%20pela%20cria%C3%A7%C3%A3o%20de%20sites%20e%20landing%20pages.%20Quero%20apresentar%20melhor%20a%20minha%20empresa%20e%20facilitar%20o%20contato%20com%20quem%20visita%20a%20p%C3%A1gina.%20Podemos%20conversar%20sobre%20uma%20proposta%3F" data-interest="Sites e landing pages" target="_blank" rel="noopener noreferrer">Conversar sobre seu site</a></article>
     </div>
   </section>
 
 
 
-  <section class="section wrap" id="trabalhos" aria-labelledby="work-title">
-    <div class="section-label"><span>03 / TRABALHOS</span><span>VEJA AS ENTREGAS.</span></div>
-    <div class="section-heading"><h2 id="work-title">Conheça o que<br><span class="metal">criamos.</span></h2><p>Assista às edições e visite as páginas publicadas. Os exemplos mostram o formato de cada entrega para você avaliar o que faz sentido para sua empresa.</p></div>
-    <div class="work-preview-grid">
-      <a class="work-preview" href="#portfolio/motion" data-portfolio="motion"><span class="eyebrow">EDIÇÃO DE VÍDEO</span><h3>Vídeos para redes sociais</h3><p>Exemplos de edição em formato vertical, com reprodução e opção de tela cheia.</p><span class="text-link">Assistir às edições <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></span></a>
-      <a class="work-preview" href="#portfolio/web" data-portfolio="web"><span class="eyebrow">CRIAÇÃO DE PÁGINAS</span><h3>Sites e lojas virtuais</h3><p>Um site institucional e uma loja virtual. Clique nos projetos para conhecer as páginas publicadas.</p><span class="text-link">Explorar as páginas <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></span></a>
-    </div>
+
+
+  <section class="section wrap team-section" aria-labelledby="team-title">
     <section class="team-block" id="equipe" aria-labelledby="team-title">
       <div class="team-heading"><div><span class="eyebrow">QUEM FAZ A NEXO</span><h3 id="team-title">Por trás de<br><span class="metal">cada entrega.</span></h3></div><p>Conheça os profissionais responsáveis pela edição dos vídeos, pelas redes sociais e pela criação das páginas.</p></div>
       <div class="team-grid">
@@ -112,12 +164,12 @@
   <section class="section wrap" id="processo">
     <div class="section-label"><span>04 / COMO TRABALHAMOS</span><span>CLAREZA DO INÍCIO AO PRÓXIMO PASSO.</span></div>
     <div class="section-heading"><h2>Antes de criar,<br><span class="muted">entendemos.</span></h2><p>Objetivo, escopo e prioridades alinhados desde o começo. Cada entrega tem uma função dentro da jornada da sua marca.</p></div>
-    <ol class="process-grid"><li><span>01</span><h3>Primeiro, sua marca.</h3><p>Em uma call, entendemos seu momento, seus objetivos e a melhor forma de você acompanhar o trabalho.</p></li><li><span>02</span><h3>Um plano com nexo.</h3><p>Definimos as frentes, as entregas e os prazos, tudo formalizado em contrato. Projeto pontual ou parceria mensal: o formato acompanha sua necessidade.</p></li><li><span>03</span><h3>Ideias no mundo.</h3><p>O trabalho começa assim que os acessos forem liberados. Colocamos o plano em prática, alinhamos os detalhes com você e orientamos os próximos passos.</p></li></ol><p class="process-contact">Você fala com o Pedro para entender as opções, alinhar prioridades e acompanhar o projeto. O time trabalha no mesmo plano.</p>
+    <ol class="process-grid"><li><span>01</span><h3>Primeiro, sua marca.</h3><p>Você fala com o Pedro pelo WhatsApp. Entendemos sua empresa, seu objetivo e quais serviços fazem sentido; uma reunião pode ser combinada para aprofundar o projeto.</p></li><li><span>02</span><h3>Um plano com nexo.</h3><p>Definimos as frentes, as entregas e os prazos, tudo formalizado em contrato. Projeto pontual ou parceria mensal: o formato acompanha sua necessidade.</p></li><li><span>03</span><h3>Ideias no mundo.</h3><p>Com a proposta aprovada, o contrato formalizado e os materiais e acessos necessários, começamos as entregas. Você acompanha os ajustes e as próximas etapas com o Pedro.</p></li></ol><p class="process-contact">Você fala com o Pedro para entender as opções, alinhar prioridades e acompanhar o projeto. O time trabalha no mesmo plano.</p>
   </section>
 
   <section class="section partnerships" id="parcerias"><span id="pacotes" class="anchor-alias" aria-hidden="true"></span><div class="wrap">
     <div class="section-label"><span>05 / FORMAS DE TRABALHAR</span><span>O ESCOPO ACOMPANHA SUA NECESSIDADE.</span></div>
-    <div class="section-heading"><h2>Comece por uma frente.<br><span class="metal">Cresça pela conexão.</span></h2><p>Os serviços podem ser contratados individualmente ou combinados em uma parceria mensal. O investimento é definido conforme o escopo.</p></div>
+    <div class="section-heading"><h2>Comece por uma frente.<br><span class="metal">Cresça pela conexão.</span></h2><p>Escolha um projeto de site ou uma parceria de conteúdo e redes sociais. Também podemos combinar as três frentes. Cada proposta define o escopo e o investimento.</p></div>
     <div class="package-grid">
         <article >
           <span class="package-no" aria-hidden="true">01</span>
@@ -125,7 +177,7 @@
           <p class="package-fronts"><span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg></span> Vídeos e motion design <span class="package-plus">+</span> <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M5.6 18.4 18.4 5.6"/></svg></span> Gestão de redes sociais</p>
           <p class="package-for">Para quem precisa aparecer com constância.</p>
           <ul class="package-list"><li>Edição de vídeos para as redes sociais</li><li>Planejamento e gestão das redes</li><li>Conteúdo alinhado à identidade da empresa</li></ul>
-          <a class="button" href="#contato" data-package="Pacote Presença">Quero esse pacote <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a>
+          <a class="button" href="https://wa.me/5511933596263?text=Oi%2C%20Pedro%21%20Tudo%20bem%3F%20Conheci%20a%20Nexo%20Studio%20e%20me%20interessei%20pelo%20plano%20Presen%C3%A7a%2C%20que%20re%C3%BAne%20edi%C3%A7%C3%A3o%20de%20v%C3%ADdeos%20e%20gest%C3%A3o%20de%20redes%20sociais.%20Quero%20entender%20as%20entregas%20e%20receber%20uma%20proposta%20para%20minha%20empresa." data-package="Plano Presença" target="_blank" rel="noopener noreferrer">Conversar sobre este plano <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a>
         </article>
         <article class="package-featured">
           <i class="featured-line" aria-hidden="true"></i>
@@ -135,25 +187,40 @@
           <p class="package-fronts"><span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M5.6 18.4 18.4 5.6"/></svg><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span> As três frentes</p>
           <p class="package-for">Conteúdo, redes e site no mesmo planejamento.</p>
           <ul class="package-list"><li>Vídeos e gestão das redes sociais</li><li>Criação de site ou landing page</li><li>Planejamento das entregas em conjunto</li></ul>
-          <a class="button primary" href="#contato" data-package="Ecossistema Nexo">Quero o ciclo completo <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a>
+          <a class="button primary" href="https://wa.me/5511933596263?text=Oi%2C%20Pedro%21%20Tudo%20bem%3F%20Conheci%20a%20Nexo%20Studio%20e%20me%20interessei%20pelo%20Ecossistema%20Nexo%2C%20que%20conecta%20v%C3%ADdeos%2C%20redes%20sociais%20e%20site.%20Quero%20conversar%20sobre%20as%20prioridades%20da%20minha%20empresa%20e%20receber%20uma%20proposta%20com%20as%20tr%C3%AAs%20frentes." data-package="Ecossistema Nexo" target="_blank" rel="noopener noreferrer">Conversar sobre as três frentes <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a>
         </article>
         <article >
           <span class="package-no" aria-hidden="true">03</span>
-          <h3>Conversão</h3>
+          <h3>Sites e páginas</h3>
           <p class="package-fronts"><span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span> Sites e landing pages</p>
           <p class="package-for">Para quem precisa de um site com oferta clara.</p>
           <ul class="package-list"><li>Página com identidade da sua marca</li><li>Informações da oferta e caminho até o contato</li><li>Layout adaptado a computador e celular</li></ul>
-          <a class="button" href="#contato" data-package="Pacote Conversão">Quero esse pacote <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a>
+          <a class="button" href="https://wa.me/5511933596263?text=Oi%2C%20Pedro%21%20Tudo%20bem%3F%20Conheci%20a%20Nexo%20Studio%20e%20me%20interessei%20pelo%20plano%20Sites%20e%20p%C3%A1ginas.%20Quero%20conversar%20sobre%20a%20cria%C3%A7%C3%A3o%20de%20um%20site%20ou%20landing%20page%20para%20minha%20empresa%20e%20entender%20o%20escopo%2C%20o%20prazo%20e%20o%20investimento." data-package="Plano Sites e páginas" target="_blank" rel="noopener noreferrer">Conversar sobre este plano <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></a>
         </article>
       </div>
-    <p class="scope-note">Antes da contratação, a proposta apresenta os serviços incluídos, as quantidades, as revisões, os prazos e o investimento. Sites e outras implantações têm escopo próprio.</p>
+    <p class="scope-note">A proposta define entregas, quantidades, revisões, prazos e investimento antes da contratação. A criação do site é um projeto com escopo próprio; a frequência dos vídeos e da gestão das redes é alinhada na parceria.</p>
   </div></section>
 
-  <section class="section contact" id="contato"><div class="wrap contact-grid"><div><span class="eyebrow">06 / VAMOS CONECTAR</span><h2>Sua próxima fase<br>começa com<br><span class="metal">uma conversa.</span></h2><p>Conte o momento da sua marca e o que você quer alcançar. A gente encontra o ponto de partida.</p><a class="phone" href="https://wa.me/5511933596263?text=Ol%C3%A1%2C%20Nexo%20Studio!%20Quero%20conversar%20sobre%20minha%20marca." target="_blank" rel="noopener noreferrer">+55 (11) 93359-6263</a><span class="contact-note">QUEM RESPONDE É O PEDRO, PESSOALMENTE.</span></div>
+
+  <section class="section wrap faq" id="faq" aria-labelledby="faq-title">
+    <div class="faq-head"><span class="eyebrow">06 / DÚVIDAS FREQUENTES</span><h2 id="faq-title">Antes da <span class="metal">primeira conversa.</span></h2></div>
+    <div class="faq-list">
+      <details><summary>Preciso contratar todas as frentes?</summary><p>Não. Você pode começar por uma frente específica, escolher uma combinação ou conectar o ecossistema completo. Definimos juntos o que faz sentido para o seu momento.</p></details>
+      <details><summary>Como funciona o orçamento?</summary><p>Entendemos seu objetivo e definimos quais entregas são necessárias. Você recebe uma proposta com escopo, quantidades, revisões, prazos e investimento para avaliar antes de contratar.</p></details>
+      <details><summary>Quanto tempo para começar?</summary><p>A data de início é alinhada na proposta. Para começar, precisamos dos materiais e dos acessos necessários às entregas contratadas.</p></details>
+      <details><summary>Como funciona o pagamento?</summary><p>Você pode contratar um projeto pontual ou uma parceria mensal. O investimento e a forma de pagamento são apresentados na proposta e formalizados em contrato.</p></details>
+      <details><summary>Quantas revisões estão incluídas?</summary><p>O número de ajustes é combinado com você e fica registrado em contrato.</p></details>
+      <details><summary>O plano inclui gestão de anúncios?</summary><p>Os planos apresentados são de vídeo, redes sociais e sites. Gestão de tráfego pago não está incluída. Um eventual impulsionamento de publicação, com verba da empresa, precisa ser combinado separadamente na proposta.</p></details>
+      <details><summary>A página fica no meu nome?</summary><p>Sim. A página é sua, com acesso total.</p></details>
+      <details><summary>Quem fornece fotos, textos e informações?</summary><p>A sua empresa. Nós transformamos esse material em conteúdo.</p></details>
+      <details><summary>Vocês trabalham com empresas de outras cidades?</summary><p>Sim. Os projetos podem ser desenvolvidos de forma remota. Necessidades presenciais, como captação de imagens, devem ser alinhadas na proposta.</p></details>
+    </div>
+  </section>
+  <section class="section contact" id="contato"><div class="wrap contact-grid"><div><span class="eyebrow">07 / SE PREFERIR, CONTE MAIS</span><h2>Quer contar mais<br><span class="metal">sobre sua empresa?</span></h2><p>Este espaço é opcional. Descreva sua empresa e o que você precisa; levamos essas informações para a conversa com o Pedro. Se preferir, use os botões para abrir o WhatsApp diretamente.</p><a class="phone" href="https://wa.me/5511933596263?text=Oi%2C%20Pedro%21%20Tudo%20bem%3F%20Conheci%20a%20Nexo%20Studio%20e%20quero%20conversar%20sobre%20a%20presen%C3%A7a%20digital%20da%20minha%20empresa.%20Podemos%20entender%20quais%20servi%C3%A7os%20fazem%20sentido%20para%20o%20meu%20momento%3F" target="_blank" rel="noopener noreferrer">+55 (11) 93359-6263</a><span class="contact-note">QUEM RESPONDE É O PEDRO, PESSOALMENTE.</span></div>
     <form id="brief" class="brief">
           <fieldset>
             <legend>O que sua marca precisa agora?</legend>
-            <p class="form-hint">A seleção é opcional. Se ainda não sabe qual serviço precisa, pode ir direto para a conversa.</p>
+            <p class="form-hint">Escolha um serviço ou plano, se quiser. Todos os campos são opcionais.</p>
             <div class="service-choices">
               <label><input type="checkbox" name="service" value="Vídeos e motion design"><span><em aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg></em> Vídeos e motion design <b aria-hidden="true">+</b></span></label>
               <label><input type="checkbox" name="service" value="Gestão de redes sociais"><span><em aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M5.6 18.4 18.4 5.6"/></svg></em> Gestão de redes sociais <b aria-hidden="true">+</b></span></label>
@@ -161,8 +228,8 @@
             </div>
             <p class="form-subhint">Ou escolha uma forma de trabalhar:</p>
             <div class="service-choices package-choices">
-              <label><input type="checkbox" name="package" value="Pacote Presença"><span>Presença <b aria-hidden="true">+</b></span></label>
-              <label><input type="checkbox" name="package" value="Pacote Conversão"><span>Conversão <b aria-hidden="true">+</b></span></label>
+              <label><input type="checkbox" name="package" value="Plano Presença"><span>Presença <b aria-hidden="true">+</b></span></label>
+              <label><input type="checkbox" name="package" value="Plano Sites e páginas"><span>Sites e páginas <b aria-hidden="true">+</b></span></label>
               <label class="choice-full"><input type="checkbox" name="package" value="Ecossistema Nexo"><span>Ecossistema Nexo, o ciclo completo <b aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></b></span></label>
             </div>
           </fieldset>
@@ -172,30 +239,16 @@
           </div>
           <label class="note-label" for="project-note">Uma ideia para começar <span>(opcional)</span></label>
           <textarea id="project-note" name="note" rows="2" maxlength="600" placeholder="Minha marca é… e eu quero…"></textarea>
-          <button class="button primary contact-button" type="submit">Vamos conversar no WhatsApp <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></button>
+          <button class="button primary contact-button" type="submit">Levar minha mensagem ao WhatsApp <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M5 5h14v14"/></svg></span></button>
           <p class="form-note">Sua mensagem chega pronta no WhatsApp.<br>É só tocar em enviar.</p>
         </form>
   </div></section>
-  <section class="section wrap faq" id="faq" aria-labelledby="faq-title">
-    <div class="faq-head"><span class="eyebrow">07 / DÚVIDAS FREQUENTES</span><h2 id="faq-title">Antes da <span class="metal">primeira conversa.</span></h2></div>
-    <div class="faq-list">
-      <details><summary>Preciso contratar todas as frentes?</summary><p>Não. Você pode começar por uma frente específica, escolher uma combinação ou conectar o ecossistema completo. Definimos juntos o que faz sentido para o seu momento.</p></details>
-      <details><summary>Como funciona o orçamento?</summary><p>Entendemos seu objetivo e definimos quais entregas são necessárias. Você recebe uma proposta com escopo, quantidades, revisões, prazos e investimento para avaliar antes de contratar.</p></details>
-      <details><summary>Quanto tempo para começar?</summary><p>A data de início é alinhada na proposta. Para começar, precisamos dos materiais e dos acessos necessários às entregas contratadas.</p></details>
-      <details><summary>Como funciona o pagamento?</summary><p>Você pode contratar um projeto pontual ou uma parceria mensal. O investimento e a forma de pagamento são apresentados na proposta e formalizados em contrato.</p></details>
-      <details><summary>Quantas revisões estão incluídas?</summary><p>O número de ajustes é combinado com você e fica registrado em contrato.</p></details>
-      <details><summary>Vocês fazem anúncios pagos?</summary><p>Não fazemos gestão de tráfego. Se você quiser e disponibilizar o valor, podemos impulsionar publicações estratégicas.</p></details>
-      <details><summary>A página fica no meu nome?</summary><p>Sim. A página é sua, com acesso total.</p></details>
-      <details><summary>Quem fornece fotos, textos e informações?</summary><p>A sua empresa. Nós transformamos esse material em conteúdo.</p></details>
-      <details><summary>Vocês trabalham com empresas de outras cidades?</summary><p>Sim. Os projetos podem ser desenvolvidos de forma remota. Necessidades presenciais, como captação de imagens, devem ser alinhadas na proposta.</p></details>
-    </div>
-  </section>
   <section class="section final-cta" id="proximo-passo" aria-labelledby="final-cta-title">
     <div class="wrap final-cta-content">
       <span class="eyebrow">08 / PRÓXIMO PASSO</span>
       <h2 id="final-cta-title">Alguém está pesquisando você<br> <span class="metal">agora.</span> O que vai encontrar?</h2>
       <p>Conte o momento da sua empresa. Vamos entender se os nossos serviços fazem sentido para o que você precisa. Sem compromisso, sem pressão.</p>
-      <a class="button primary final-cta-button" href="https://wa.me/5511933596263?text=Ol%C3%A1%2C%20Nexo%20Studio!%20Quero%20conversar%20sobre%20minha%20marca." target="_blank" rel="noopener noreferrer">Falar no WhatsApp <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></span></a>
+      <a class="button primary final-cta-button" href="https://wa.me/5511933596263?text=Oi%2C%20Pedro%21%20Tudo%20bem%3F%20Conheci%20a%20Nexo%20Studio%20e%20quero%20conversar%20sobre%20a%20presen%C3%A7a%20digital%20da%20minha%20empresa.%20Podemos%20entender%20quais%20servi%C3%A7os%20fazem%20sentido%20para%20o%20meu%20momento%3F" target="_blank" rel="noopener noreferrer">Falar no WhatsApp <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16M13 5l7 7-7 7"/></svg></span></a>
     </div>
   </section>
 </main>
@@ -209,20 +262,20 @@
       <h3>NAVEGAÇÃO</h3>
       <ul>
         <li><a href="#servicos">Serviços</a></li>
-        <li><a href="#parcerias">Pacotes</a></li>
+        <li><a href="#parcerias">Planos</a></li>
         <li><a href="#processo">Processo</a></li>
       </ul>
     </nav>
     <div class="footer-col footer-contact">
       <h3>CONTATO</h3>
       <ul>
-        <li><a href="https://wa.me/5511933596263?text=Ol%C3%A1%2C%20Nexo%20Studio!%20Quero%20conversar%20sobre%20minha%20marca." target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
+        <li><a href="https://wa.me/5511933596263?text=Oi%2C%20Pedro%21%20Tudo%20bem%3F%20Conheci%20a%20Nexo%20Studio%20e%20quero%20conversar%20sobre%20a%20presen%C3%A7a%20digital%20da%20minha%20empresa.%20Podemos%20entender%20quais%20servi%C3%A7os%20fazem%20sentido%20para%20o%20meu%20momento%3F" target="_blank" rel="noopener noreferrer">WhatsApp</a></li>
         <li><a href="https://www.instagram.com/nexostud/" target="_blank" rel="noopener noreferrer">@nexostud</a></li>
         <li><a class="to-top" href="#inicio">Voltar ao topo <span aria-hidden="true"><svg class="ui-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20V4M5 11l7-7 7 7"/></svg></span></a></li>
       </ul>
     </div>
   </div>
-  <div class="footer-bottom"><span>© 2026 Nexo Studio. Todos os direitos reservados.</span><span>DA ATENÇÃO À VENDA. TUDO CONECTADO.</span></div>
+  <div class="footer-bottom"><span>© 2026 Nexo Studio. Todos os direitos reservados.</span><span>TUDO SE CONECTA, TUDO TEM NEXO.</span></div>
 </footer>
-<a class="floating" href="https://wa.me/5511933596263?text=Ol%C3%A1%2C%20Nexo%20Studio!%20Quero%20conversar%20sobre%20minha%20marca." target="_blank" rel="noopener noreferrer" aria-label="Conversar com a Nexo Studio no WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.5L3 20.5l1.3-4.7a8.5 8.5 0 1 1 16.2-4.1Z"/><path d="M8.5 7.5c-.8.5-.8 2 .4 3.9s3.1 3.5 4.9 3.8c1.2.2 2-.5 2.2-1.3l-2.2-1.2-.9.9c-1.4-.5-2.7-1.7-3.3-3.1l.7-.9Z"/></svg></a>
+<a class="floating" href="https://wa.me/5511933596263?text=Oi%2C%20Pedro%21%20Tudo%20bem%3F%20Conheci%20a%20Nexo%20Studio%20e%20quero%20conversar%20sobre%20a%20presen%C3%A7a%20digital%20da%20minha%20empresa.%20Podemos%20entender%20quais%20servi%C3%A7os%20fazem%20sentido%20para%20o%20meu%20momento%3F" target="_blank" rel="noopener noreferrer" aria-label="Conversar com a Nexo Studio no WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.5L3 20.5l1.3-4.7a8.5 8.5 0 1 1 16.2-4.1Z"/><path d="M8.5 7.5c-.8.5-.8 2 .4 3.9s3.1 3.5 4.9 3.8c1.2.2 2-.5 2.2-1.3l-2.2-1.2-.9.9c-1.4-.5-2.7-1.7-3.3-3.1l.7-.9Z"/></svg></a>
 </body></html>

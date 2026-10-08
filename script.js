@@ -466,13 +466,13 @@ document.querySelectorAll('#contato, .final-cta-button, .footer-contact').forEac
 finePointer.addEventListener('change', syncFloating);
 syncFloating();
 
-// Seleção de frentes e pacotes preservada da versão mais recente do projeto.
+// Seleção exclusiva do formulário opcional; os CTAs têm links diretos ao WhatsApp.
 const brief = document.getElementById('brief');
 const fronts = [...brief.querySelectorAll('input[name="service"]')];
 const packages = [...brief.querySelectorAll('input[name="package"]')];
 const packageFronts = {
-  'Pacote Presença':'Vídeos e motion design + Gestão de redes sociais',
-  'Pacote Conversão':'Sites e landing pages',
+  'Plano Presença':'Vídeos e motion design + Gestão de redes sociais',
+  'Plano Sites e páginas':'Sites e landing pages',
   'Ecossistema Nexo':'Vídeos e motion design + Gestão de redes sociais + Sites e landing pages'
 };
 packages.forEach(input => input.addEventListener('change', () => {
@@ -482,18 +482,6 @@ packages.forEach(input => input.addEventListener('change', () => {
 }));
 fronts.forEach(input => input.addEventListener('change', () => {
   if (input.checked) packages.forEach(pack => { pack.checked = false; });
-}));
-document.querySelectorAll('[data-package]').forEach(link => link.addEventListener('click', () => {
-  const target = packages.find(input => input.value === link.dataset.package);
-  if (!target) return;
-  target.checked = true;
-  target.dispatchEvent(new Event('change'));
-}));
-document.querySelectorAll('[data-interest]').forEach(link => link.addEventListener('click', () => {
-  const target = fronts.find(input => input.value === link.dataset.interest);
-  if (!target) return;
-  target.checked = true;
-  target.dispatchEvent(new Event('change'));
 }));
 brief.addEventListener('focusin', () => {
   briefHasFocus = true;
@@ -516,10 +504,10 @@ brief.addEventListener('submit', event => {
   const origin = pack ? pack.value : selected.length ? selected.join(' + ') : 'Contato geral';
   const lines = [
     '[Site · ' + origin + ']',
-    'Olá, Nexo Studio! Quero conectar minha marca à próxima fase.',
+    'Oi, Pedro! Tudo bem? Conheci a Nexo Studio e gostaria de conversar sobre minha empresa.',
     company ? 'Empresa: ' + company : '',
     segment ? 'Segmento: ' + segment : '',
-    pack ? 'Tenho interesse no ' + pack.value + ' (' + packageFronts[pack.value] + ').' : selected.length ? 'Tenho interesse em: ' + selected.join(', ') + '.' : 'Gostaria de ajuda para entender quais frentes fazem sentido para minha marca.',
+    pack ? 'Tenho interesse em: ' + pack.value + ' (' + packageFronts[pack.value] + ').' : selected.length ? 'Tenho interesse em: ' + selected.join(', ') + '.' : 'Gostaria de ajuda para entender quais frentes fazem sentido para minha marca.',
     note ? 'Sobre meu projeto: ' + note : ''
   ].filter(Boolean);
   window.location.assign('https://wa.me/5511933596263?text=' + encodeURIComponent(lines.join('\n\n')));

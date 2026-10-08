@@ -15,6 +15,12 @@
     } catch { return ''; }
   };
   const categoryMap = new Map(data.categories.map(category => [category.id, category]));
+  const contactURL = (category, project) => {
+    const message = 'Oi, Pedro! Tudo bem? Conheci a Nexo Studio e me interessei por ' + (category?.name || 'seus serviços') + '.'
+      + (project ? ' Vi o trabalho “' + project.title + '” no portfólio e gostaria de algo nessa direção para minha empresa.' : ' Quero conversar sobre um projeto para minha empresa.')
+      + ' Podemos entender o escopo e preparar uma proposta?';
+    return 'https://wa.me/5511933596263?text=' + encodeURIComponent(message);
+  };
   const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const pointer = window.matchMedia('(hover: hover) and (pointer: fine)');
   const canAnimate = () => !motion.matches && !document.documentElement.classList.contains('motion-paused');
@@ -131,7 +137,7 @@
         project.objective ? '<span class="pf-project-summary"><span class="pf-project-goal-label">Objetivo do projeto</span>' + html(project.objective) + '</span>' : project.description ? '<span class="pf-project-summary">' + html(project.description) + '</span>' : '',
         '<span class="pf-tags">' + (project.tags || []).map(tag => '<span>' + html(tag) + '</span>').join('') + '</span>',
       website ? '</a>' : '</button>'
-    ].join(''); }).join('') + '</div>' : '<div class="pf-empty"><span aria-hidden="true">' + html(category.icon) + '</span><h3>Novos projetos. Em breve.</h3><p>Vamos conversar sobre o que sua marca precisa?</p><button class="pf-action" type="button" data-contact>Conversar com a Nexo <span aria-hidden="true">↗</span></button></div>');
+    ].join(''); }).join('') + '</div>' : '<div class="pf-empty"><span aria-hidden="true">' + html(category.icon) + '</span><h3>Novos projetos. Em breve.</h3><p>Vamos conversar sobre o que sua marca precisa?</p><a class="pf-action" data-contact href="' + html(contactURL(category)) + '" target="_blank" rel="noopener noreferrer">Conversar com a Nexo <span aria-hidden="true">↗</span></a></div>');
     panel.setAttribute('aria-labelledby', 'pf-tab-' + category.id);
     status.textContent = (category.label || category.name) + ': ' + projects.length + (projects.some(project => project.demo) ? ' prévias de apresentação.' : ' projetos.');
   }
@@ -156,10 +162,11 @@
           project.demo ? '<span class="pf-demo-label">PRÉVIA DA APRESENTAÇÃO</span>' : '<span class="pf-demo-label">' + html(category.short) + '</span>',
           '<h3>' + (project.demo ? 'Um espaço para<br>ver cada detalhe.' : html(project.title)) + '</h3>',
           '<p>' + html(project.description) + '</p>',
-          project.approach ? '<div class="pf-approach"><span>' + (project.demo ? 'A APRESENTAÇÃO' : 'DIREÇÃO DO PROJETO') + '</span><p>' + html(project.approach) + '</p></div>' : '',
+          project.objective ? '<div class="pf-approach"><span>OBJETIVO DA ENTREGA</span><p>' + html(project.objective) + '</p></div>' : '',
+          project.approach ? '<div class="pf-approach"><span>' + (project.demo ? 'A APRESENTAÇÃO' : 'O QUE FOI FEITO') + '</span><p>' + html(project.approach) + '</p></div>' : '',
           '<div class="pf-tags">' + (project.tags || []).map(tag => '<span>' + html(tag) + '</span>').join('') + '</div>',
           websiteURL ? '<a class="pf-action" href="' + html(websiteURL) + '" target="_blank" rel="noopener noreferrer">Visitar projeto <span aria-hidden="true">↗</span></a>' : '',
-          '<button class="pf-action ' + (websiteURL ? 'pf-action-secondary' : '') + '" type="button" data-contact>Quero algo nessa direção <span aria-hidden="true">↗</span></button>',
+          '<a class="pf-action ' + (websiteURL ? 'pf-action-secondary' : '') + '" data-contact href="' + html(contactURL(category, project)) + '" target="_blank" rel="noopener noreferrer">Conversar no WhatsApp <span aria-hidden="true">↗</span></a>',
           videos.length > 1 ? '<div class="pf-switcher"><h4>NA GALERIA</h4>' + videos.map(item => '<button class="pf-switcher-row" type="button" data-case="' + html(item.id) + '"' + (item.id === project.id ? ' aria-current="true" disabled' : '') + '>' + cover(item) + '<span><strong>' + html(item.title) + '</strong><small>' + (item.id === project.id ? 'Selecionado' : 'Assistir vídeo') + (duration(item.media.duration) ? ' · ' + duration(item.media.duration) : '') + '</small></span><span class="pf-switcher-play" aria-hidden="true">▷</span></button>').join('') + '</div>' : '',
         '</aside>',
       '</div>'
@@ -286,19 +293,6 @@
     }
   }
 
-  function contact() {
-    const category = categoryMap.get(activeCategory);
-    const input = [...document.querySelectorAll('#brief input[name="service"]')].find(element => element.value === category?.name);
-    if (input) {
-      input.checked = true;
-      input.dispatchEvent(new Event('change', {bubbles:true}));
-    }
-    directEntry = false;
-    history.replaceState(null, '', window.location.pathname + window.location.search + '#contato');
-    renderRoute();
-    document.getElementById('contato')?.scrollIntoView({behavior:canAnimate() ? 'smooth' : 'instant'});
-  }
-
   document.addEventListener('click', event => {
     const entry = event.target.closest?.('[data-portfolio]');
     if (!entry || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button > 0) return;
@@ -307,7 +301,7 @@
     if (!dialog.open) {
       previousURL = window.location.pathname + window.location.search + window.location.hash;
       lastTrigger = entry;
-      origin = entry.closest('.service-card')?.getBoundingClientRect();
+      origin = entry.getBoundingClientRect();
       directEntry = false;
     }
     navigate(entry.dataset.portfolio);
@@ -323,8 +317,7 @@
       const state = history.state?.nexoPortfolio;
       if (state?.token === token && state.depth > 0) history.back();
       else navigate(activeCategory, null, true);
-    } else if (button.hasAttribute('data-contact')) contact();
-    else if (button.hasAttribute('data-pause')) {
+    } else if (button.hasAttribute('data-pause')) {
       const frame = panel.querySelector('.pf-media-frame');
       const paused = frame.classList.toggle('is-paused');
       button.setAttribute('aria-pressed', String(paused));

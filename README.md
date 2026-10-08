@@ -27,13 +27,17 @@ O ecossistema conecta três serviços:
 2. Gestão de redes sociais.
 3. Sites e landing pages.
 
-Presença reúne vídeos e gestão das redes sociais; Conversão é dedicado a sites e landing pages; Ecossistema Nexo combina os três serviços. O escopo e o investimento são definidos na proposta. A equipe e os trabalhos estão apresentados no site.
+Presença reúne vídeos e gestão das redes sociais; Sites e páginas é dedicado a sites e landing pages; Ecossistema Nexo combina os três serviços. A criação de site tem escopo de projeto, e a frequência das entregas de conteúdo é alinhada na parceria. O escopo e o investimento são definidos na proposta.
+
+O acesso aos portfólios fica apenas em `#trabalhos`, perto do início da página. Vídeos e sites abrem suas galerias; a frente de social media está sinalizada como “Portfólio em breve”, sem galeria vazia. Os trabalhos têm nomes descritivos e contexto do objetivo, sem números de desempenho não informados.
 
 ## Contato
 
 WhatsApp: **+55 (11) 93359-6263** (`5511933596263`).
 
-O formulário permite selecionar uma ou mais frentes ou um pacote. A escolha de um pacote substitui as frentes avulsas, e vice-versa. Os botões de serviços e pacotes já deixam a escolha marcada. Empresa, segmento e ideia inicial são opcionais. A mensagem inclui a etiqueta de origem e abre no WhatsApp para o visitante revisar e enviar. O site não envia mensagens automaticamente nem armazena os dados do formulário.
+Os botões de serviços, planos e contato abrem diretamente o WhatsApp com uma mensagem específica para o Pedro, por meio de links nativos que também funcionam sem JavaScript. O contato dentro dos projetos do portfólio leva o nome do trabalho e do serviço na mensagem.
+
+O formulário fica perto do fim da página como opção para quem prefere descrever a empresa. Permite selecionar uma ou mais frentes ou um plano. A escolha de um plano substitui as frentes avulsas, e vice-versa. Empresa, segmento e ideia inicial são opcionais. A mensagem inclui a etiqueta de origem e abre no WhatsApp para o visitante revisar e enviar. O site não envia mensagens automaticamente nem armazena os dados do formulário.
 
 ## Visualizar e publicar
 
@@ -79,9 +83,9 @@ O domínio só fica acessível após configurar e propagar esses registros no pr
 
 ### Tela de abertura
 
-Só a logo sem fundo, sem barra de carregamento. O brilho azul atrás dela cresce conforme a página carrega; quando termina, acontece uma faísca azul e a tela some com fade, revelando o site. Fica no mínimo 2,6 s e sai quando a página termina de carregar (`MIN_PRELOADER_MS` em `script.js`). Uma rede de segurança no `<head>` mostra o site em até 8 s, mesmo que algo falhe. Quem usa "reduzir movimento" no sistema não vê a abertura.
+Logo original, brilho azul crescente e faísca. A sequência é decorativa e não espera os vídeos ou o evento `load`: o código independente no `<head>` inicia a saída após 1 s, com fade de 300 ms. No perfil leve, a saída começa após 270 ms, com efeito simplificado. Qualquer interação encerra a abertura. Quem usa “reduzir movimento”, abre um link com âncora ou retorna na mesma sessão entra diretamente. A chave da sessão é `nexo-intro-v2-seen`.
 
-### Frase "Cada frente alimenta a próxima"
+### Frase “Cada etapa. Uma só direção.”
 
 A logo (N sem fundo) fica acima da frase e ganha um brilho azul atrás que se intensifica continuamente conforme a pessoa rola. A variável `--emblem-glow` (0 a 1) é calculada em `script.js` e usada em `styles.css` (`.manifesto-logo`).
 
@@ -93,13 +97,13 @@ A logo (N sem fundo) fica acima da frase e ganha um brilho azul atrás que se in
 
 ### Dúvidas frequentes e rodapé
 
-- `#faq` é a última seção, abaixo do contato (`#contato`): título em cima e as nove perguntas empilhadas embaixo, com destaque azul ao passar o mouse.
-- O rodapé tem descrição, coluna **Navegação**, coluna **Contato** (hoje só o WhatsApp), a assinatura grande e a linha final. Há espaços prontos, dentro de comentários no `index.html`, para Instagram, e-mail e uma terceira coluna de redes: basta apagar o "abre comentário" (`<!--`) e o "fecha comentário" (`-->`) da linha desejada e trocar o endereço.
+- `#faq` vem antes do formulário opcional (`#contato`), seguido pelo CTA final direto ao WhatsApp.
+- O rodapé tem descrição curta, três links de navegação e três linhas de contato: WhatsApp, Instagram `@nexostud` e voltar ao topo. A assinatura grande foi removida.
 
 A logo é exibida a partir de `assets/nexo-logo-clean.webp` (recorte transparente da logo original), com janelas SVG para o símbolo e a assinatura. O recorte vem do arquivo raster original; se houver um arquivo vetorial (SVG, AI ou PDF) da logo, vale substituir para ficar ainda mais nítida em telas grandes. Os efeitos usam CSS e APIs nativas do navegador, sem bibliotecas de animação.
 
 ## Personalizar
 
-Edite `styles.css` para alterar cores e aparência. Os textos dos serviços estão em `index.html`; as descrições dos pacotes usadas na mensagem de contato estão em `script.js`. As âncoras anteriores `#problema`, `#essencia`, `#ciclo`, `#frentes` e `#pacotes` continuam disponíveis. A numeração das seções vai de 01 a 07: 06 é o contato e 07 são as dúvidas frequentes.
+Edite `styles.css` para alterar cores e aparência. Os serviços, links diretos e mensagens dos planos estão em `index.html`; as descrições dos planos usadas no formulário opcional estão em `script.js`. Os nomes e contextos dos trabalhos estão em `portfolio-data.js`. As âncoras anteriores `#problema`, `#essencia`, `#ciclo`, `#frentes` e `#pacotes` continuam disponíveis. A numeração vai de 01 a 08: 06 são as dúvidas, 07 é o formulário e 08 é o CTA final.
 
 Para trocar o WhatsApp, atualize `5511933596263` nos arquivos HTML e JavaScript e o número exibido no HTML. Para mudar a hospedagem, atualize o canonical, `og:url` e a URL no JSON-LD.
