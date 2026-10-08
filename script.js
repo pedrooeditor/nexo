@@ -112,16 +112,18 @@ document.querySelectorAll('.hero-art, .manifesto, .service-card, .package-grid a
 const TILT_X = 5.5;   // graus de inclinação para cima/baixo
 const TILT_Y = 7.5;   // graus de inclinação para os lados
 const EDGE = 10;      // folga da borda, em px
-const tiltCards = [...document.querySelectorAll('.work-access, .service-card, .team-card, .package-grid article')];
+const tiltCards = [...document.querySelectorAll('.work-access, .team-card, .package-grid article')];
+const liftCards = [...document.querySelectorAll('.service-card')];
 const nodeCards = [...document.querySelectorAll('.node')];
 tiltCards.forEach(card => card.classList.add('tilt-card'));
+liftCards.forEach(card => card.classList.add('lift-card'));
 const canHover = event => event.pointerType !== 'touch' && finePointer.matches && !reducedMotion.matches && !effectsPaused && !lightMotion && !root.classList.contains('pf-open');
 let activeCard = null;
 let pointerX = 0;
 let pointerY = 0;
 let paintFrame = 0;
 function releaseCard(card) {
-  card.classList.remove('tilt-live', 'node-live');
+  card.classList.remove('tilt-live', 'lift-live', 'node-live');
   card.style.setProperty('--tilt-x', '0deg');
   card.style.setProperty('--tilt-y', '0deg');
 }
@@ -129,7 +131,7 @@ function setActive(card) {
   if (card === activeCard) return;
   if (activeCard) releaseCard(activeCard);
   activeCard = card;
-  if (card) card.classList.add(card.classList.contains('node') ? 'node-live' : 'tilt-live');
+  if (card) card.classList.add(card.classList.contains('node') ? 'node-live' : card.classList.contains('lift-card') ? 'lift-live' : 'tilt-live');
 }
 function paintActive() {
   paintFrame = 0;
@@ -148,7 +150,7 @@ function paintActive() {
     activeCard.style.setProperty('--tilt-y', ((clamp(x / rect.width) - .5) * 2 * TILT_Y).toFixed(2) + 'deg');
   }
 }
-[...tiltCards, ...nodeCards].forEach(card => card.addEventListener('pointerenter', event => {
+[...tiltCards, ...liftCards, ...nodeCards].forEach(card => card.addEventListener('pointerenter', event => {
   if (!canHover(event)) return;
   pointerX = event.clientX;
   pointerY = event.clientY;

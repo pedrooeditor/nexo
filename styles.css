@@ -242,11 +242,11 @@ html.is-smooth-scrolling { scroll-behavior:auto }
 /* Luz que acompanha o cursor, contorno brilhante e inclinação leve (o JavaScript escreve --mx, --my, --tilt-x e --tilt-y).
    Inclinação usa `transform`; o pulinho usa `translate` e `scale`, para cada um ter o seu tempo. */
 .tilt-card { --tilt-x:0deg; --tilt-y:0deg; transform:perspective(1100px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)); transition:transform .7s var(--ease),translate .5s var(--ease),scale .5s var(--ease),border-color .35s,box-shadow .35s }
-.tilt-card::before,.tilt-card::after,.node::before { content:''; position:absolute; inset:0; pointer-events:none; border-radius:inherit; opacity:0; transition:opacity .35s }
-.tilt-card::before,.node::before { background:radial-gradient(380px circle at var(--mx,50%) var(--my,0%),#3aa9ff30,#1488ff12 42%,transparent 68%) }
-.tilt-card::after { padding:1px; background:radial-gradient(240px circle at var(--mx,50%) var(--my,0%),#8fdcff,#2f9bff99 38%,transparent 70%); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); mask-composite:exclude }
+.tilt-card::before,.tilt-card::after,.lift-card::before,.lift-card::after,.node::before { content:''; position:absolute; inset:0; pointer-events:none; border-radius:inherit; opacity:0; transition:opacity .35s }
+.tilt-card::before,.lift-card::before,.node::before { background:radial-gradient(380px circle at var(--mx,50%) var(--my,0%),#3aa9ff30,#1488ff12 42%,transparent 68%) }
+.tilt-card::after,.lift-card::after { padding:1px; background:radial-gradient(240px circle at var(--mx,50%) var(--my,0%),#8fdcff,#2f9bff99 38%,transparent 70%); -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0); mask-composite:exclude }
 .tilt-card.tilt-live { translate:0 -7px; scale:1.012; will-change:transform; border-color:#54adff84; box-shadow:0 24px 60px #000a,0 0 38px #087cff26 }
-.tilt-card.tilt-live::before,.tilt-card.tilt-live::after,.node.node-live::before,.node:focus-visible::before { opacity:1 }
+.tilt-card.tilt-live::before,.tilt-card.tilt-live::after,.lift-card.lift-live::before,.lift-card.lift-live::after,.node.node-live::before,.node:focus-visible::before { opacity:1 }
 .has-motion .tilt-card.reveal { transform:perspective(1100px) translateY(30px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)); transition:opacity .85s var(--ease),transform .7s var(--ease),translate .5s var(--ease),scale .5s var(--ease),border-color .35s,box-shadow .35s; transition-delay:var(--reveal-delay,0ms),var(--reveal-delay,0ms),0ms,0ms,0ms,0ms }
 .has-motion .tilt-card.reveal.is-visible { transform:perspective(1100px) translateY(0) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) }
 .has-motion .tilt-card.reveal.tilt-live { transition:opacity .85s var(--ease),transform .16s ease-out,translate .5s var(--ease),scale .5s var(--ease),border-color .35s,box-shadow .35s; transition-delay:0ms }
@@ -391,11 +391,15 @@ textarea { resize:vertical }
 @keyframes sp-dot { 0%{opacity:0;transform:translateY(30px) scale(.4)} 14%{opacity:1} 100%{opacity:0;transform:translateY(var(--r1)) scale(.2)} }
 
 @keyframes pre-glow { from { opacity:.04; scale:.4 } }
-.intro-quiet .pre-logo { animation-duration:.15s }
-.intro-quiet .pre-aura { animation:none; opacity:.25 }
-.intro-quiet .pre-core,.intro-quiet .pre-spark { display:none }
+.intro-quiet .pre-logo { animation-duration:.35s }
+.intro-quiet .pre-aura { width:190% }
+.intro-quiet .pre-core { width:110%; mix-blend-mode:normal }
+.intro-quiet .sp-ray:nth-of-type(even),.intro-quiet .sp-dot:nth-of-type(even) { display:none }
+.intro-quiet .sp-ray { box-shadow:none }
+.intro-quiet .sp-dot { box-shadow:0 0 4px #49b4ff }
+.intro-quiet .sp-flash { width:min(105vw,600px) }
+.intro-quiet .sp-streak { width:min(120vw,650px); box-shadow:0 0 8px #2fa8ff99 }
 .intro-quiet .pre-mark { animation:none; filter:drop-shadow(0 0 10px #168cff77) }
-.intro-quiet .preloader { transition-duration:.12s }
 @media(prefers-reduced-motion:reduce) { .preloader { display:none!important } }
 
 /* Animações com luz azul e cores da identidade. */
@@ -427,14 +431,14 @@ textarea { resize:vertical }
 @keyframes fab-breathe-low { 0%,100%{opacity:1} 50%{opacity:0} }
 .motion-paused *, .motion-paused *::before, .motion-paused *::after,.tab-hidden *, .tab-hidden *::before, .tab-hidden *::after { animation-play-state:paused!important }
 .motion-paused .tilt-card,.motion-paused .logo-parallax { --tilt-x:0deg!important; --tilt-y:0deg!important; --logo-rx:0deg!important; --logo-ry:0deg!important }
-.motion-paused .tilt-card { translate:none!important; scale:none!important }
+.motion-paused .tilt-card,.motion-paused .lift-card { translate:none!important; scale:none!important }
 .motion-paused .reveal { opacity:1!important; transform:none!important; transition:none!important }
 .motion-paused details p,.motion-paused .connection-detail.switching { animation:none!important; opacity:1!important; transform:none!important }
 .motion-zone:not(.in-view), .motion-zone:not(.in-view)::before, .motion-zone:not(.in-view)::after,
 .motion-zone:not(.in-view) *, .motion-zone:not(.in-view) *::before, .motion-zone:not(.in-view) *::after { animation-play-state:paused!important }
 /* Durante o portfólio, o site ao fundo não disputa recursos com o vídeo. */
-html.pf-open body>:not(.pf-dialog), html.pf-open body>:not(.pf-dialog)::before, html.pf-open body>:not(.pf-dialog)::after,
-html.pf-open body>:not(.pf-dialog) *, html.pf-open body>:not(.pf-dialog) *::before, html.pf-open body>:not(.pf-dialog) *::after { animation-play-state:paused!important }
+html.pf-open body>:not(.pf-dialog):not(.preloader), html.pf-open body>:not(.pf-dialog):not(.preloader)::before, html.pf-open body>:not(.pf-dialog):not(.preloader)::after,
+html.pf-open body>:not(.pf-dialog):not(.preloader) *, html.pf-open body>:not(.pf-dialog):not(.preloader) *::before, html.pf-open body>:not(.pf-dialog):not(.preloader) *::after { animation-play-state:paused!important }
 /* Gradientes, luz azul e revelação das palavras permanecem no perfil leve. */
 .motion-light .ambient-glow, .motion-light .ambient-beam, .motion-light .orbit-halo, .motion-light .orbit-track,
 .motion-light .logo-float, .motion-light .orbit-tag, .motion-light .cross-one, .motion-light .cross-two,
@@ -675,7 +679,7 @@ html.pf-open body>:not(.pf-dialog) *, html.pf-open body>:not(.pf-dialog) *::befo
   .manifesto { height:auto }
   .manifesto-stage { position:relative; min-height:85svh }
   .manifesto-word,.manifesto-logo,.manifesto-sub,.manifesto-glow { opacity:1!important; transform:none!important }
-  .hero-art,.logo-parallax,.tilt-card { transform:none!important; translate:none!important; scale:none!important }
+  .hero-art,.logo-parallax,.tilt-card,.lift-card { transform:none!important; translate:none!important; scale:none!important }
   .node.node-live,.node:focus-visible { transform:none!important }
   #particles { display:none }
 }
@@ -943,4 +947,45 @@ html.pf-open body>:not(.pf-dialog) *, html.pf-open body>:not(.pf-dialog) *::befo
 }
 @media(prefers-reduced-motion:reduce) {
   .has-service-disclosures .service-panel,.has-service-disclosures .is-service-open .service-panel,.service-indicator { transition:none }
+}
+
+/* Nos serviços, a luz segue o cursor e o cartão apenas sobe, sem rotação. */
+.lift-card { transform-style:flat; transition:translate .3s var(--ease),border-color .35s,box-shadow .35s }
+.has-motion .lift-card.reveal { transition:opacity .78s var(--ease),transform .78s var(--ease),translate .3s var(--ease),border-color .35s,box-shadow .35s; transition-delay:var(--reveal-delay,0ms),var(--reveal-delay,0ms),0ms,0ms,0ms }
+.lift-card.lift-live { translate:0 -7px; will-change:translate; border-color:#54adff84; box-shadow:0 18px 48px #0008,0 0 30px #087cff22 }
+
+/* Um único link por cartão de portfólio, inclusive sobre a imagem e o texto. */
+.work-access.portfolio-entry { cursor:pointer }
+.work-access>p { margin-bottom:17px }
+.work-access .work-visual { aspect-ratio:2.2/1 }
+.portfolio-formats { display:flex; flex-wrap:wrap; gap:8px; list-style:none; padding:0; margin:0 0 23px }
+.portfolio-formats li { padding:5px 9px; border:1px solid #79b9fb24; border-radius:99px; color:#b3ccea; background:#09224455; font-size:11px; line-height:1.5 }
+.portfolio-card-cta { display:flex; justify-content:space-between; align-items:center; gap:15px; padding-top:17px; border-top:1px solid #7ab9ee2d; margin-top:auto; color:#96d4ff; font-size:14px; font-weight:500 }
+.portfolio-card-cta .ui-icon { font-size:16px; transition:translate .25s var(--ease) }
+.work-access:hover .portfolio-card-cta .ui-icon,.work-access:focus-visible .portfolio-card-cta .ui-icon { translate:2px -2px }
+.work-access:focus-visible { border-color:#9ad9ff; outline-offset:5px }
+
+/* O pacote completo ganha o centro, selo cromado e convite azul mais forte. */
+.package-grid .package-featured { border-color:#8bcfffbd; background:linear-gradient(145deg,#123e78ee,#092d59ed 54%,#071327); box-shadow:0 0 48px #087fff28,inset 0 1px 0 #c0e7ff55 }
+.package-grid .package-badge { display:inline-flex; align-items:center; gap:6px; top:25px; right:22px; max-width:calc(100% - 64px); margin:0; padding:7px 10px; border:1px solid #e9f4ffd9; border-radius:99px; background:linear-gradient(125deg,#f9fcff,#afc2d8 48%,#e3edfa 75%,#bfcedf); color:#0c2445; box-shadow:inset 0 1px 0 #fff,0 5px 16px #0004; font-size:8px; font-weight:700; line-height:1.5; letter-spacing:.055em; white-space:nowrap }
+.package-badge .ui-icon { width:12px; height:12px; fill:currentColor; stroke-width:1 }
+.package-grid .package-featured .button.primary { border-color:#b0dfffbb; color:#021226; background:linear-gradient(115deg,#c5edff -10%,#68c3ff 24%,#329afa 67%,#3688f7); box-shadow:inset 0 1px 0 #fff9,0 9px 34px #087fff58 }
+.header-contact { flex-shrink:0 }
+
+/* O contato fica legível sem depender de reconhecer o ícone. */
+.floating { width:auto; min-height:54px; height:auto; display:inline-flex; align-items:center; justify-content:center; gap:10px; padding:12px 17px; border-radius:99px; background:linear-gradient(145deg,#0b61b5,#063970); font-size:14px; font-weight:600; line-height:1.5 }
+.floating svg { flex-shrink:0; width:24px; height:24px }
+.floating>span { white-space:nowrap }
+@media(min-width:761px) {
+  .package-grid .package-featured { margin-block:-12px; padding-block:46px }
+}
+@media(max-width:760px) {
+  .portfolio-formats { gap:7px; margin-bottom:20px }
+  .portfolio-card-cta { min-height:44px; padding-top:15px; font-size:14px }
+  .package-grid .package-badge { top:24px; right:21px; padding:7px 9px; font-size:8px }
+  .floating { min-height:49px; padding:11px 14px; gap:8px; font-size:12px; max-width:calc(100% - 36px) }
+  .floating svg { width:22px; height:22px }
+}
+@media(prefers-reduced-motion:reduce) {
+  .has-motion .lift-card.reveal,.portfolio-card-cta .ui-icon { transition:none }
 }

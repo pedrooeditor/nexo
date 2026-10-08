@@ -15,7 +15,8 @@
   let dots = [];
   let count = null;
   let status = null;
-  let activeIndex = 0;
+  // O pacote completo é o destaque inicial no celular, no centro dos três planos.
+  let activeIndex = Math.max(0, cards.findIndex(card => card.classList.contains('package-featured')));
   let frame = 0;
   const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
   const pad = number => String(number).padStart(2, '0');

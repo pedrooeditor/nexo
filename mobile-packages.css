@@ -2,9 +2,10 @@
 @media(max-width:760px) {
   .package-grid.package-carousel {
     position:relative;
-    width:calc(100% + 12vw);
-    margin-inline:-6vw;
-    padding:18px 8vw 22px;
+    /* Usa a largura da seção (88%), incluindo telas com barra de rolagem. */
+    width:113.636364%;
+    margin-inline:-6.818182%;
+    padding:18px 9.090909% 22px;
     display:grid;
     grid-template-columns:none;
     grid-auto-flow:column;
@@ -14,7 +15,7 @@
     overflow-x:auto;
     overflow-y:hidden;
     scroll-snap-type:x mandatory;
-    scroll-padding-inline:8vw;
+    scroll-padding-inline:8%;
     overscroll-behavior-x:contain;
     touch-action:pan-x pan-y pinch-zoom;
     scrollbar-width:none;

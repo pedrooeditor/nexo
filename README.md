@@ -23,7 +23,7 @@ Primeira tela: **Sua empresa tem valor. Sua presença digital precisa mostrar is
 
 Hierarquia: cabeçalho → primeira tela → trabalhos → serviços e conexão → equipe → planos → como funciona → dúvidas frequentes → convite final e contexto opcional → rodapé.
 
-A identidade preserva o N com órbitas, o brilho azul, a abertura, as palavras reveladas pela rolagem, a inclinação das caixas e o movimento dos botões. O manifesto fica dentro de `#servicos`, com palco compacto e progressão reversível que considera a altura do cabeçalho.
+A identidade preserva o N com órbitas, o brilho azul, a abertura, as palavras reveladas pela rolagem, a inclinação em portfólios/equipe/planos e o movimento dos botões. Os cartões de serviços têm somente subida leve com luz sob o cursor. O manifesto fica dentro de `#servicos`, com palco compacto e progressão reversível que considera a altura do cabeçalho.
 
 O ecossistema conecta três serviços:
 
@@ -31,9 +31,9 @@ O ecossistema conecta três serviços:
 2. Gestão de redes sociais.
 3. Sites e landing pages.
 
-Presença reúne vídeos e gestão das redes sociais; Sites e páginas é dedicado a sites e landing pages; Ecossistema Nexo combina os três serviços. A criação de site tem escopo de projeto, e a frequência das entregas de conteúdo é alinhada na parceria. O escopo e o investimento são definidos na proposta.
+Presença reúne vídeos e gestão das redes sociais; Sites e páginas é dedicado a sites e landing pages; Ecossistema Nexo combina os três serviços. A ordem é Presença → Ecossistema Nexo → Sites e páginas. O pacote completo fica no centro, com selo prateado "Plano recomendado" e CTA azul. No carrossel mobile, é o pacote inicialmente selecionado, com os outros dois ao lado. O selo indica a recomendação da Nexo, sem alegar volume de vendas não informado. A criação de site tem escopo de projeto, e a frequência das entregas de conteúdo é alinhada na parceria. O escopo e o investimento são definidos na proposta.
 
-O acesso aos portfólios fica apenas em `#trabalhos`, logo após a primeira tela. As duas entradas usam capas conceituais em preto, azul e cromado: `assets/portfolio/entrada-motion-conceito-v1.webp` e `assets/portfolio/entrada-web-conceito-v1.webp`. Os trabalhos reais, com suas capas e capturas, aparecem somente nas galerias abertas pelo clique. A seleção de social media está em preparação, com contato disponível sobre o serviço. Os trabalhos têm nomes descritivos e contexto, sem números de desempenho não informados. Há dois vídeos e dois sites publicados; não são exibidos projetos fictícios.
+O acesso aos portfólios fica apenas em `#trabalhos`, logo após a primeira tela. Cada cartão inteiro é um único link nativo, com descrição e formatos; clicar na imagem ou no texto abre a galeria. As duas entradas usam capas conceituais em preto, azul e cromado: `assets/portfolio/entrada-motion-conceito-v1.webp` e `assets/portfolio/entrada-web-conceito-v1.webp`. Os trabalhos reais, com suas capas e capturas, aparecem somente nas galerias abertas pelo clique. A seleção de social media está em preparação, com contato disponível sobre o serviço. Os trabalhos têm nomes descritivos e contexto, sem números de desempenho não informados. Há dois vídeos e dois sites publicados; não são exibidos projetos fictícios.
 
 Os serviços são três cartões compactos sem imagens, antes do bloco de conexão e das etapas seguintes. Um cartão expande por vez, revelando uma dor, o benefício da frente e um link próprio para o WhatsApp. Vídeo desperta interesse, social media mantém a presença e o site apresenta a oferta. Os textos não prometem viralização nem resultados garantidos. As capas de entrada foram geradas com a ferramenta integrada ImageGen e otimizadas em WebP; o conjunto tem menos de 35 KB.
 
@@ -41,7 +41,7 @@ Os serviços são três cartões compactos sem imagens, antes do bloco de conex�
 
 WhatsApp: **+55 (11) 93359-6263** (`5511933596263`).
 
-Os botões de serviços, planos e contato abrem diretamente o WhatsApp com uma mensagem específica para o Pedro, por meio de links nativos que também funcionam sem JavaScript. O contato dentro dos projetos do portfólio leva o nome do trabalho e do serviço na mensagem.
+Os botões de serviços, planos e contato usam "Fale no WhatsApp" e abrem diretamente o contato com uma mensagem específica para o Pedro, por meio de links nativos que também funcionam sem JavaScript. O atalho fixo tem ícone e texto visível. O contato dentro dos projetos do portfólio leva o nome do trabalho e do serviço na mensagem.
 
 O formulário fica recolhido abaixo do botão principal do convite final. Nome da empresa, contexto e seleção de serviços são opcionais. Os planos têm seus próprios links diretos e não precisam ser selecionados novamente. A mensagem inclui a etiqueta de origem e abre no WhatsApp para o visitante revisar e enviar. O site não envia mensagens automaticamente nem armazena os dados do formulário.
 
@@ -90,7 +90,7 @@ O domínio só fica acessível após configurar e propagar esses registros no pr
 
 ### Tela de abertura
 
-Logo original, brilho azul crescente e faísca. A sequência é decorativa e não espera os vídeos ou o evento `load`: o código independente no `<head>` inicia a saída após 1 s, com fade de 300 ms. No perfil leve, a saída começa após 270 ms, com efeito simplificado. Qualquer interação encerra a abertura. Quem usa “reduzir movimento”, abre um link com âncora ou retorna na mesma sessão entra diretamente. A chave da sessão é `nexo-intro-v2-seen`.
+Logo original, brilho azul crescente e faísca. A sequência é decorativa e não espera os vídeos ou o evento `load`: o código independente no `<head>` acende as faíscas em 650 ms e inicia a saída após 1 s, com fade de 320 ms. O perfil leve mantém halo, clarão e faíscas, usando menos partículas de faísca, halos menores e sombras reduzidas. A abertura também roda ao recarregar, mesmo depois de vista na sessão. Qualquer interação encerra a abertura. Quem usa “reduzir movimento” entra diretamente; a volta pelo histórico e a navegação interna não repetem a abertura. A chave da sessão é `nexo-intro-v2-seen`.
 
 ### Frase “Cada etapa. Uma só direção.”
 

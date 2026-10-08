@@ -166,7 +166,7 @@
           project.approach ? '<div class="pf-approach"><span>' + (project.demo ? 'A APRESENTAÇÃO' : 'O QUE FOI FEITO') + '</span><p>' + html(project.approach) + '</p></div>' : '',
           '<div class="pf-tags">' + (project.tags || []).map(tag => '<span>' + html(tag) + '</span>').join('') + '</div>',
           websiteURL ? '<a class="pf-action" href="' + html(websiteURL) + '" target="_blank" rel="noopener noreferrer">Visitar projeto <span aria-hidden="true">↗</span></a>' : '',
-          '<a class="pf-action ' + (websiteURL ? 'pf-action-secondary' : '') + '" data-contact href="' + html(contactURL(category, project)) + '" target="_blank" rel="noopener noreferrer">' + (project.media?.type === 'video' ? 'Conversar sobre um vídeo assim' : 'Conversar no WhatsApp') + ' <span aria-hidden="true">↗</span></a>',
+          '<a class="pf-action ' + (websiteURL ? 'pf-action-secondary' : '') + '" data-contact href="' + html(contactURL(category, project)) + '" target="_blank" rel="noopener noreferrer">' + (project.media?.type === 'video' ? 'Fale no WhatsApp' : 'Conversar no WhatsApp') + ' <span aria-hidden="true">↗</span></a>',
           videos.length > 1 ? '<div class="pf-switcher"><h4>NA GALERIA</h4>' + videos.map(item => '<button class="pf-switcher-row" type="button" data-case="' + html(item.id) + '"' + (item.id === project.id ? ' aria-current="true" disabled' : '') + '>' + cover(item) + '<span><strong>' + html(item.title) + '</strong><small>' + (item.id === project.id ? 'Selecionado' : 'Assistir vídeo') + (duration(item.media.duration) ? ' · ' + duration(item.media.duration) : '') + '</small></span><span class="pf-switcher-play" aria-hidden="true">▷</span></button>').join('') + '</div>' : '',
         '</aside>',
       '</div>'
