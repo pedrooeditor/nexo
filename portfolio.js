@@ -92,7 +92,10 @@
 
   const cover = project => {
     const src = safeURL(project.cover || project.media?.poster || (project.media?.type === 'image' ? project.media.src : ''));
-    return src ? '<img class="pf-cover' + (project.media?.type === 'video' ? ' pf-video-cover' : '') + '" src="' + html(src) + '" alt="" loading="lazy" decoding="async">' : visual(project);
+    const width = project.media?.type === 'image' ? project.media.width : 0;
+    const height = project.media?.type === 'image' ? project.media.height : 0;
+    const size = Number.isInteger(width) && width > 0 && Number.isInteger(height) && height > 0 ? ' width="' + width + '" height="' + height + '"' : '';
+    return src ? '<img class="pf-cover' + (project.media?.type === 'video' ? ' pf-video-cover' : '') + '" src="' + html(src) + '"' + size + ' alt="" loading="lazy" decoding="async">' : visual(project);
   };
 
   const media = project => {
@@ -118,7 +121,7 @@
       const attributes = ' class="pf-project" style="--pf-order:' + index + '"';
       return [
       website ? '<a' + attributes + ' href="' + html(website) + '" target="_blank" rel="noopener noreferrer" aria-label="Visitar: ' + html(project.title) + ' (abre em uma nova aba)">' : '<button' + attributes + ' type="button" data-case="' + html(project.id) + '" aria-label="' + (project.media?.type === 'video' ? 'Assistir: ' : 'Explorar: ') + html(project.title) + '">',
-        '<span class="pf-thumb' + (project.media?.type === 'video' ? ' pf-thumb-video' : '') + '">',
+        '<span class="pf-thumb' + (project.media?.type === 'video' ? ' pf-thumb-video' : website && project.media?.type === 'image' ? ' pf-thumb-site' : '') + '">',
           cover(project),
           project.demo ? '<span class="pf-demo-badge">PRÉVIA VISUAL</span>' : '',
           project.media?.type === 'video' && !project.cover ? '<span class="pf-card-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg></span>' : '',
@@ -126,7 +129,7 @@
           '<span class="pf-peek">' + (website ? 'Visitar site' : project.media?.type === 'video' ? 'Assistir vídeo' : 'Explorar projeto') + ' <span aria-hidden="true">↗</span></span>',
         '</span>',
         '<span class="pf-project-caption"><span><span class="pf-project-format">' + html(project.format) + '</span><strong>' + html(project.title) + '</strong></span><span class="pf-project-arrow" aria-hidden="true">↗</span></span>',
-        project.description ? '<span class="pf-project-summary">' + html(project.description) + '</span>' : '',
+        project.objective ? '<span class="pf-project-summary"><span class="pf-project-goal-label">Objetivo do projeto</span>' + html(project.objective) + '</span>' : project.description ? '<span class="pf-project-summary">' + html(project.description) + '</span>' : '',
         '<span class="pf-tags">' + (project.tags || []).map(tag => '<span>' + html(tag) + '</span>').join('') + '</span>',
       website ? '</a>' : '</button>'
     ].join(''); }).join('') + '</div>' : '<div class="pf-empty"><span aria-hidden="true">' + html(category.icon) + '</span><h3>Novos projetos. Em breve.</h3><p>Vamos conversar sobre o que sua marca precisa?</p><button class="pf-action" type="button" data-contact>Conversar com a Nexo <span aria-hidden="true">↗</span></button></div>');

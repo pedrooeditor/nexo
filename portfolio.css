@@ -335,4 +335,8 @@ html.pf-open,html.pf-open body { overflow:hidden }
 
 /* Contexto do trabalho permanece visível antes de abrir a mídia ou o site. */
 .pf-project-summary { display:block; margin:0 14px 17px; color:#a7bbd2; font-size:13px; line-height:1.75 }
+.pf-project-goal-label { display:block; margin-bottom:5px; color:#80a3c6; font-size:9px; letter-spacing:.08em; text-transform:uppercase }
+.pf-thumb-site { display:grid; align-items:center; padding:29px 12px 14px; background:linear-gradient(150deg,#0e2544,#030910) }
+.pf-thumb-site::before { content:'● ● ●'; position:absolute; top:7px; left:14px; color:#80a3c6; font-size:9px; letter-spacing:3px; pointer-events:none }
+.pf-thumb-site .pf-cover { height:auto; max-height:100%; object-fit:contain; border:1px solid #72b5f036; border-radius:4px }
 @media(max-width:600px) { .pf-project-summary { margin-inline:12px; font-size:12px } }

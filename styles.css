@@ -660,3 +660,20 @@ html.pf-open body>:not(.pf-dialog) *, html.pf-open body>:not(.pf-dialog) *::befo
 .work-preview h3 { font-size:25px; margin:17px 0 12px }
 .work-preview p { color:var(--muted); font-size:14px; line-height:1.8; margin-bottom:22px }
 @media(max-width:760px) { .work-preview-grid { grid-template-columns:1fr; gap:18px } .work-preview { padding:25px } .work-preview h3 { font-size:23px } }
+
+/* Equipe: cartões estáticos, sem novas imagens ou animações contínuas. */
+.team-block { margin-top:64px; padding-top:54px; border-top:1px solid var(--line) }
+.team-heading { display:grid; grid-template-columns:1.35fr 1fr; align-items:end; gap:60px; margin-bottom:32px }
+.team-heading .eyebrow { font-size:10px; margin-bottom:12px }
+.team-heading h3 { font-size:clamp(28px,3vw,40px); line-height:1.2; letter-spacing:-.04em }
+.team-heading>p { max-width:420px; color:var(--muted); font-size:14px; line-height:1.85 }
+.team-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px }
+.team-card { min-width:0; padding:27px; border:1px solid #609ee43b; border-radius:18px; background:linear-gradient(150deg,#0e254460,#030910e8) }
+.team-card-top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:24px; color:#80a3c6; font-size:10px; letter-spacing:.12em }
+.team-initials { display:grid; place-items:center; width:48px; height:48px; border:1px solid #77beff63; border-radius:12px; background:#051326; color:#98d7ff; font:600 16px/1 'Manrope',Arial,sans-serif; letter-spacing:.02em }
+.team-card h4 { margin:0 0 7px; color:var(--text); font:500 23px/1.35 'Manrope',Arial,sans-serif; letter-spacing:-.025em; overflow-wrap:anywhere }
+.team-role { min-height:46px; color:#a3d9ff; font-size:14px; line-height:1.65 }
+.team-experience { border-top:1px solid var(--line); margin-top:22px; padding-top:18px; color:var(--muted); font-size:13px; line-height:1.8 }
+.team-experience>span { display:block; color:#80a3c6; font-size:9px; letter-spacing:.08em; margin-bottom:7px }
+@media(max-width:900px) { .team-grid { gap:14px } .team-card { padding:21px } .team-card h4 { font-size:21px } }
+@media(max-width:760px) { .team-block { margin-top:44px; padding-top:36px } .team-heading { grid-template-columns:1fr; gap:18px; margin-bottom:25px } .team-grid { grid-template-columns:1fr; gap:16px } .team-card { padding:24px } .team-card-top { margin-bottom:18px } .team-role { min-height:0 } }
