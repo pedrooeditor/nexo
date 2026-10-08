@@ -231,33 +231,11 @@ html.pf-open,html.pf-open body { overflow:hidden }
 .pf-scene-landing .pf-site-content { background:linear-gradient(130deg,#e2f0f6,#d3e9f1); color:#0a2c48 }
 .pf-scene-landing .pf-site-content em { color:#176ea7 }
 .pf-scene-landing .pf-site-nav small,.pf-scene-landing .pf-site-hero small,.pf-scene-landing .pf-site-strip { color:#456f91 }
-.pf-scene-chat { background:radial-gradient(ellipse at 65% 55%,#10559355,transparent 65%),#050e1d }
-.pf-chat-window { position:absolute; left:17%; top:22%; width:66%; height:66%; padding:5% 5% 4%; border:1px solid #79b6e451; border-radius:12px; background:#071528e8; box-shadow:0 20px 40px #0003; z-index:1 }
-.pf-chat-header { display:flex; align-items:center; gap:4%; margin-bottom:8%; color:#b5d4f0; font-size:2cqw; letter-spacing:.06em }
-.pf-chat-header>i { display:grid; place-items:center; width:8cqw; height:8cqw; border-radius:50%; border:1px solid #5eb9ef56; color:#7acbff; background:#103b65; font-size:4cqw; font-style:normal; flex-shrink:0 }
-.pf-chat-header>span { display:block }
-.pf-chat-header small { display:block; color:#6d91ae; font-size:1.2cqw; letter-spacing:.07em; margin-top:4% }
-.pf-chat-bubble { display:block; width:max-content; max-width:92%; padding:5% 7%; border:1px solid #7eabd449; border-radius:9px 9px 9px 2px; background:#10273d; color:#b4d2ec; font-size:2.2cqw; line-height:1.4; animation:pf-chat 5s ease-in-out infinite }
-.pf-chat-answer { margin-top:5%; margin-left:auto; background:#0c5595; color:#dff2ff; border-color:#89ccfa66; border-radius:9px 9px 2px 9px; animation-delay:.45s }
-.pf-chat-next { margin-top:5%; animation-delay:.9s; font-size:1.8cqw }
-.pf-chat-next i { font-style:normal; margin-left:7px; color:#82cfff }
-.pf-chat-ring { position:absolute; left:8%; top:8%; width:84%; aspect-ratio:1; border-radius:50%; border:1px solid #7ba9df25; transform:rotateX(45deg); }
-.pf-scene-journey { background:radial-gradient(ellipse at 50% 65%,#103d6855,transparent 70%),#050e1d }
-.pf-journey-title { display:block; position:absolute; top:24%; left:9%; font-size:7cqw; line-height:1.13; letter-spacing:-.05em; font-weight:500 }
-.pf-journey-steps { position:absolute; top:63%; left:9%; width:82%; display:flex; justify-content:space-between; gap:10px }
-.pf-journey-steps::before { content:''; position:absolute; left:8%; right:8%; top:3.5cqw; height:1px; background:linear-gradient(90deg,#1d6aaa,#9fe1ff,#1d6aaa) }
-.pf-journey-steps>span { position:relative; display:flex; flex-direction:column; align-items:center; gap:8px; color:#9ab9d1; font-size:2.1cqw; width:28% }
-.pf-journey-steps i { display:grid; place-items:center; width:7cqw; height:7cqw; border:1px solid #8bbceb6e; border-radius:50%; background:#0c2845; color:#b3e4ff; font-size:2cqw; font-style:normal; animation:pf-node 4s ease-in-out infinite }
-.pf-journey-steps>span:nth-child(2) i { animation-delay:.5s }
-.pf-journey-steps>span:nth-child(3) i { animation-delay:1s }
-.pf-journey-steps b { font-weight:400 }
 @keyframes pf-enter { from { opacity:0; transform:translateY(15px) } to { opacity:1; transform:none } }
 @keyframes pf-float { 0%,100% { translate:0 0 } 50% { translate:0 -7px } }
 @keyframes pf-breathe { 0%,100% { opacity:.75; scale:1 } 50% { opacity:1; scale:1.035 } }
 @keyframes pf-wave { from { transform:scaleY(.35); opacity:.5 } to { transform:scaleY(1); opacity:1 } }
 @keyframes pf-orbit { to { rotate:335deg } }
-@keyframes pf-chat { 0%,14%,100% { opacity:.3; translate:0 6px } 25%,85% { opacity:1; translate:0 0 } }
-@keyframes pf-node { 0%,100% { box-shadow:0 0 0 #1d8bf700; border-color:#6295bd4d } 45% { box-shadow:0 0 19px #1d8bf744; border-color:#a9e4ff } }
 
 @media(max-width:1000px) { .pf-detail { grid-template-columns:1fr; gap:28px } .pf-detail-info { max-width:650px; width:100%; margin-inline:auto } .pf-detail-info .pf-action { max-width:340px } }
 @media(max-width:900px) {
@@ -328,7 +306,6 @@ html.pf-open,html.pf-open body { overflow:hidden }
 @media(prefers-reduced-motion:reduce) {
   .pf-dialog *,.pf-dialog *::before,.pf-dialog *::after { animation:none!important; transition:none!important; scroll-behavior:auto!important }
   .pf-project:hover .pf-thumb,.pf-project:hover .pf-cover { transform:none }
-  .pf-scene .pf-chat-bubble { opacity:1 }
   .pf-demo-control button { display:none }
   .portfolio-entry-arrow { transition:none }
 }

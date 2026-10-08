@@ -21,14 +21,13 @@ Os arquivos `identity.css`, `responsive.css`, `ecossistema.css` e `experiencia.c
 
 Posicionamento: **Da atenção à venda. Tudo conectado.**
 
-O ecossistema conecta quatro frentes:
+O ecossistema conecta três serviços:
 
-1. ▷ Motion Designer: atrair.
-2. ✳ Social Media: conectar.
-3. ↗ Pages Builder: converter.
-4. ⌁ Especialista em X1: conversar.
+1. Vídeos e motion design.
+2. Gestão de redes sociais.
+3. Sites e landing pages.
 
-Dados e CRM organizam o acompanhamento e alimentam a melhoria das próximas entregas. As parcerias são Presença, Conversão e Ecossistema Nexo, com escopo e investimento definidos na proposta. A página não exibe e-mail, perfis de profissionais, preços, depoimentos ou resultados não comprovados.
+Presença reúne vídeos e gestão das redes sociais; Conversão é dedicado a sites e landing pages; Ecossistema Nexo combina os três serviços. O escopo e o investimento são definidos na proposta. A equipe e os trabalhos estão apresentados no site.
 
 ## Contato
 
@@ -75,7 +74,7 @@ O domínio só fica acessível após configurar e propagar esses registros no pr
 - Botões com gradiente azul/prata e reflexo em movimento; faixa de palavras contínua.
 - Manifesto fixado durante parte da rolagem, com palavras acendendo em sequência.
 - Entradas de seções e cartões em cascata; linha de processo preenchida pela rolagem.
-- Prévia animada para cada serviço: vídeo, conteúdo social, site e conversa.
+- Prévia animada para cada serviço: vídeo, conteúdo social e site.
 - Brilho e inclinação nos cartões em dispositivos com ponteiro; composição própria para celular.
 
 ### Tela de abertura
@@ -101,6 +100,6 @@ A logo é exibida a partir de `assets/nexo-logo-clean.webp` (recorte transparent
 
 ## Personalizar
 
-Edite `styles.css` para alterar cores e aparência. Os textos das quatro etapas interativas estão em `script.js`; os demais textos estão em `index.html`. As âncoras anteriores `#problema`, `#essencia`, `#ciclo`, `#frentes` e `#pacotes` continuam disponíveis. A numeração das seções vai de 01 a 07: 06 é o contato e 07 são as dúvidas frequentes.
+Edite `styles.css` para alterar cores e aparência. Os textos dos serviços estão em `index.html`; as descrições dos pacotes usadas na mensagem de contato estão em `script.js`. As âncoras anteriores `#problema`, `#essencia`, `#ciclo`, `#frentes` e `#pacotes` continuam disponíveis. A numeração das seções vai de 01 a 07: 06 é o contato e 07 são as dúvidas frequentes.
 
 Para trocar o WhatsApp, atualize `5511933596263` nos arquivos HTML e JavaScript e o número exibido no HTML. Para mudar a hospedagem, atualize o canonical, `og:url` e a URL no JSON-LD.

@@ -472,8 +472,8 @@ const fronts = [...brief.querySelectorAll('input[name="service"]')];
 const packages = [...brief.querySelectorAll('input[name="package"]')];
 const packageFronts = {
   'Pacote Presença':'Vídeos e motion design + Gestão de redes sociais',
-  'Pacote Conversão':'Sites e landing pages + Atendimento no WhatsApp',
-  'Ecossistema Nexo':'as quatro frentes'
+  'Pacote Conversão':'Sites e landing pages',
+  'Ecossistema Nexo':'Vídeos e motion design + Gestão de redes sociais + Sites e landing pages'
 };
 packages.forEach(input => input.addEventListener('change', () => {
   if (!input.checked) return;
