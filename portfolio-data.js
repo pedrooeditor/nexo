@@ -1,7 +1,7 @@
 /*
  * Nexo Studio — conteúdo do portfólio.
- * Vídeos e projetos de páginas publicados, com prévias para futuros trabalhos.
- * Ao receber os trabalhos, substitua os itens de cada frente e marque demo:false.
+ * Vídeos e projetos de páginas publicados.
+ * Adicione trabalhos reais à frente correspondente preservando os links existentes.
  * Mídia: { type:'video'|'image'|'file', src:'assets/portfolio/...', poster:'...', alt:'...' }.
  * Para sites, use cover:'assets/portfolio/capa.webp' e websiteUrl:'https://...'.
  * Para uma sequência de imagens, use gallery:[{src:'...', alt:'...'}, ...].
@@ -27,7 +27,7 @@ window.NEXO_PORTFOLIO = {
       approach:'Edição da fala e legendas na tela, mantendo o foco na mensagem do vídeo.',
       cover:'assets/portfolio/exemplo-viral-1-capa-v1.webp',
       media:{ type:'video', src:'assets/portfolio/exemplo-viral-1-web-v1.mp4', poster:'assets/portfolio/exemplo-viral-1-capa-v1.webp', width:720, height:1280, duration:70.820998 } },
-    { id:'marca-movimento', category:'motion', title:'Conteúdo em formato Reels', format:'Reels · Edição de vídeo',
+    { id:'marca-movimento', category:'motion', title:'Edição para Reels', format:'Reels · Edição de vídeo',
       tags:['Vídeo','Edição','Narrativa'], demo:false, visual:'motion',
       description:'Vídeo editado em formato vertical para publicação nas redes sociais.',
       objective:'Preparar o conteúdo em formato vertical para publicação nas redes sociais.',
@@ -48,14 +48,6 @@ window.NEXO_PORTFOLIO = {
       objective:'Apresentar o catálogo de perfumaria e cosméticos e permitir a compra online.',
       approach:'Apresentação dos produtos, busca por fragrâncias e acesso à consultora virtual.',
       websiteUrl:'https://herscosmeticos.com.br/',
-      media:{ type:'image', src:'assets/portfolio/exemplo-2-site-v1.webp', alt:'Loja virtual de perfumaria com apresentação do produto e botão para adicionar à sacola.', width:1902, height:973 } },
-    { id:'site-experiencia', category:'web', title:'Um site, uma experiência', format:'Site institucional',
-      tags:['Site','Interface','Responsivo'], demo:true, visual:'web',
-      description:'Uma prévia do espaço para sites: apresentação ampla, contexto e acesso ao projeto publicado quando estiver disponível.',
-      approach:'A página pode ser apresentada por capturas de tela, com suas versões para computador e celular.' },
-    { id:'pagina-objetivo', category:'web', title:'Uma página, um objetivo', format:'Landing page',
-      tags:['Landing page','Direção','Design'], demo:true, visual:'landing',
-      description:'Uma prévia de apresentação para landing pages, com uma capa e o percurso visual da página.',
-      approach:'O espaço permite mostrar a hierarquia da informação e o caminho até o contato.' }
+      media:{ type:'image', src:'assets/portfolio/exemplo-2-site-v1.webp', alt:'Loja virtual de perfumaria com apresentação do produto e botão para adicionar à sacola.', width:1902, height:973 } }
   ]
 };

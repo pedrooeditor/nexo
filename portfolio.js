@@ -26,7 +26,7 @@
   const canAnimate = () => !motion.matches && !document.documentElement.classList.contains('motion-paused');
   const titleBefore = document.title;
   const token = 'nexo-' + Date.now().toString(36);
-  let previousURL = window.location.pathname + window.location.search + '#servicos';
+  let previousURL = window.location.pathname + window.location.search + '#trabalhos';
   let lastTrigger = null;
   let origin = null;
   let renderedRoute = '';
@@ -54,7 +54,7 @@
     '<div class="pf-shell">',
       '<header class="pf-topbar">',
         '<button class="pf-return" type="button" data-close><span aria-hidden="true">←</span><span>Voltar ao site</span></button>',
-        '<a class="pf-logo" href="#servicos" data-close aria-label="Nexo Studio, voltar ao site">',
+        '<a class="pf-logo" href="#trabalhos" data-close aria-label="Nexo Studio, voltar ao site">',
           '<svg viewBox="245 775 770 220" aria-hidden="true"><image href="assets/nexo-logo-clean.webp" width="1254" height="1254"/></svg>',
           '<span>PORTFÓLIO</span>',
         '</a>',
@@ -166,7 +166,7 @@
           project.approach ? '<div class="pf-approach"><span>' + (project.demo ? 'A APRESENTAÇÃO' : 'O QUE FOI FEITO') + '</span><p>' + html(project.approach) + '</p></div>' : '',
           '<div class="pf-tags">' + (project.tags || []).map(tag => '<span>' + html(tag) + '</span>').join('') + '</div>',
           websiteURL ? '<a class="pf-action" href="' + html(websiteURL) + '" target="_blank" rel="noopener noreferrer">Visitar projeto <span aria-hidden="true">↗</span></a>' : '',
-          '<a class="pf-action ' + (websiteURL ? 'pf-action-secondary' : '') + '" data-contact href="' + html(contactURL(category, project)) + '" target="_blank" rel="noopener noreferrer">Conversar no WhatsApp <span aria-hidden="true">↗</span></a>',
+          '<a class="pf-action ' + (websiteURL ? 'pf-action-secondary' : '') + '" data-contact href="' + html(contactURL(category, project)) + '" target="_blank" rel="noopener noreferrer">' + (project.media?.type === 'video' ? 'Conversar sobre um vídeo assim' : 'Conversar no WhatsApp') + ' <span aria-hidden="true">↗</span></a>',
           videos.length > 1 ? '<div class="pf-switcher"><h4>NA GALERIA</h4>' + videos.map(item => '<button class="pf-switcher-row" type="button" data-case="' + html(item.id) + '"' + (item.id === project.id ? ' aria-current="true" disabled' : '') + '>' + cover(item) + '<span><strong>' + html(item.title) + '</strong><small>' + (item.id === project.id ? 'Selecionado' : 'Assistir vídeo') + (duration(item.media.duration) ? ' · ' + duration(item.media.duration) : '') + '</small></span><span class="pf-switcher-play" aria-hidden="true">▷</span></button>').join('') + '</div>' : '',
         '</aside>',
       '</div>'
@@ -235,7 +235,7 @@
     fallbackInert = [];
     document.title = titleBefore;
     if (lastTrigger?.isConnected) lastTrigger.focus({preventScroll:true});
-    else if (directEntry) document.getElementById('servicos')?.scrollIntoView({behavior:'instant'});
+    else if (directEntry) document.getElementById('trabalhos')?.scrollIntoView({behavior:'instant'});
     activeProject = null;
     activeCategory = '';
   }

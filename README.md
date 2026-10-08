@@ -8,7 +8,7 @@ Site: https://nexostud.com.br/
 
 - `index.html`: conteúdo, tela de abertura, navegação, serviços, formulário, FAQ, rodapé e metadados.
 - `styles.css`: identidade visual, layout, componentes e regras responsivas. As cores estão em `:root`; os ajustes para celular ficam nas regras `@media` ao final do arquivo.
-- `script.js`: tela de abertura, animações ligadas à rolagem, luz e inclinação das caixas, partículas, pausa de efeitos, menu móvel, seleção das etapas do ecossistema e preparação da mensagem para o WhatsApp.
+- `script.js`: animações ligadas à rolagem, luz e inclinação das caixas, partículas, pausa de efeitos, menu móvel, desaceleração da roda do mouse e preparação da mensagem para o WhatsApp. A abertura tem um script independente no `<head>`.
 - `assets/nexo-logo-clean.webp`: a logo **sem fundo** (transparente). É a que o site usa em todos os lugares: abertura, cabeçalho, topo, frase que se revela e rodapé.
 - `assets/nexo-icon.png`: ícone da aba do navegador (o N sobre fundo escuro).
 - `assets/nexo-logo.webp`: logo original da Nexo Studio, preservada como arquivo-fonte (o site não a carrega mais).
@@ -19,7 +19,11 @@ Os arquivos `identity.css`, `responsive.css`, `ecossistema.css` e `experiencia.c
 
 ## Conteúdo
 
-Posicionamento: **Da atenção à venda. Tudo conectado.**
+Primeira tela: **Sua empresa tem valor. Sua presença digital precisa mostrar isso.**
+
+Hierarquia: cabeçalho → primeira tela → trabalhos → serviços e conexão → equipe → planos → como funciona → dúvidas frequentes → convite final e contexto opcional → rodapé.
+
+A identidade preserva o N com órbitas, o brilho azul, a abertura, as palavras reveladas pela rolagem, a inclinação das caixas e o movimento dos botões. O manifesto fica dentro de `#servicos`, com palco compacto e progressão reversível que considera a altura do cabeçalho.
 
 O ecossistema conecta três serviços:
 
@@ -29,7 +33,7 @@ O ecossistema conecta três serviços:
 
 Presença reúne vídeos e gestão das redes sociais; Sites e páginas é dedicado a sites e landing pages; Ecossistema Nexo combina os três serviços. A criação de site tem escopo de projeto, e a frequência das entregas de conteúdo é alinhada na parceria. O escopo e o investimento são definidos na proposta.
 
-O acesso aos portfólios fica apenas em `#trabalhos`, perto do início da página. Vídeos e sites abrem suas galerias; a frente de social media está sinalizada como “Portfólio em breve”, sem galeria vazia. Os trabalhos têm nomes descritivos e contexto do objetivo, sem números de desempenho não informados.
+O acesso aos portfólios fica apenas em `#trabalhos`, logo após a primeira tela, com capas e capturas reais junto aos botões. Vídeos e sites abrem suas galerias; a seleção de social media está em preparação, com contato disponível sobre o serviço. Os trabalhos têm nomes descritivos e contexto, sem números de desempenho não informados. Há dois vídeos e dois sites publicados; não são exibidos projetos fictícios.
 
 ## Contato
 
@@ -37,7 +41,7 @@ WhatsApp: **+55 (11) 93359-6263** (`5511933596263`).
 
 Os botões de serviços, planos e contato abrem diretamente o WhatsApp com uma mensagem específica para o Pedro, por meio de links nativos que também funcionam sem JavaScript. O contato dentro dos projetos do portfólio leva o nome do trabalho e do serviço na mensagem.
 
-O formulário fica perto do fim da página como opção para quem prefere descrever a empresa. Permite selecionar uma ou mais frentes ou um plano. A escolha de um plano substitui as frentes avulsas, e vice-versa. Empresa, segmento e ideia inicial são opcionais. A mensagem inclui a etiqueta de origem e abre no WhatsApp para o visitante revisar e enviar. O site não envia mensagens automaticamente nem armazena os dados do formulário.
+O formulário fica recolhido abaixo do botão principal do convite final. Nome da empresa, contexto e seleção de serviços são opcionais. Os planos têm seus próprios links diretos e não precisam ser selecionados novamente. A mensagem inclui a etiqueta de origem e abre no WhatsApp para o visitante revisar e enviar. O site não envia mensagens automaticamente nem armazena os dados do formulário.
 
 ## Visualizar e publicar
 
@@ -63,10 +67,10 @@ O domínio só fica acessível após configurar e propagar esses registros no pr
 
 - Conteúdo semântico, link para pular para o conteúdo e foco visível.
 - Menu móvel com estado acessível e fechamento por Escape.
-- Etapas do ecossistema selecionáveis por teclado e anúncio da descrição atualizada.
+- Planos no mobile com encaixe nativo, indicadores selecionáveis, teclado e anúncio do plano atual.
 - FAQ com controles nativos `details` e `summary`.
 - Rótulos de formulário, seleções por teclado e campos de tamanho adequado para toque.
-- Layouts para desktop, tablet e celular, com fontes de sistema como alternativa ao Google Fonts.
+- Layouts para desktop, tablet e celular, com fontes locais e alternativas de sistema.
 - Respeito a `prefers-reduced-motion`.
 - Botão para pausar os efeitos contínuos. Animações de cartões param fora da tela e partículas param quando a aba fica oculta.
 - Conteúdo e contato direto disponíveis sem JavaScript. Nesse caso, o formulário é ocultado.
@@ -75,10 +79,10 @@ O domínio só fica acessível após configurar e propagar esses registros no pr
 
 - Símbolo original entre três órbitas rotativas com pontos luminosos, flutuação e reação sutil ao ponteiro.
 - Fundo preto com auroras azuis, grade discreta e partículas azuis e prateadas.
-- Botões com gradiente azul/prata e reflexo em movimento; faixa de palavras contínua.
+- Botões com gradiente azul/prata, reflexo em movimento e deslocamento leve com o cursor.
 - Manifesto fixado durante parte da rolagem, com palavras acendendo em sequência.
 - Entradas de seções e cartões em cascata; linha de processo preenchida pela rolagem.
-- Prévia animada para cada serviço: vídeo, conteúdo social e site.
+- Capas de vídeo e capturas de site reais; composição ilustrativa para social media até chegar o portfólio.
 - Brilho e inclinação nos cartões em dispositivos com ponteiro; composição própria para celular.
 
 ### Tela de abertura

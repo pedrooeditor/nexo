@@ -46,7 +46,7 @@ window.matchMedia('(min-width: 901px)').addEventListener('change', event => {
 });
 
 // Entradas em cascata. Sem JavaScript, o conteúdo permanece visível.
-const revealElements = document.querySelectorAll('.section-label, .section-heading, .problem-grid article, .service-card, .process-grid li, .package-grid article, .faq>div, .contact-grid>div, .brief');
+const revealElements = document.querySelectorAll('.section-label, .section-heading, .work-access, .service-card, .connection-intro, .team-card, .process-grid li, .package-grid article, .faq>div, .final-cta-content');
 const revealObserver = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (!entry.isIntersecting) return;
@@ -58,7 +58,7 @@ const revealObserver = new IntersectionObserver(entries => {
 }, {threshold: 0.08, rootMargin: '0px 0px -4% 0px'});
 revealElements.forEach((element, index) => {
   element.classList.add('reveal');
-  if (element.matches('.problem-grid article, .node, .service-card, .process-grid li, .package-grid article')) {
+  if (element.matches('.work-access, .service-card, .team-card, .process-grid li, .package-grid article')) {
     element.style.setProperty('--reveal-delay', ((index % 3) * 70) + 'ms');
   }
   revealObserver.observe(element);
@@ -80,7 +80,7 @@ document.querySelectorAll('.hero-art, .manifesto, .service-card, .package-grid a
 const TILT_X = 5.5;   // graus de inclinação para cima/baixo
 const TILT_Y = 7.5;   // graus de inclinação para os lados
 const EDGE = 10;      // folga da borda, em px
-const tiltCards = [...document.querySelectorAll('.problem-grid article, .service-card, .package-grid article')];
+const tiltCards = [...document.querySelectorAll('.work-access, .service-card, .team-card, .package-grid article')];
 const nodeCards = [...document.querySelectorAll('.node')];
 tiltCards.forEach(card => card.classList.add('tilt-card'));
 const canHover = event => event.pointerType !== 'touch' && finePointer.matches && !reducedMotion.matches && !effectsPaused && !lightMotion && !root.classList.contains('pf-open');
@@ -212,14 +212,16 @@ function updateScroll(timestamp) {
   scrollFrame = 0;
   if (document.hidden || root.classList.contains('pf-open')) { lastScrollPaint = 0; return; }
   const interval = timestamp - lastScrollPaint;
-  if (!lightMotion && lastScrollPaint && interval >= 8 && interval < 100) {
+  // Só avalia cadência quando a roda produz quadros contínuos. Gestos espaçados
+  // não significam um aparelho lento e não devem desligar os efeitos da marca.
+  if (!lightMotion && root.classList.contains('is-smooth-scrolling') && lastScrollPaint && interval >= 8 && interval < 100) {
     scrollSamples++;
     if (interval > 30) slowScrollSamples++;
     if (scrollSamples >= 24) {
       if (slowScrollSamples >= 10) enableLightMotion();
       scrollSamples = slowScrollSamples = 0;
     }
-  } else if (interval >= 100) scrollSamples = slowScrollSamples = 0;
+  } else scrollSamples = slowScrollSamples = 0;
   lastScrollPaint = timestamp;
   // Todas as medidas vêm antes de qualquer escrita: evita recalcular o layout a cada palavra.
   const viewport = window.innerHeight;
@@ -229,6 +231,7 @@ function updateScroll(timestamp) {
   const heroRect = motionEnabled && finePointer.matches && !lightMotion ? hero.getBoundingClientRect() : null;
   const rect = manifesto.getBoundingClientRect();
   const stageHeight = manifestoStage.offsetHeight || viewport;
+  const stickyTop = parseFloat(window.getComputedStyle(manifestoStage).top) || 0;
   const processRect = processGrid.getBoundingClientRect();
   paintValue(root, '--scroll', (scrollRange > 0 ? clamp(scrollY / scrollRange) : 0).toFixed(4));
   header.classList.toggle('scrolled', scrollY > 22);
@@ -236,7 +239,7 @@ function updateScroll(timestamp) {
   if (manifestoPaintedProgress < 0 || (rect.bottom >= 0 && rect.top <= viewport)) {
     // Cada estado depende da posição atual: descer revela, subir recolhe.
     // A altura real do palco mantém a sequência estável quando a barra do celular recolhe.
-    const progress = motionEnabled ? clamp(-rect.top / Math.max(1, rect.height - stageHeight)) : 1;
+    const progress = motionEnabled ? clamp((stickyTop - rect.top) / Math.max(1, rect.height - stageHeight)) : 1;
     if (progress !== manifestoPaintedProgress) {
       manifestoPaintedProgress = progress;
       const textProgress = clamp((progress - .12) / .72) * manifestoWords.length;
@@ -273,7 +276,7 @@ requestScroll();
 // A roda do mouse mantém a distância nativa e ganha uma desaceleração curta.
 // A página continua usando a rolagem real: sticky, âncoras e portfólios são preservados.
 (() => {
-  const RESPONSE_MS = 110;
+  const RESPONSE_MS = 135;
   let frame = 0;
   let target = window.scrollY;
   let writtenY = window.scrollY;
@@ -452,7 +455,7 @@ const floating = document.querySelector('.floating');
 const visibleContactZones = new Set();
 let briefHasFocus = Boolean(document.activeElement?.closest?.('#brief'));
 function syncFloating() {
-  const contactVisible = [...visibleContactZones].some(zone => zone.id === 'contato' || !finePointer.matches);
+  const contactVisible = [...visibleContactZones].some(zone => zone.id === 'proximo-passo' || !finePointer.matches);
   floating.classList.toggle('is-hidden', contactVisible || briefHasFocus);
 }
 const contactObserver = new IntersectionObserver(entries => {
@@ -462,27 +465,13 @@ const contactObserver = new IntersectionObserver(entries => {
   });
   syncFloating();
 }, {threshold:.08});
-document.querySelectorAll('#contato, .final-cta-button, .footer-contact').forEach(zone => contactObserver.observe(zone));
+document.querySelectorAll('#proximo-passo, [data-final-contact], .footer-contact').forEach(zone => contactObserver.observe(zone));
 finePointer.addEventListener('change', syncFloating);
 syncFloating();
 
-// Seleção exclusiva do formulário opcional; os CTAs têm links diretos ao WhatsApp.
+// Contexto opcional abaixo do CTA. Os planos e serviços têm links próprios.
 const brief = document.getElementById('brief');
 const fronts = [...brief.querySelectorAll('input[name="service"]')];
-const packages = [...brief.querySelectorAll('input[name="package"]')];
-const packageFronts = {
-  'Plano Presença':'Vídeos e motion design + Gestão de redes sociais',
-  'Plano Sites e páginas':'Sites e landing pages',
-  'Ecossistema Nexo':'Vídeos e motion design + Gestão de redes sociais + Sites e landing pages'
-};
-packages.forEach(input => input.addEventListener('change', () => {
-  if (!input.checked) return;
-  packages.forEach(other => { if (other !== input) other.checked = false; });
-  fronts.forEach(front => { front.checked = false; });
-}));
-fronts.forEach(input => input.addEventListener('change', () => {
-  if (input.checked) packages.forEach(pack => { pack.checked = false; });
-}));
 brief.addEventListener('focusin', () => {
   briefHasFocus = true;
   syncFloating();
@@ -496,18 +485,15 @@ brief.addEventListener('focusout', event => {
 brief.addEventListener('submit', event => {
   event.preventDefault();
   if (!brief.reportValidity()) return;
-  const pack = packages.find(input => input.checked);
   const selected = fronts.filter(input => input.checked).map(input => input.value);
   const company = document.getElementById('company-name').value.trim();
-  const segment = document.getElementById('company-segment').value.trim();
   const note = document.getElementById('project-note').value.trim();
-  const origin = pack ? pack.value : selected.length ? selected.join(' + ') : 'Contato geral';
+  const origin = selected.length ? selected.join(' + ') : 'Contato geral';
   const lines = [
     '[Site · ' + origin + ']',
     'Oi, Pedro! Tudo bem? Conheci a Nexo Studio e gostaria de conversar sobre minha empresa.',
     company ? 'Empresa: ' + company : '',
-    segment ? 'Segmento: ' + segment : '',
-    pack ? 'Tenho interesse em: ' + pack.value + ' (' + packageFronts[pack.value] + ').' : selected.length ? 'Tenho interesse em: ' + selected.join(', ') + '.' : 'Gostaria de ajuda para entender quais frentes fazem sentido para minha marca.',
+    selected.length ? 'Tenho interesse em: ' + selected.join(', ') + '.' : 'Gostaria de ajuda para entender quais frentes fazem sentido para minha marca.',
     note ? 'Sobre meu projeto: ' + note : ''
   ].filter(Boolean);
   window.location.assign('https://wa.me/5511933596263?text=' + encodeURIComponent(lines.join('\n\n')));
