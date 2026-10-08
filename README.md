@@ -33,7 +33,9 @@ O ecossistema conecta três serviços:
 
 Presença reúne vídeos e gestão das redes sociais; Sites e páginas é dedicado a sites e landing pages; Ecossistema Nexo combina os três serviços. A criação de site tem escopo de projeto, e a frequência das entregas de conteúdo é alinhada na parceria. O escopo e o investimento são definidos na proposta.
 
-O acesso aos portfólios fica apenas em `#trabalhos`, logo após a primeira tela, com capas e capturas reais junto aos botões. Vídeos e sites abrem suas galerias; a seleção de social media está em preparação, com contato disponível sobre o serviço. Os trabalhos têm nomes descritivos e contexto, sem números de desempenho não informados. Há dois vídeos e dois sites publicados; não são exibidos projetos fictícios.
+O acesso aos portfólios fica apenas em `#trabalhos`, logo após a primeira tela. As duas entradas usam capas conceituais em preto, azul e cromado: `assets/portfolio/entrada-motion-conceito-v1.webp` e `assets/portfolio/entrada-web-conceito-v1.webp`. Os trabalhos reais, com suas capas e capturas, aparecem somente nas galerias abertas pelo clique. A seleção de social media está em preparação, com contato disponível sobre o serviço. Os trabalhos têm nomes descritivos e contexto, sem números de desempenho não informados. Há dois vídeos e dois sites publicados; não são exibidos projetos fictícios.
+
+Os serviços são três cartões compactos sem imagens, antes do bloco de conexão e das etapas seguintes. Um cartão expande por vez, revelando uma dor, o benefício da frente e um link próprio para o WhatsApp. Vídeo desperta interesse, social media mantém a presença e o site apresenta a oferta. Os textos não prometem viralização nem resultados garantidos. As capas de entrada foram geradas com a ferramenta integrada ImageGen e otimizadas em WebP; o conjunto tem menos de 35 KB.
 
 ## Contato
 
@@ -68,6 +70,7 @@ O domínio só fica acessível após configurar e propagar esses registros no pr
 - Conteúdo semântico, link para pular para o conteúdo e foco visível.
 - Menu móvel com estado acessível e fechamento por Escape.
 - Planos no mobile com encaixe nativo, indicadores selecionáveis, teclado e anúncio do plano atual.
+- Cartões de serviços com botões nativos, estado `aria-expanded`, conteúdo recolhido fora da navegação por teclado e expansão suave. Sem JavaScript, as explicações e os contatos ficam visíveis.
 - FAQ com controles nativos `details` e `summary`.
 - Rótulos de formulário, seleções por teclado e campos de tamanho adequado para toque.
 - Layouts para desktop, tablet e celular, com fontes locais e alternativas de sistema.
@@ -82,7 +85,7 @@ O domínio só fica acessível após configurar e propagar esses registros no pr
 - Botões com gradiente azul/prata, reflexo em movimento e deslocamento leve com o cursor.
 - Manifesto fixado durante parte da rolagem, com palavras acendendo em sequência.
 - Entradas de seções e cartões em cascata; linha de processo preenchida pela rolagem.
-- Capas de vídeo e capturas de site reais; composição ilustrativa para social media até chegar o portfólio.
+- Capas conceituais discretas na entrada de portfólio; capas de vídeo e capturas reais dentro das galerias.
 - Brilho e inclinação nos cartões em dispositivos com ponteiro; composição própria para celular.
 
 ### Tela de abertura

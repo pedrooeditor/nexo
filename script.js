@@ -45,6 +45,38 @@ window.matchMedia('(min-width: 901px)').addEventListener('change', event => {
   if (event.matches) closeMenu();
 });
 
+// Serviços compactos: um cartão aberto por vez, com contato próprio.
+// Sem JavaScript, todas as explicações e os links continuam disponíveis.
+(() => {
+  const grid = document.querySelector('.service-disclosure-grid');
+  if (!grid) return;
+  const cards = [...grid.querySelectorAll('.service-disclosure')];
+  function setOpen(card, open) {
+    const toggle = card.querySelector('.service-toggle');
+    const panel = card.querySelector('.service-panel');
+    if (!open && panel.contains(document.activeElement)) toggle.focus();
+    card.classList.toggle('is-service-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.querySelector('.service-hint-label').textContent = open ? 'Recolher informações' : 'Entenda como ajuda';
+    panel.setAttribute('aria-hidden', String(!open));
+    panel.inert = !open;
+  }
+  cards.forEach(card => {
+    const toggle = card.querySelector('.service-toggle');
+    setOpen(card, false);
+    toggle.disabled = false;
+    toggle.addEventListener('click', () => {
+      const open = toggle.getAttribute('aria-expanded') !== 'true';
+      cards.forEach(other => setOpen(other, other === card && open));
+      requestScroll();
+    });
+  });
+  grid.classList.add('has-service-disclosures');
+  grid.addEventListener('transitionend', event => {
+    if (event.propertyName === 'grid-template-rows') requestScroll();
+  });
+})();
+
 // Entradas em cascata. Sem JavaScript, o conteúdo permanece visível.
 const revealElements = document.querySelectorAll('.section-label, .section-heading, .work-access, .service-card, .connection-intro, .team-card, .process-grid li, .package-grid article, .faq>div, .final-cta-content');
 const revealObserver = new IntersectionObserver(entries => {
