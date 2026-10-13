@@ -1002,10 +1002,6 @@ html.pf-open body>:not(.pf-dialog):not(.preloader) *, html.pf-open body>:not(.pf
 .feedback-preview { display:block; margin:0 12px 12px; border-radius:16px; overflow:hidden; border:1px solid #79b9fb22; background:#081322; transition:border-color .25s }
 .feedback-image-frame { display:block; aspect-ratio:853/1844; background:#0b0f12 }
 .feedback-image-frame img { display:block; width:100%; height:auto; object-fit:contain }
-.feedback-image-caption { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:14px 16px; color:#96d4ff; font-size:13px; font-weight:500; line-height:1.5 }
-.feedback-image-caption .ui-icon { flex-shrink:0; font-size:19px }
-.feedback-preview:hover,.feedback-preview:focus-visible { border-color:#9ad9ff }
-.feedback-preview:focus-visible { outline-offset:4px }
 @media(hover:hover) and (pointer:fine) {
   .feedback-card:hover { transform:translateY(-5px); border-color:#79b9fb80 }
 }
@@ -1017,6 +1013,5 @@ html.pf-open body>:not(.pf-dialog):not(.preloader) *, html.pf-open body>:not(.pf
   .feedback-card-heading { padding:20px 20px 18px }
   .feedback-card-heading h3 { font-size:22px }
   .feedback-card-heading p { font-size:13px }
-  .feedback-image-caption { min-height:48px; padding:14px }
 }
 @media(prefers-reduced-motion:reduce) { .feedback-card,.feedback-preview { transition:none } .feedback-card:hover { transform:none } }
