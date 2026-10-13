@@ -23,7 +23,7 @@ Primeira tela: **Sua empresa tem valor. Sua presença digital precisa mostrar is
 
 Hierarquia: cabeçalho → primeira tela → trabalhos → serviços e conexão → equipe → feedbacks de clientes → planos → como funciona → dúvidas frequentes → convite final e contexto opcional → rodapé.
 
-Os feedbacks ficam em `#clientes`, antes dos planos, com duas conversas fornecidas pelo proprietário. Nomes, avatares e menções aos nomes dentro das mensagens foram ocultados nas imagens antes de publicá-las. Os arquivos originais identificáveis não estão no repositório. As versões públicas em `assets/clientes/` usam WebP com carregamento sob demanda; cada cartão abre a conversa inteira em uma nova aba por um link nativo, inclusive sem JavaScript. A seção apresenta relatos dos clientes sem acrescentar promessas de desempenho ou números além dos prints.
+Os feedbacks ficam em `#clientes`, antes dos planos, com duas conversas fornecidas pelo proprietário. Por solicitação do proprietário, Nova Aço e Dr. Marcos são identificados nos cartões e os nomes permanecem visíveis nos prints. Somente os avatares estão borrados nas versões `v2` de `assets/clientes/`. Os prints originais não foram publicados. As imagens usam WebP com carregamento sob demanda; cada cartão abre a conversa inteira em uma nova aba por um link nativo, inclusive sem JavaScript. A seção apresenta relatos dos clientes sem acrescentar promessas de desempenho ou números além dos prints.
 
 A identidade preserva o N com órbitas, o brilho azul, a abertura, as palavras reveladas pela rolagem, a inclinação em portfólios/equipe/planos e o movimento dos botões. Os cartões de serviços têm somente subida leve com luz sob o cursor. O manifesto fica dentro de `#servicos`, com palco compacto e progressão reversível que considera a altura do cabeçalho.
 
@@ -35,7 +35,7 @@ O ecossistema conecta três serviços:
 
 Presença reúne vídeos e gestão das redes sociais; Sites e páginas é dedicado a sites e landing pages; Ecossistema Nexo combina os três serviços. A ordem é Presença → Ecossistema Nexo → Sites e páginas. O pacote completo fica no centro, com selo prateado "Plano recomendado" e CTA azul. No carrossel mobile, é o pacote inicialmente selecionado, com os outros dois ao lado. O selo indica a recomendação da Nexo, sem alegar volume de vendas não informado. A criação de site tem escopo de projeto, e a frequência das entregas de conteúdo é alinhada na parceria. O escopo e o investimento são definidos na proposta.
 
-O acesso aos portfólios fica apenas em `#trabalhos`, logo após a primeira tela. Cada cartão inteiro é um único link nativo, com descrição e formatos; clicar na imagem ou no texto abre a galeria. As duas entradas usam capas conceituais em preto, azul e cromado: `assets/portfolio/entrada-motion-conceito-v1.webp` e `assets/portfolio/entrada-web-conceito-v1.webp`. Os trabalhos reais, com suas capas e capturas, aparecem somente nas galerias abertas pelo clique. A seleção de social media está em preparação, com contato disponível sobre o serviço. Os trabalhos têm nomes descritivos e contexto, sem números de desempenho não informados. Há dois vídeos e dois sites publicados; não são exibidos projetos fictícios.
+O acesso aos portfólios fica apenas em `#trabalhos`, logo após a primeira tela. Cada cartão inteiro é um único link nativo, com descrição e formatos; clicar na imagem ou no texto abre a galeria. As duas entradas usam capas conceituais em preto, azul e cromado: `assets/portfolio/entrada-motion-conceito-v1.webp` e `assets/portfolio/entrada-web-conceito-v1.webp`. Os trabalhos reais, com suas capas e capturas, aparecem somente nas galerias abertas pelo clique. Social media é apresentado com descrição e contato, sem aviso de seleção pendente. Os trabalhos têm nomes descritivos, objetivos e escolhas de edição/estrutura, sem números de desempenho não informados. Há dois vídeos e dois sites publicados; não são exibidos projetos fictícios.
 
 Os serviços são três cartões compactos sem imagens, antes do bloco de conexão e das etapas seguintes. Um cartão expande por vez, revelando uma dor, o benefício da frente e um link próprio para o WhatsApp. Vídeo desperta interesse, social media mantém a presença e o site apresenta a oferta. Os textos não prometem viralização nem resultados garantidos. As capas de entrada foram geradas com a ferramenta integrada ImageGen e otimizadas em WebP; o conjunto tem menos de 35 KB.
 
@@ -89,6 +89,20 @@ O domínio só fica acessível após configurar e propagar esses registros no pr
 - Entradas de seções e cartões em cascata; linha de processo preenchida pela rolagem.
 - Capas conceituais discretas na entrada de portfólio; capas de vídeo e capturas reais dentro das galerias.
 - Brilho e inclinação nos cartões em dispositivos com ponteiro; composição própria para celular.
+
+### Medição de visitas e intenção de contato
+
+`analytics-config.js` recebe o ID de medição da propriedade GA4 da Nexo. O valor atual é vazio: **a medição ainda está inativa**, nenhum script do Google é carregado e nenhum dado é enviado. A ativação exige informar o ID real `G-...`, publicar a configuração e conferir a propriedade em Tempo real/DebugView. O ID de medição é público; não é necessário fornecer senha ou chave de API.
+
+Quando configurado, `analytics.js` carrega a tag oficial de forma assíncrona. O GA4 recebe a visita inicial e pode apresentar sessões, usuários e origem/campanha. Os parâmetros UTM são preservados; outros parâmetros de consulta não entram na URL de página enviada por esta integração. O referrer é reduzido à origem. Google Signals e personalização de anúncios não são habilitados por esta configuração.
+
+Eventos customizados:
+- `portfolio_open`: abertura de uma categoria real, incluindo navegação por teclado e histórico. `portfolio_category` identifica `motion` ou `web`; a troca de projeto dentro da mesma categoria não gera nova abertura.
+- `whatsapp_click`: intenção de abrir o WhatsApp em links ou no formulário opcional. `source_section` diferencia cabeçalho, botão fixo, seção, rodapé e formulário; `plan_name` distingue `presenca`, `ecossistema` e `sites` quando o botão pertence a um plano.
+
+Os eventos customizados não incluem conteúdo da mensagem, nome da empresa ou texto preenchido no formulário. Cliques não confirmam envio de mensagem, lead qualificado ou contrato. Para relatórios por seção/plano/categoria, registre os três parâmetros como dimensões customizadas de escopo de evento no GA4. A mensuração aprimorada do GA4 pode gerar eventos genéricos e visualizações de histórico; não some eventos genéricos `click` ao indicador `whatsapp_click`.
+
+Os planos distinguem conteúdo/redes como parceria recorrente e site como projeto de criação. Quantidades, frequência, revisões, condições de manutenção e novas alterações continuam sujeitas à proposta aprovada, sem inventar inclusões, exclusões ou preços.
 
 ### Tela de abertura
 

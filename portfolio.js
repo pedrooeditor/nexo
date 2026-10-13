@@ -245,7 +245,11 @@
     if (renderedRoute === currentRoute) return;
     const next = route();
     renderedRoute = currentRoute;
-    if (!next) { hideDialog(); return; }
+    if (!next) {
+      hideDialog();
+      document.dispatchEvent(new CustomEvent('nexo:portfolioview', {detail:{category:''}}));
+      return;
+    }
     stopMedia();
     activeCategory = next.category.id;
     activeProject = next.project;
@@ -272,6 +276,7 @@
       heading.tabIndex = -1;
       heading.focus({preventScroll:true});
     }
+    document.dispatchEvent(new CustomEvent('nexo:portfolioview', {detail:{category:next.category.id}}));
   }
 
   function navigate(category, project, replace = false) {
