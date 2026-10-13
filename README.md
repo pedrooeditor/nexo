@@ -21,7 +21,9 @@ Os arquivos `identity.css`, `responsive.css`, `ecossistema.css` e `experiencia.c
 
 Primeira tela: **Sua empresa tem valor. Sua presença digital precisa mostrar isso.**
 
-Hierarquia: cabeçalho → primeira tela → trabalhos → serviços e conexão → equipe → planos → como funciona → dúvidas frequentes → convite final e contexto opcional → rodapé.
+Hierarquia: cabeçalho → primeira tela → trabalhos → serviços e conexão → equipe → feedbacks de clientes → planos → como funciona → dúvidas frequentes → convite final e contexto opcional → rodapé.
+
+Os feedbacks ficam em `#clientes`, antes dos planos, com duas conversas fornecidas pelo proprietário. Nomes, avatares e menções aos nomes dentro das mensagens foram ocultados nas imagens antes de publicá-las. Os arquivos originais identificáveis não estão no repositório. As versões públicas em `assets/clientes/` usam WebP com carregamento sob demanda; cada cartão abre a conversa inteira em uma nova aba por um link nativo, inclusive sem JavaScript. A seção apresenta relatos dos clientes sem acrescentar promessas de desempenho ou números além dos prints.
 
 A identidade preserva o N com órbitas, o brilho azul, a abertura, as palavras reveladas pela rolagem, a inclinação em portfólios/equipe/planos e o movimento dos botões. Os cartões de serviços têm somente subida leve com luz sob o cursor. O manifesto fica dentro de `#servicos`, com palco compacto e progressão reversível que considera a altura do cabeçalho.
 
