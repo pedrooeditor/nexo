@@ -126,13 +126,26 @@
     catch(_){$('owner-status').textContent='Não foi possível confirmar a exclusão no servidor. A marcação local foi solicitada; tente novamente.';}
   }
   $('exclude-device').addEventListener('click',async()=>{await exclude();load();});
+  const campaignTag=(value,max)=>value.normalize('NFD').replace(/[\u0300-\u036f]/g,'').trim().toLowerCase()
+    .replace(/[^a-z0-9_-]+/g,'_').replace(/_+/g,'_').slice(0,max).replace(/^[_-]+|[_-]+$/g,'');
+  function clearCampaign(){
+    $('campaign-output').value='';$('campaign-output-wrap').hidden=true;$('campaign-status').textContent='';
+  }
+  ['campaign-source','campaign-name'].forEach(id=>$(id).addEventListener('input',clearCampaign));
   $('campaign-form').addEventListener('submit',event=>{
-    event.preventDefault();const source=$('campaign-source').value.trim().toLowerCase(),campaign=$('campaign-name').value.trim().toLowerCase();
-    if(!/^[a-z0-9_-]{1,60}$/.test(source)||!/^[a-z0-9_-]{1,80}$/.test(campaign))return;
+    event.preventDefault();clearCampaign();
+    const source=campaignTag($('campaign-source').value,60),campaign=campaignTag($('campaign-name').value,80);
+    if(!source||!campaign){
+      $('campaign-status').textContent='Use pelo menos uma letra ou número em cada campo para identificar a divulgação.';
+      $(source?'campaign-name':'campaign-source').focus();return;
+    }
+    $('campaign-source').value=source;$('campaign-name').value=campaign;
     const url=new URL('https://nexostud.com.br/');url.searchParams.set('utm_source',source);url.searchParams.set('utm_medium','divulgacao');url.searchParams.set('utm_campaign',campaign);
-    $('campaign-output').value=url.href;$('campaign-output-wrap').hidden=false;$('campaign-status').textContent='Compartilhe este link para identificar a origem das visitas.';
+    $('campaign-output').value=url.href;$('campaign-output-wrap').hidden=false;
+    $('campaign-status').textContent='Link pronto. Origem: '+source+' · Campanha: '+campaign+'. Acompanhe as visitas em Campanhas identificadas.';
   });
   $('copy-campaign').addEventListener('click',async()=>{
+    if(!$('campaign-output').value)return;
     try{await navigator.clipboard.writeText($('campaign-output').value);$('campaign-status').textContent='Link copiado.';}
     catch(_){$('campaign-output').focus();$('campaign-output').select();$('campaign-status').textContent='Selecione e copie o link acima.';}
   });
