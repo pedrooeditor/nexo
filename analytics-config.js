@@ -1,3 +1,6 @@
-/* Preencha com o ID G-... da propriedade GA4 da Nexo. Sem ID, não há coleta. */
+/* Somente a URL e a chave pública. Relatórios e login são verificados no servidor. */
 'use strict';
-window.NEXO_ANALYTICS = Object.freeze({ measurementId: '' });
+window.NEXO_ANALYTICS = Object.freeze({
+  supabaseUrl: 'https://pwbpxhsucidjgmlneksz.supabase.co',
+  publishableKey: 'sb_publishable_cO1ukxKyw8P9tdb2u8H92w_p-q3k-oy'
+});

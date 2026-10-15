@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer">
+  <meta name="theme-color" content="#050a12">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; connect-src 'self' https://pwbpxhsucidjgmlneksz.supabase.co; img-src 'self'; font-src 'self'; style-src 'self'; script-src 'self'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Painel de tráfego | Nexo Studio</title>
+  <link rel="icon" href="../assets/nexo-icon.png"><link rel="stylesheet" href="admin.css?v=1">
+  <script defer src="../analytics-config.js?v=2"></script><script defer src="auth.js?v=1"></script><script defer src="dashboard.js?v=1"></script>
+</head>
+<body data-page="panel">
+  <p class="loading-session" id="session-loading" role="status">Verificando acesso…</p>
+  <div id="dashboard" hidden>
+    <header class="topbar">
+      <a class="brand" href="../" target="_blank" rel="noopener"><img src="../assets/nexo-icon.png" width="36" height="36" alt=""><span>NEXO<span class="brand-small">STUDIO / ANALYTICS</span></span></a>
+      <nav aria-label="Navegação do painel"><a href="#resumo">Resumo</a><a href="#interesse">Interesse</a><a href="#detalhes">Detalhes</a><a href="#configuracoes">Configurações</a></nav>
+      <button id="logout" class="button small" type="button">Sair <span aria-hidden="true">↗</span></button>
+    </header>
+    <main class="shell">
+      <section class="dashboard-intro" id="resumo">
+        <div><p class="eyebrow">NEXO STUDIO / VISÃO GERAL</p><h1>O movimento<br><span>da sua marca.</span></h1><p class="muted">Acessos, atenção e intenção de contato. Em uma visão clara.</p></div>
+        <div class="live-status"><span class="dot"></span><span id="connection-status">Conectando…</span><small id="last-update">Aguardando dados</small></div>
+      </section>
+      <form class="filters" id="filters">
+        <label class="period-label">Período<select id="period"><option value="today">Hoje</option><option value="7" selected>Últimos 7 dias</option><option value="30">Últimos 30 dias</option><option value="90">Últimos 90 dias</option><option value="all">Desde o início da medição</option><option value="custom">Personalizado</option></select></label>
+        <div class="date-fields" id="date-fields" hidden><label>De<input type="date" id="start-date" required></label><label>Até<input type="date" id="end-date" required></label></div>
+        <label>Aparelho<select id="device"><option value="">Todos</option><option value="mobile">Celular</option><option value="desktop">Computador</option><option value="tablet">Tablet</option></select></label>
+        <label>Origem<select id="source"><option value="">Todas</option></select></label>
+        <button class="button primary" type="submit" id="refresh">Atualizar <span aria-hidden="true">↻</span></button>
+        <button class="button" type="button" id="export">Exportar CSV <span aria-hidden="true">↓</span></button>
+      </form>
+      <p class="range-copy" id="range-copy"></p>
+      <div class="notice" id="history-notice" role="status">O histórico começa quando a medição é ativada. Acessos anteriores não registrados não podem ser reconstruídos.</div>
+      <div class="notice error" id="data-error" role="alert" hidden></div>
+      <section class="kpis" aria-label="Indicadores principais">
+        <article class="kpi"><div class="kpi-label">Visitantes <span class="kpi-icon" aria-hidden="true">◎</span></div><strong data-kpi="visitors">—</strong><p>Navegadores distintos no período</p></article>
+        <article class="kpi"><div class="kpi-label">Visitas <span class="kpi-icon" aria-hidden="true">↗</span></div><strong data-kpi="sessions">—</strong><p>Sessões de navegação</p></article>
+        <article class="kpi"><div class="kpi-label">Tempo ativo médio <span class="kpi-icon" aria-hidden="true">◷</span></div><strong data-kpi="avg_active_seconds" data-format="duration">—</strong><p>Por visita, com a página visível</p></article>
+        <article class="kpi featured"><div class="kpi-label">WhatsApp <span class="kpi-icon" aria-hidden="true">↗</span></div><strong data-kpi="whatsapp_sessions">—</strong><p>Visitas com clique para conversar</p><small id="contact-rate">—</small></article>
+      </section>
+      <section class="secondary-kpis" aria-label="Mais indicadores">
+        <article><span>Engajamento</span><strong data-kpi="engagement_rate" data-format="percent">—</strong><small>10s ativos ou ação relevante</small></article>
+        <article><span>Abriram portfólio</span><strong data-kpi="portfolio_sessions">—</strong><small>Visitas com galeria aberta</small></article>
+        <article><span>Visualizações</span><strong data-kpi="page_views">—</strong><small>Carregamentos da página</small></article>
+        <article><span>Ativos recentemente</span><strong data-kpi="online">—</strong><small>No filtro, últimos 5 minutos</small></article>
+      </section>
+      <div class="empty-state" id="no-data" hidden><span aria-hidden="true">↗</span><div><h2>A medição está pronta para receber visitas.</h2><p>Os gráficos vão aparecer conforme outros visitantes navegarem pelo site. Seus navegadores marcados e os testes ficam fora dos números.</p></div></div>
+      <section class="main-grid" aria-label="Acessos e aquisição">
+        <article class="panel chart-panel"><div class="panel-head"><div><p class="eyebrow">MOVIMENTO</p><h2>Acessos ao longo do tempo</h2></div><label class="compact-select"><span class="sr-only">Métrica do gráfico</span><select id="chart-metric"><option value="visitors">Visitantes</option><option value="sessions">Visitas</option><option value="contacts">WhatsApp</option></select></label></div><div id="daily-chart" class="line-chart" role="img" aria-label="Gráfico de acessos"></div><p class="chart-note">Datas no horário de Brasília. O período anterior à coleta fica sem dados.</p><details class="data-details"><summary>Ver valores por dia</summary><div id="daily-table" class="table-wrap"></div></details></article>
+        <article class="panel"><div class="panel-head"><div><p class="eyebrow">AQUISIÇÃO</p><h2>De onde vêm as visitas</h2></div></div><div id="sources-chart" class="bar-list"></div><p class="chart-note">“Direto” inclui links sem identificação de origem.</p></article>
+      </section>
+      <section id="interesse" class="section-block">
+        <div class="section-title"><div><p class="eyebrow">02 / INTERESSE</p><h2>O que desperta atenção.</h2></div><p>Da visita ao portfólio e à intenção de conversar.</p></div>
+        <div class="two-grid">
+          <article class="panel"><div class="panel-head"><div><h3>Jornada com portfólio</h3><p class="muted">Ações na mesma visita</p></div></div><div id="journey" class="journey"></div><p class="chart-note" id="direct-contacts"></p><p class="chart-note">Clique no WhatsApp indica interesse; não confirma mensagem enviada ou venda.</p></article>
+          <article class="panel"><div class="panel-head"><div><h3>Portfólios e projetos</h3><p class="muted">Aberturas e visitas distintas</p></div></div><div id="portfolios" class="bar-list"></div><div id="projects-table" class="table-wrap"></div></article>
+        </div>
+        <article class="panel wide-panel"><div class="panel-head"><div><p class="eyebrow">VÍDEOS</p><h3>Reprodução e retenção</h3></div><span class="subtle-badge" id="video-total">—</span></div><div id="videos-table" class="table-wrap"></div><p class="chart-note">Cada abertura do player conta um início. 25%, 50% e 75% indicam posições alcançadas; o tempo assistido considera reprodução visível. Avançar o vídeo pode alcançar uma posição sem assistir todo o trecho.</p></article>
+        <div class="two-grid">
+          <article class="panel"><div class="panel-head"><div><h3>Quais botões levam ao WhatsApp</h3><p class="muted" id="whatsapp-total">—</p></div></div><div id="whatsapp-table" class="table-wrap"></div></article>
+          <article class="panel"><div class="panel-head"><div><h3>Até onde as pessoas chegam</h3><p class="muted">Seções vistas durante a navegação</p></div></div><div id="sections-chart" class="bar-list"></div><p class="chart-note" id="scroll-summary"></p></article>
+        </div>
+      </section>
+      <section id="detalhes" class="section-block">
+        <div class="section-title"><div><p class="eyebrow">03 / DETALHES</p><h2>O contexto de cada acesso.</h2></div><p>Aparelhos, campanhas, horários e interações.</p></div>
+        <div class="three-grid"><article class="panel"><h3>Aparelhos</h3><div id="devices-chart" class="bar-list"></div></article><article class="panel"><h3>Navegadores</h3><div id="browsers-chart" class="bar-list"></div></article><article class="panel"><h3>Novos e recorrentes</h3><div id="returning-chart" class="bar-list"></div><p class="chart-note">Novo = primeiro registro dentro do período selecionado.</p></article></div>
+        <div class="two-grid"><article class="panel"><div class="panel-head"><h3>Campanhas identificadas</h3></div><div id="campaigns-table" class="table-wrap"></div></article><article class="panel"><div class="panel-head"><h3>Horários das visitas</h3></div><div id="hours-chart" class="hour-chart" role="img" aria-label="Visitas por horário"></div><p class="chart-note">Horário de início da visita, em Brasília.</p></article></div>
+        <details class="panel expandable"><summary>Links e interações recentes <span>+</span></summary><div class="two-grid"><div><h3>Links mais clicados</h3><div id="links-table" class="table-wrap"></div></div><div><h3>Últimas interações</h3><div id="recent-table" class="table-wrap"></div></div></div></details>
+      </section>
+      <section id="configuracoes" class="section-block">
+        <div class="section-title"><div><p class="eyebrow">04 / CONFIGURAÇÕES</p><h2>Dados que você entende.</h2></div><p>Controle dos seus acessos e critérios de medição.</p></div>
+        <div class="two-grid"><article class="panel"><p class="eyebrow">EXCLUSÃO DOS SEUS ACESSOS</p><h3>Este navegador fica fora da contagem.</h3><p class="muted settings-copy" id="owner-status">Verificando exclusão…</p><button class="button" id="exclude-device" type="button">Marcar este navegador novamente</button><p class="chart-note">Entre em <strong>nexostud.com.br/admin/</strong> uma vez em cada navegador do celular ou computador que você usa. A marcação não acompanha outros dispositivos, modo anônimo ou limpeza do armazenamento.</p></article><article class="panel"><p class="eyebrow">ORIGEM DOS LINKS</p><h3>Identifique suas divulgações.</h3><form id="campaign-form" class="campaign-form"><label>Origem<input id="campaign-source" maxlength="60" placeholder="Ex.: whatsapp" required pattern="[A-Za-z0-9_-]+"></label><label>Campanha<input id="campaign-name" maxlength="80" placeholder="Ex.: grupos_barueri" required pattern="[A-Za-z0-9_-]+"></label><button class="button" type="submit">Gerar link</button></form><label class="campaign-output" id="campaign-output-wrap" hidden>Link para compartilhar<input id="campaign-output" readonly><button class="button small" id="copy-campaign" type="button">Copiar</button></label><p class="form-status" id="campaign-status" role="status"></p></article></div>
+        <article class="panel search-console"><div><p class="eyebrow">GOOGLE / HISTÓRICO DE BUSCA</p><h3>Posição no Google e visitas são medidas diferentes.</h3><p class="muted">A integração conectada ao Search Console está indisponível por assinatura expirada. O painel não mistura impressões ou cliques de busca com as visitas registradas aqui. O histórico anterior de busca pode ser consultado no Search Console da sua conta.</p></div><a class="button" href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer">Abrir Search Console ↗</a></article>
+        <details class="panel expandable methods"><summary>Como os números são calculados <span>+</span></summary><dl><dt>Visitantes</dt><dd>Identificadores aleatórios de navegador. Uma pessoa em dois aparelhos pode aparecer duas vezes; pessoas que compartilham navegador podem aparecer como uma só.</dd><dt>Visitas</dt><dd>Sessões com intervalo de até 30 minutos entre atividades. Recarregar gera outra visualização, sem criar automaticamente outra visita.</dd><dt>Tempo ativo e engajamento</dt><dd>Tempo com a página visível e atividade recente; vídeos em reprodução também contam. Após 60 segundos sem interação, a leitura ativa deixa de somar. A visita é engajada com 10 segundos ativos ou abertura de portfólio/projeto ou clique no WhatsApp.</dd><dt>Privacidade e limites</dt><dd>Não coletamos conteúdo dos formulários, número de telefone do visitante, localização exata ou IP no banco de eventos. Bloqueadores, JavaScript desativado, perda de conexão e sinais Do Not Track podem reduzir a medição. Bots conhecidos e navegadores de teste são ignorados. Este sistema não mede contratos fechados.</dd><dt>Origem e campanhas</dt><dd>Links UTM ou domínio de referência. Compartilhamentos por aplicativos podem aparecer como “direto” quando não levam identificação. Origem é uma indicação, sem atribuição completa entre aparelhos.</dd><dt>Filtros e período</dt><dd>Todos os blocos seguem o período e os filtros selecionados. Acessos recentes considera os últimos 5 minutos dentro desse recorte. Dados da Nexo e do PH Motions ficam separados.</dd><dt>Histórico</dt><dd id="history-method">A coleta começa na data informada no topo. O período anterior não registrado é indisponível.</dd></dl></details>
+      </section>
+      <footer class="admin-footer"><span>Nexo Studio · Tudo se conecta, tudo tem Nexo.</span><span>Horário de Brasília · <a href="../privacidade/">Privacidade</a></span></footer>
+    </main>
+  </div>
+</body>
+</html>

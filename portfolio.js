@@ -276,7 +276,7 @@
       heading.tabIndex = -1;
       heading.focus({preventScroll:true});
     }
-    document.dispatchEvent(new CustomEvent('nexo:portfolioview', {detail:{category:next.category.id}}));
+    document.dispatchEvent(new CustomEvent('nexo:portfolioview', {detail:{category:next.category.id,project:next.project?.id||''}}));
   }
 
   function navigate(category, project, replace = false) {

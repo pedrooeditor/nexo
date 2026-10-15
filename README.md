@@ -90,19 +90,32 @@ O domínio só fica acessível após configurar e propagar esses registros no pr
 - Capas conceituais discretas na entrada de portfólio; capas de vídeo e capturas reais dentro das galerias.
 - Brilho e inclinação nos cartões em dispositivos com ponteiro; composição própria para celular.
 
-### Medição de visitas e intenção de contato
+### Painel privado de tráfego — /admin/
 
-`analytics-config.js` recebe o ID de medição da propriedade GA4 da Nexo. O valor atual é vazio: **a medição ainda está inativa**, nenhum script do Google é carregado e nenhum dado é enviado. A ativação exige informar o ID real `G-...`, publicar a configuração e conferir a propriedade em Tempo real/DebugView. O ID de medição é público; não é necessário fornecer senha ou chave de API.
+Publicado em `https://nexostud.com.br/admin/`. A página inicial pede usuário e senha; `painel.html` apresenta os relatórios após o login. Usuário: `nexo_admin`. A senha foi provisionada com o mesmo hash protegido do acesso já existente ao PH Motions. Senhas e tokens não fazem parte deste repositório.
 
-Quando configurado, `analytics.js` carrega a tag oficial de forma assíncrona. O GA4 recebe a visita inicial e pode apresentar sessões, usuários e origem/campanha. Os parâmetros UTM são preservados; outros parâmetros de consulta não entram na URL de página enviada por esta integração. O referrer é reduzido à origem. Google Signals e personalização de anúncios não são habilitados por esta configuração.
+- `analytics-config.js`: somente URL e chave **pública** do Supabase.
+- `metrics.js`: coletor próprio leve, sem SDK ou bibliotecas adicionais no site.
+- `admin/`: login, painel, estilos, autenticação e gráficos SVG nativos.
+- `backend/nexo-analytics.sql`: estrutura versionada do banco e funções. O esquema `nexo_private` é isolado dos dados do PH Motions. Todas as tabelas têm RLS e nenhum acesso direto para `anon`/`authenticated`. Os wrappers públicos são `SECURITY INVOKER`; as implementações privadas verificam o token de sessão antes de ler relatórios ou excluir um visitante.
+- `privacidade/`: descrição da medição e opção de desativar neste navegador.
+- `robots.txt` e metadados: painel fora da indexação. Isso complementa o login; não substitui a autorização no servidor.
 
-Eventos customizados:
-- `portfolio_open`: abertura de uma categoria real, incluindo navegação por teclado e histórico. `portfolio_category` identifica `motion` ou `web`; a troca de projeto dentro da mesma categoria não gera nova abertura.
-- `whatsapp_click`: intenção de abrir o WhatsApp em links ou no formulário opcional. `source_section` diferencia cabeçalho, botão fixo, seção, rodapé e formulário; `plan_name` distingue `presenca`, `ecossistema` e `sites` quando o botão pertence a um plano.
+A preparação antiga para GA4 em `analytics.js` deixou de ser carregada. A coleta atual não depende de um ID `G-...` e não envia eventos ao Google Analytics. O projeto Supabase existente foi reativado, sem criação de projeto ou contratação de plano adicional.
 
-Os eventos customizados não incluem conteúdo da mensagem, nome da empresa ou texto preenchido no formulário. Cliques não confirmam envio de mensagem, lead qualificado ou contrato. Para relatórios por seção/plano/categoria, registre os três parâmetros como dimensões customizadas de escopo de evento no GA4. A mensuração aprimorada do GA4 pode gerar eventos genéricos e visualizações de histórico; não some eventos genéricos `click` ao indicador `whatsapp_click`.
+**Sessão do painel:** token aleatório de 256 bits, hash no servidor e expiração de uma hora. O login transfere o token uma única vez pela `sessionStorage`, com validade de 20 segundos, e a página do painel o remove imediatamente. Depois disso, o token fica apenas na memória. Recarregar ou reabrir exige novo login; sair revoga o token. Há limitação de tentativas de senha. O conteúdo dos relatórios não é incluído no HTML público.
 
-Os planos distinguem conteúdo/redes como parceria recorrente e site como projeto de criação. Quantidades, frequência, revisões, condições de manutenção e novas alterações continuam sujeitas à proposta aprovada, sem inventar inclusões, exclusões ou preços.
+**Excluir os próprios acessos:** abrir `/admin/` marca a chave local `nexo.analytics.owner=1`, antes de qualquer visita medida naquela página. Após login, o identificador do navegador, caso já exista, é incluído na lista de exclusões do banco; seus registros anteriores deixam de aparecer e os próximos são recusados. Repetir em cada navegador/dispositivo. Modo anônimo, armazenamento apagado e aparelhos diferentes não podem ser reconhecidos automaticamente como a mesma pessoa. A navegação no admin e em privacidade não gera eventos de visita.
+
+**Critérios:** visitante é um identificador aleatório de navegador, não uma pessoa identificada. Sessão renova após 30 minutos sem atividade. Recarregar aumenta visualizações, preservando sessão/visitante. Tempo ativo soma amostras de página visível com atividade nos últimos 60 segundos ou vídeo tocando; o relatório usa o máximo por visualização para não somar heartbeats repetidos. Sessão engajada: 10s ativos ou portfólio/projeto/WhatsApp. Ativos recentemente: eventos nos últimos 5 minutos dentro dos filtros.
+
+**Eventos:** abertura de página, tempo ativo, rolagem, seções vistas, abertura de portfólio/projeto, links, WhatsApp por botão e plano, reprodução/progresso/fim/erro/tempo dos vídeos e expansão de serviços/FAQ/formulário. Cliques do formulário registram apenas a ação; os campos e a mensagem não são enviados ao painel. Milestones de vídeo indicam posição alcançada, inclusive após avançar; tempo assistido é medido separadamente.
+
+**Privacidade e limites:** sem texto de formulário, nome/telefone de visitante, URL completa, IP bruto ou localização exata no banco de eventos. Origem por domínio ou UTM. IDs locais, Do Not Track e Global Privacy Control respeitados; bots conhecidos e automação são descartados. Bloqueadores, falta de JavaScript e conexão podem impedir eventos. Não há medição de mensagem efetivamente enviada, venda ou contrato. Campanhas podem ser identificadas pelo gerador UTM do painel. CSV exporta o recorte selecionado, com proteção contra fórmulas originadas de textos.
+
+**Histórico:** a Nexo não tinha uma propriedade de medição ativa no código anterior. O painel mostra a data real de início da coleta; períodos anteriores sem registro são indisponíveis e nunca são preenchidos com estimativas. O acesso conectado ao GSC Wizard foi recusado por assinatura expirada; não há importação automática dos cliques/impressões históricos do Google. Search Console e visitas internas são indicadores separados. O painel aceita até 367 dias por consulta e usa `America/Sao_Paulo`.
+
+As condições de entrega dos planos permanecem na proposta aprovada; o painel não altera escopo, preços, identidade visual ou animação de abertura do site.
 
 ### Tela de abertura
 
