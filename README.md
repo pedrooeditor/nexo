@@ -2,7 +2,7 @@
 
 Site institucional da Nexo Studio em HTML, CSS e JavaScript puros. A identidade usa a logo original, preto profundo, azul elétrico e prata, com brilho e animações inspirados nas referências de movimento. Não exige instalação, compilação ou backend.
 
-Site: https://nexostud.com.br/
+Site: https://pedrooeditor.github.io/nexo/ (versão antiga da Nexo Studio). O domínio `nexostud.com.br` passou para a Nexo nova, publicada pelo repositório SaaSstudioCT.
 
 ## Arquivos utilizados
 
@@ -13,7 +13,6 @@ Site: https://nexostud.com.br/
 - `assets/nexo-icon.png`: ícone da aba do navegador (o N sobre fundo escuro).
 - `assets/nexo-logo.webp`: logo original da Nexo Studio, preservada como arquivo-fonte (o site não a carrega mais).
 - `.nojekyll`: entrega direta dos arquivos no GitHub Pages.
-- `CNAME`: domínio personalizado `nexostud.com.br` usado pelo GitHub Pages.
 
 Os arquivos `identity.css`, `responsive.css`, `ecossistema.css` e `experiencia.css` pertencem a versões anteriores e **não são carregados** pela página atual. O estilo ativo está em `styles.css`. Eles podem ser apagados do repositório sem afetar o site.
 
@@ -55,17 +54,7 @@ O GitHub Pages usa a branch `main` e a pasta raiz. A publicação acompanha os c
 
 ### Domínio personalizado
 
-O arquivo `CNAME` na raiz vincula `nexostud.com.br` à publicação da branch `main`. O DNS do domínio deve apontar para o GitHub Pages:
-
-| Tipo | Nome | Valor |
-| --- | --- | --- |
-| A | @ | 185.199.108.153 |
-| A | @ | 185.199.109.153 |
-| A | @ | 185.199.110.153 |
-| A | @ | 185.199.111.153 |
-| CNAME | www | pedrooeditor.github.io |
-
-O domínio só fica acessível após configurar e propagar esses registros no provedor DNS. Depois da emissão do certificado, ative **Enforce HTTPS** em **Settings → Pages**. Referência: https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site
+Este site não usa mais domínio próprio: `nexostud.com.br` passou para o repositório SaaSstudioCT (a Nexo nova). Ele continua publicado em https://pedrooeditor.github.io/nexo/.
 
 ## Acessibilidade e responsividade
 
